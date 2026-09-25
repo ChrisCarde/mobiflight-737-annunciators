@@ -1,0 +1,428 @@
+{
+  "Name": "[0ebfa3] Electrical",
+  "ConfigFiles": [
+    {
+      "Label": "[0ebfa3] Electrical",
+      "FileName": null,
+      "ReferenceOnly": false,
+      "EmbedContent": true,
+      "ConfigItems": [
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25760,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ELEC",
+            "CustomName": "Electrical Meter",
+            "MessageType": 0,
+            "Value": "",
+            "Name": "Electrical Meter",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Electrical Meter",
+          "GUID": "f052dac3-4da1-5b35-b26a-594f7095423d",
+          "Active": true,
+          "Name": "Electrical Meter - BAT DISCHARGE  [ELEC_annunBAT_DISCHARGE 0x64A0]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25761,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ELEC",
+            "CustomName": "Electrical Meter",
+            "MessageType": 1,
+            "Value": "",
+            "Name": "Electrical Meter",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Electrical Meter",
+          "GUID": "7f0e86ea-2ee1-5f4e-bab7-b0de64a83848",
+          "Active": true,
+          "Name": "Electrical Meter - TR UNIT  [ELEC_annunTR_UNIT 0x64A1]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25762,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ELEC",
+            "CustomName": "Electrical Meter",
+            "MessageType": 2,
+            "Value": "",
+            "Name": "Electrical Meter",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Electrical Meter",
+          "GUID": "50696c71-8de6-5c2b-8fbb-a9ee597ea04d",
+          "Active": true,
+          "Name": "Electrical Meter - ELEC  [ELEC_annunELEC 0x64A2]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25788,
+              "Size": 255,
+              "OffsetType": 2,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 2,
+            "Float64": 0.0,
+            "String": "  28  49 115"
+          },
+          "Device": {
+            "CustomType": "ANNUN_ELEC",
+            "CustomName": "Electrical Meter",
+            "MessageType": 10,
+            "Value": "",
+            "Name": "Electrical Meter",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Electrical Meter",
+          "GUID": "6c5151b4-7686-57ec-8545-28d8769378cf",
+          "Active": true,
+          "Name": "Electrical Meter - Display top line  [ELEC_MeterDisplayTop 0x64BC]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25801,
+              "Size": 255,
+              "OffsetType": 2,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 2,
+            "Float64": 0.0,
+            "String": "  28  49 115"
+          },
+          "Device": {
+            "CustomType": "ANNUN_ELEC",
+            "CustomName": "Electrical Meter",
+            "MessageType": 11,
+            "Value": "",
+            "Name": "Electrical Meter",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Electrical Meter",
+          "GUID": "4888bdee-e20d-5005-84b8-13ba445d85a3",
+          "Active": true,
+          "Name": "Electrical Meter - Display bottom line  [ELEC_MeterDisplayBottom 0x64C9]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25763,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ELEC",
+            "CustomName": "Electrical Meter",
+            "MessageType": 12,
+            "Value": "",
+            "Name": "Electrical Meter",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Electrical Meter",
+          "GUID": "a1d99d7f-2caa-5c44-8784-0e80bc7a31e6",
+          "Active": true,
+          "Name": "Electrical Meter - DC meter selector  [ELEC_DCMeterSelector 0x64A3]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25764,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ELEC",
+            "CustomName": "Electrical Meter",
+            "MessageType": 13,
+            "Value": "",
+            "Name": "Electrical Meter",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Electrical Meter",
+          "GUID": "14428014-9682-587b-b889-20a8e153bf3a",
+          "Active": true,
+          "Name": "Electrical Meter - AC meter selector  [ELEC_ACMeterSelector 0x64A4]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 2.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ELEC",
+            "CustomName": "Electrical Meter",
+            "MessageType": 102,
+            "Value": "",
+            "Name": "Electrical Meter",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Electrical Meter",
+          "GUID": "be2f5b9f-35a9-5f76-91fa-8f7b9a6bfcfa",
+          "Active": true,
+          "Name": "Electrical Meter - Night dimming (lights switch DIM)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=2,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": -1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ELEC",
+            "CustomName": "Electrical Meter",
+            "MessageType": 103,
+            "Value": "",
+            "Name": "Electrical Meter",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Electrical Meter",
+          "GUID": "f3922df9-a34f-529e-912d-0a4800781dcf",
+          "Active": true,
+          "Name": "Electrical Meter - Lamp test (lights switch TEST)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($<=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25816,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 0.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ELEC",
+            "CustomName": "Electrical Meter",
+            "MessageType": 107,
+            "Value": "",
+            "Name": "Electrical Meter",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Electrical Meter",
+          "GUID": "4b6053ca-4d64-55b1-ad01-39e9bd076606",
+          "Active": true,
+          "Name": "Electrical Meter - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "Sim": "msfs",
+  "Aircraft": [],
+  "Features": {
+    "FSUIPC": true,
+    "ProSim": false
+  },
+  "_version": "0.9"
+}

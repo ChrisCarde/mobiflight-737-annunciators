@@ -1,0 +1,580 @@
+{
+  "Name": "[47b19e] IRS",
+  "ConfigFiles": [
+    {
+      "Label": "[47b19e] IRS",
+      "FileName": null,
+      "ReferenceOnly": false,
+      "EmbedContent": true,
+      "ConfigItems": [
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25634,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_IRS",
+            "CustomName": "IRS Annunciator",
+            "MessageType": 0,
+            "Value": "",
+            "Name": "IRS Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Annunciator",
+          "GUID": "c34e1291-634e-5324-b4ce-1f9be5fddeab",
+          "Active": true,
+          "Name": "IRS Annunciator - GPS  [IRS_annunGPS 0x6422]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "SimConnectValue": {
+              "UUID": "",
+              "Value": "(L:switch_2461_73X, number) 0 >",
+              "VarType": 2
+            },
+            "Type": "SimConnectSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_IRS",
+            "CustomName": "IRS Annunciator",
+            "MessageType": 1,
+            "Value": "",
+            "Name": "IRS Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Annunciator",
+          "GUID": "7f4ea241-310e-5e23-a807-0570d3650522",
+          "Active": true,
+          "Name": "IRS Annunciator - ILS  [(L:switch_2461_73X, number) 0 >]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "SimConnectValue": {
+              "UUID": "",
+              "Value": "(L:switch_2462_73X, number) 0 >",
+              "VarType": 2
+            },
+            "Type": "SimConnectSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_IRS",
+            "CustomName": "IRS Annunciator",
+            "MessageType": 2,
+            "Value": "",
+            "Name": "IRS Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Annunciator",
+          "GUID": "eb294492-d1b7-5349-94eb-4c2b4a504c45",
+          "Active": true,
+          "Name": "IRS Annunciator - GLS  [(L:switch_2462_73X, number) 0 >]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25635,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_IRS",
+            "CustomName": "IRS Annunciator",
+            "MessageType": 3,
+            "Value": "",
+            "Name": "IRS Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Annunciator",
+          "GUID": "630cbd28-4bf0-577b-b9cf-c1c31777c95a",
+          "Active": true,
+          "Name": "IRS Annunciator - L IRU ALIGN  [IRS_annunALIGN[0] 0x6423]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25637,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_IRS",
+            "CustomName": "IRS Annunciator",
+            "MessageType": 4,
+            "Value": "",
+            "Name": "IRS Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Annunciator",
+          "GUID": "d0fac929-5953-59e2-bd4e-6b66d366c14f",
+          "Active": true,
+          "Name": "IRS Annunciator - L IRU ON DC  [IRS_annunON_DC[0] 0x6425]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25639,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_IRS",
+            "CustomName": "IRS Annunciator",
+            "MessageType": 5,
+            "Value": "",
+            "Name": "IRS Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Annunciator",
+          "GUID": "f258ee32-b4d4-5ddd-999a-7f7de1661608",
+          "Active": true,
+          "Name": "IRS Annunciator - L IRU FAULT  [IRS_annunFAULT[0] 0x6427]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25641,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_IRS",
+            "CustomName": "IRS Annunciator",
+            "MessageType": 6,
+            "Value": "",
+            "Name": "IRS Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Annunciator",
+          "GUID": "c5cc8c1f-c7fb-5b16-9c99-dac6c67af9fc",
+          "Active": true,
+          "Name": "IRS Annunciator - L IRU DC FAIL  [IRS_annunDC_FAIL[0] 0x6429]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25636,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_IRS",
+            "CustomName": "IRS Annunciator",
+            "MessageType": 7,
+            "Value": "",
+            "Name": "IRS Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Annunciator",
+          "GUID": "4ec5140b-554a-50b9-a178-399345773d3d",
+          "Active": true,
+          "Name": "IRS Annunciator - R IRU ALIGN  [IRS_annunALIGN[1] 0x6424]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25638,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_IRS",
+            "CustomName": "IRS Annunciator",
+            "MessageType": 8,
+            "Value": "",
+            "Name": "IRS Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Annunciator",
+          "GUID": "10b9c7f8-0504-5180-a549-0816ee86e850",
+          "Active": true,
+          "Name": "IRS Annunciator - R IRU ON DC  [IRS_annunON_DC[1] 0x6426]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25640,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_IRS",
+            "CustomName": "IRS Annunciator",
+            "MessageType": 9,
+            "Value": "",
+            "Name": "IRS Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Annunciator",
+          "GUID": "d99888cb-5692-5c15-8138-b8f762422040",
+          "Active": true,
+          "Name": "IRS Annunciator - R IRU FAULT  [IRS_annunFAULT[1] 0x6428]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25642,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_IRS",
+            "CustomName": "IRS Annunciator",
+            "MessageType": 10,
+            "Value": "",
+            "Name": "IRS Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Annunciator",
+          "GUID": "76dfc98a-b38a-521d-8b7c-7bded5cee96f",
+          "Active": true,
+          "Name": "IRS Annunciator - R IRU DC FAIL  [IRS_annunDC_FAIL[1] 0x642A]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 2.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_IRS",
+            "CustomName": "IRS Annunciator",
+            "MessageType": 102,
+            "Value": "",
+            "Name": "IRS Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Annunciator",
+          "GUID": "a781a729-b580-5cd5-8cc6-ac56bdb66118",
+          "Active": true,
+          "Name": "IRS Annunciator - Night dimming (lights switch DIM)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=2,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": -1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_IRS",
+            "CustomName": "IRS Annunciator",
+            "MessageType": 103,
+            "Value": "",
+            "Name": "IRS Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Annunciator",
+          "GUID": "e0549cbf-b1cc-56d4-975e-af1631cec78d",
+          "Active": true,
+          "Name": "IRS Annunciator - Lamp test (lights switch TEST)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($<=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25816,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 0.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_IRS",
+            "CustomName": "IRS Annunciator",
+            "MessageType": 107,
+            "Value": "",
+            "Name": "IRS Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Annunciator",
+          "GUID": "b7ab7543-88c2-5da4-a7e5-79e7b0dfe71b",
+          "Active": true,
+          "Name": "IRS Annunciator - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "Sim": "msfs",
+  "Aircraft": [],
+  "Features": {
+    "FSUIPC": true,
+    "ProSim": false
+  },
+  "_version": "0.9"
+}

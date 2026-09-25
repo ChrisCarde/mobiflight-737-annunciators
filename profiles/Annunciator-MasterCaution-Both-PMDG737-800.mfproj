@@ -1,0 +1,839 @@
+{
+  "Name": "[db33ff] MasterCaution-Both",
+  "ConfigFiles": [
+    {
+      "Label": "[db33ff] MasterCaution-Both",
+      "FileName": null,
+      "ReferenceOnly": false,
+      "EmbedContent": true,
+      "ConfigItems": [
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26020,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 0,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "06eaead8-9974-57d8-8ef2-114b3e6ae588",
+          "Active": true,
+          "Name": "Master Caution - FIRE WARN  [WARN_annunFIRE_WARN[0] 0x65A4]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26022,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 1,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "9ef3dc4a-ddee-5105-90e9-30c24e113565",
+          "Active": true,
+          "Name": "Master Caution - MASTER CAUTION  [WARN_annunMASTER_CAUTION[0] 0x65A6]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26024,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 2,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "0cb007df-56e5-5a7d-8606-950b55391dcb",
+          "Active": true,
+          "Name": "Master Caution - FLT CONT  [WARN_annunFLT_CONT 0x65A8]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26027,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 3,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "1c6982d1-cd60-5a93-9292-67d6a240bb65",
+          "Active": true,
+          "Name": "Master Caution - ELEC  [WARN_annunELEC 0x65AB]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26025,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 4,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "8bff6559-26c1-556e-a332-bea73b5a2f56",
+          "Active": true,
+          "Name": "Master Caution - IRS  [WARN_annunIRS 0x65A9]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26028,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 5,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "862ace24-a0dd-5308-a484-9358e6907f68",
+          "Active": true,
+          "Name": "Master Caution - APU  [WARN_annunAPU 0x65AC]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26026,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 6,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "2bedb7b9-f920-51cc-afe0-e1ee02832193",
+          "Active": true,
+          "Name": "Master Caution - FUEL  [WARN_annunFUEL 0x65AA]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26029,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 7,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "74448399-3502-59ba-89f3-b1fba6c961d2",
+          "Active": true,
+          "Name": "Master Caution - OVHT/DET  [WARN_annunOVHT_DET 0x65AD]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26030,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 8,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "5abf85e8-06e2-5356-a180-eccd573ab188",
+          "Active": true,
+          "Name": "Master Caution - ANTI-ICE  [WARN_annunANTI_ICE 0x65AE]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26033,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 9,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "f5bf692e-0261-55fa-a0cc-794d996cf6ff",
+          "Active": true,
+          "Name": "Master Caution - ENG  [WARN_annunENG 0x65B1]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26031,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 10,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "e67f6623-c6ac-5b85-82a4-4c86875b029e",
+          "Active": true,
+          "Name": "Master Caution - HYD  [WARN_annunHYD 0x65AF]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26034,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 11,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "76d09cd7-ca2e-5a4e-bb05-4fed92b1f61e",
+          "Active": true,
+          "Name": "Master Caution - OVERHEAD  [WARN_annunOVERHEAD 0x65B2]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26032,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 12,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "d8a7a84f-2fb2-5be4-92c1-f290652f532e",
+          "Active": true,
+          "Name": "Master Caution - DOORS  [WARN_annunDOORS 0x65B0]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26035,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 13,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "dfce5662-766f-5e0e-9a49-269fa0789b0b",
+          "Active": true,
+          "Name": "Master Caution - AIR COND  [WARN_annunAIR_COND 0x65B3]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 2.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 102,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "52ea824b-c891-5c32-862b-95821f0a2a11",
+          "Active": true,
+          "Name": "Master Caution - Night dimming (lights switch DIM)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=2,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": -1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 103,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "69308b0f-3529-524b-9906-52d1f3f75878",
+          "Active": true,
+          "Name": "Master Caution - Lamp test (lights switch TEST)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($<=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25816,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 0.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH",
+            "CustomName": "Master Caution",
+            "MessageType": 107,
+            "Value": "",
+            "Name": "Master Caution",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Master Caution",
+          "GUID": "139fd755-ad1d-55a0-9af5-4f9e3642ba6d",
+          "Active": true,
+          "Name": "Master Caution - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "34701 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "FIRE WARN",
+            "Type": "Button"
+          },
+          "DeviceName": "FIRE WARN",
+          "DeviceType": "Button",
+          "GUID": "df153c3d-21ed-5414-8bdf-bb73b51b952b",
+          "Active": true,
+          "Name": "Master Caution - touch FIRE WARN  [34701 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "34801 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "MASTER CAUTION",
+            "Type": "Button"
+          },
+          "DeviceName": "MASTER CAUTION",
+          "DeviceType": "Button",
+          "GUID": "ddd9244c-8039-51f2-b195-417d10486b73",
+          "Active": true,
+          "Name": "Master Caution - touch MASTER CAUTION  [34801 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "34901 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "34904 (>K:ROTOR_BRAKE)"
+            },
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "RECALL L",
+            "Type": "Button"
+          },
+          "DeviceName": "RECALL L",
+          "DeviceType": "Button",
+          "GUID": "80f5a971-471b-580c-a45b-fba6058a915d",
+          "Active": true,
+          "Name": "Master Caution - touch RECALL L  [34901 (>K:ROTOR_BRAKE) + release]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "43701 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "43704 (>K:ROTOR_BRAKE)"
+            },
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "RECALL R",
+            "Type": "Button"
+          },
+          "DeviceName": "RECALL R",
+          "DeviceType": "Button",
+          "GUID": "f6aaf076-991b-5fe0-b3db-d6737725f346",
+          "Active": true,
+          "Name": "Master Caution - touch RECALL R  [43701 (>K:ROTOR_BRAKE) + release]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        }
+      ]
+    }
+  ],
+  "Sim": "msfs",
+  "Aircraft": [],
+  "Features": {
+    "FSUIPC": true,
+    "ProSim": false
+  },
+  "_version": "0.9"
+}

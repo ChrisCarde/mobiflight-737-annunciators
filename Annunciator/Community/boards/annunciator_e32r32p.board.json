@@ -1,0 +1,104 @@
+{
+  "$schema": "./mfboard.schema.json",
+  "Connection": {
+    "ConnectionDelay": 1250,
+    "DelayAfterFirmwareUpdate": 1250,
+    "DtrEnable": false,
+    "EEPROMSize": 1496,
+    "ExtraConnectionRetry": false,
+    "ForceResetOnFirmwareUpdate": false,
+    "MessageSize": 90
+  },
+  "HardwareIds": [
+    "^VID_1A86&PID_7523",
+    "^VID_1A86\\+PID_7523\\+.+",
+    "^VID_1A86&PID_55D4",
+    "^VID_10C4&PID_EA60"
+  ],
+  "Info": {
+    "CanInstallFirmware": false,
+    "CanResetBoard": false,
+    "FirmwareBaseName": "annunciator_e32r32p",
+    "FirmwareExtension": "bin",
+    "FriendlyName": "Annunciator Panel (LCDWIKI E32R32P 3.2in)",
+    "LatestFirmwareVersion": "0.0.1",
+    "MobiFlightType": "Annunciator E32R32P",
+    "MobiFlightTypeLabel": "Annunciator Panel",
+    "CustomDeviceTypes": [
+      "ANNUN_DOOR",
+      "ANNUN_IRS",
+      "ANNUN_ELEC",
+      "ANNUN_MCS_L",
+      "ANNUN_MCS_R",
+      "ANNUN_MCS_BOTH",
+      "ANNUN_MCS_BOTH_AFDS",
+      "ANNUN_AIR",
+      "ANNUN_FCTL",
+      "ANNUN_ISDU"
+    ],
+    "Community": {
+      "Project": "Annunciator",
+      "Website": "https://www.lcdwiki.com/3.2inch_ESP32-32E_Display",
+      "Docs": "https://github.com/",
+      "Support": "https://github.com/"
+    }
+  },
+  "ModuleLimits": {
+    "MaxAnalogInputs": 3,
+    "MaxButtons": 4,
+    "MaxEncoders": 2,
+    "MaxInputShifters": 1,
+    "MaxLcdI2C": 2,
+    "MaxLedSegments": 1,
+    "MaxOutputs": 4,
+    "MaxServos": 4,
+    "MaxShifters": 1,
+    "MaxSteppers": 1,
+    "MaxInputMultiplexer": 1,
+    "MaxCustomDevices": 1
+  },
+  "Pins": [
+    {
+      "isAnalog": false,
+      "isI2C": false,
+      "isPWM": true,
+      "Name": "27 (LCD backlight)",
+      "Pin": 27
+    },
+    {
+      "isAnalog": false,
+      "isI2C": false,
+      "isPWM": true,
+      "Name": "21 (SPI header CS)",
+      "Pin": 21
+    },
+    {
+      "isAnalog": true,
+      "isI2C": true,
+      "isPWM": true,
+      "Name": "32 (I2C header SDA)",
+      "Pin": 32
+    },
+    {
+      "isAnalog": false,
+      "isI2C": true,
+      "isPWM": true,
+      "Name": "25 (I2C header SCL)",
+      "Pin": 25
+    },
+    {
+      "isAnalog": true,
+      "isI2C": false,
+      "isPWM": false,
+      "Name": "35 (analog in only)",
+      "Pin": 35
+    },
+    {
+      "isAnalog": true,
+      "isI2C": false,
+      "isPWM": false,
+      "Name": "39 (analog in only)",
+      "Pin": 39
+    }
+  ]
+}

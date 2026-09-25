@@ -1,0 +1,100 @@
+{
+  "$schema": "./mfdevice.schema.json",
+  "Info": {
+    "Label": "IRS Display Unit",
+    "Type": "ANNUN_ISDU",
+    "Author": "chris",
+    "URL": "https://github.com/",
+    "Version": "1.0.0"
+  },
+  "Config": {
+    "Pins": [
+      "Backlight (fixed: GPIO 27)"
+    ],
+    "I2C": {
+      "Enabled": false,
+      "Addresses": []
+    },
+    "Custom": {
+      "Enabled": true,
+      "Value": "255"
+    }
+  },
+  "MessageTypes": [
+    {
+      "Id": 0,
+      "Label": "Left display text",
+      "Description": "$ = up to 6 characters, one per cell from the left (N/S, digits). PMDG: FSUIPC 0x642E, string"
+    },
+    {
+      "Id": 1,
+      "Label": "Right display text",
+      "Description": "$ = up to 7 characters, one per cell from the left (E/W, digits). PMDG: FSUIPC 0x6435, string"
+    },
+    {
+      "Id": 2,
+      "Label": "Display dots",
+      "Description": "$ = 1 lights the degree, decimal and minute dots, 0 darkens them. PMDG: FSUIPC 0x643D"
+    },
+    {
+      "Id": 3,
+      "Label": "DSPL SEL position",
+      "Description": "$ = 0 TEST, 1 TK/GS, 2 PPOS, 3 WIND, 4 HDG/STS. PMDG: FSUIPC 0x6420"
+    },
+    {
+      "Id": 4,
+      "Label": "SYS DSPL position",
+      "Description": "$ = 0 L, 1 R. PMDG: FSUIPC 0x6421"
+    },
+    {
+      "Id": 5,
+      "Label": "ENT cue lights",
+      "Description": "$ = 0 dark, anything else lit. PMDG: L:switch_242_73X"
+    },
+    {
+      "Id": 6,
+      "Label": "CLR cue lights",
+      "Description": "$ = 0 dark, anything else lit. PMDG: L:switch_245_73X"
+    },
+    {
+      "Id": 100,
+      "Label": "Set screen rotation",
+      "Description": "$ = 1 normal landscape, 3 rotated 180 degrees"
+    },
+    {
+      "Id": 101,
+      "Label": "Set backlight brightness",
+      "Description": "$ = 16-255, applied while the panel is lit (lower values are raised to 16: turning the panel off is bus power's job). Defaults to 255, or the Additional config value set on the device"
+    },
+    {
+      "Id": 102,
+      "Label": "Night dimming",
+      "Description": "$ = 1 drops lamp luminance and removes the glow, 0 restores full brightness"
+    },
+    {
+      "Id": 103,
+      "Label": "Lamp test",
+      "Description": "$ = 1 lights every lamp, 0 returns to the live state"
+    },
+    {
+      "Id": 104,
+      "Label": "Run self test",
+      "Description": "$ = 1 cycles the built-in demo states; the next lamp message ends it"
+    },
+    {
+      "Id": 105,
+      "Label": "Bus power (panel lit)",
+      "Description": "$ = 0 keeps the panel dark, 1 lets it light. For binding a bus VOLTAGE directly (anything from 0.5 up counts as powered). The profiles use 107 instead, because the Connector's tests send 0 here and darken the panel"
+    },
+    {
+      "Id": 106,
+      "Label": "Touch calibration",
+      "Description": "$ = 1 shows four crosshairs to press in turn, then saves the calibration on the board. A bench step, not something to bind; holding a finger on an empty part of the screen for 6 seconds does the same"
+    },
+    {
+      "Id": 107,
+      "Label": "Bus unpowered (panel dark)",
+      "Description": "$ = 1 keeps the panel dark (the bus that feeds these lights is off), 0 lets it light. The inverse of 105, so that the 0 which Test Mode and the end of every test send leaves the panel lit (a row's own Test sends 1, which shows the dark, unpowered state). PMDG: FSUIPC 0x64D8 (DC BATT BUS) with Transformation if($=0,1,0)"
+    }
+  ]
+}

@@ -1,0 +1,779 @@
+{
+  "Name": "[fb940a] AirCond-Bleed-Press",
+  "ConfigFiles": [
+    {
+      "Label": "[fb940a] AirCond-Bleed-Press",
+      "FileName": null,
+      "ReferenceOnly": false,
+      "EmbedContent": true,
+      "ConfigItems": [
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25904,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 0,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "729fe5a7-ac64-5358-b6ac-a073a65d4fe6",
+          "Active": true,
+          "Name": "Air Conditioning - ZONE TEMP CONT CAB  [AIR_annunZoneTemp[0] 0x6530]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25905,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 1,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "6a358f1a-9165-5080-8e39-c046386599cc",
+          "Active": true,
+          "Name": "Air Conditioning - ZONE TEMP FWD CAB  [AIR_annunZoneTemp[1] 0x6531]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25906,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 2,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "895d74a8-ec33-5022-97ea-e98f3c6082f9",
+          "Active": true,
+          "Name": "Air Conditioning - ZONE TEMP AFT CAB  [AIR_annunZoneTemp[2] 0x6532]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25907,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 3,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "7cb5f139-dbe5-5585-aa6a-c9676578e4f0",
+          "Active": true,
+          "Name": "Air Conditioning - DUAL BLEED  [AIR_annunDualBleed 0x6533]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25908,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 4,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "a042c27b-c72c-5944-9d83-f93191d9aa48",
+          "Active": true,
+          "Name": "Air Conditioning - RAM DOOR FULL OPEN L  [AIR_annunRamDoorL 0x6534]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25909,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 5,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "00be5ac3-4ebc-527e-9fb3-91e4cd24a2f3",
+          "Active": true,
+          "Name": "Air Conditioning - RAM DOOR FULL OPEN R  [AIR_annunRamDoorR 0x6535]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25918,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 6,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "ad4181c8-04fc-5104-9370-7e1f3ce0e3c1",
+          "Active": true,
+          "Name": "Air Conditioning - L PACK  [AIR_annunPackTripOff[0] 0x653E]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25920,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 7,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "5cba23c1-4d10-53d0-9dca-3cfc40a2f1b2",
+          "Active": true,
+          "Name": "Air Conditioning - L WING-BODY OVERHEAT  [AIR_annunWingBodyOverheat[0] 0x6540]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25922,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 8,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "a433770e-f239-5143-b4c5-0f008ef2b513",
+          "Active": true,
+          "Name": "Air Conditioning - L BLEED TRIP OFF  [AIR_annunBleedTripOff[0] 0x6542]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25919,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 9,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "95a5cb8b-cf80-50a7-ab2a-c2869a65ee4b",
+          "Active": true,
+          "Name": "Air Conditioning - R PACK  [AIR_annunPackTripOff[1] 0x653F]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25921,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 10,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "c1f6e2e8-5388-5e3b-a3cd-c29c517f33b7",
+          "Active": true,
+          "Name": "Air Conditioning - R WING-BODY OVERHEAT  [AIR_annunWingBodyOverheat[1] 0x6541]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25923,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 11,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "52aff84b-8af5-5f93-8451-8ff8ae20dbfb",
+          "Active": true,
+          "Name": "Air Conditioning - R BLEED TRIP OFF  [AIR_annunBleedTripOff[1] 0x6543]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25924,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 12,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "285c63a8-5d86-5b0b-bcda-b6d5fc46acb1",
+          "Active": true,
+          "Name": "Air Conditioning - AUTO FAIL  [AIR_annunAUTO_FAIL 0x6544]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25925,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 13,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "db7d70c1-d722-527e-97f7-03bf6607c249",
+          "Active": true,
+          "Name": "Air Conditioning - OFF SCHED DESCENT  [AIR_annunOFFSCHED_DESCENT 0x6545]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25926,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 14,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "1b98804a-5708-5924-bd1e-4ca5e8202b2e",
+          "Active": true,
+          "Name": "Air Conditioning - ALTN  [AIR_annunALTN 0x6546]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25927,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 15,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "865d8dda-6ba5-5f64-afd5-11122f728a26",
+          "Active": true,
+          "Name": "Air Conditioning - MANUAL  [AIR_annunMANUAL 0x6547]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 2.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 102,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "87219f13-40d6-5b5c-a921-e8986da5fe36",
+          "Active": true,
+          "Name": "Air Conditioning - Night dimming (lights switch DIM)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=2,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": -1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 103,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "9988c79b-5b6a-5c64-9bf8-a5e350f0ffe8",
+          "Active": true,
+          "Name": "Air Conditioning - Lamp test (lights switch TEST)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($<=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25816,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 0.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_AIR",
+            "CustomName": "Air Conditioning",
+            "MessageType": 107,
+            "Value": "",
+            "Name": "Air Conditioning",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Air Conditioning",
+          "GUID": "a3cb9014-012c-57b0-98a9-f3b080dac6d6",
+          "Active": true,
+          "Name": "Air Conditioning - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "Sim": "msfs",
+  "Aircraft": [],
+  "Features": {
+    "FSUIPC": true,
+    "ProSim": false
+  },
+  "_version": "0.9"
+}

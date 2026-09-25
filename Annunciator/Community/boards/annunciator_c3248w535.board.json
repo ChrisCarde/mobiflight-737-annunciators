@@ -1,0 +1,67 @@
+{
+  "$schema": "./mfboard.schema.json",
+  "Connection": {
+    "ConnectionDelay": 1250,
+    "DelayAfterFirmwareUpdate": 1250,
+    "DtrEnable": true,
+    "EEPROMSize": 1496,
+    "ExtraConnectionRetry": false,
+    "ForceResetOnFirmwareUpdate": false,
+    "MessageSize": 90
+  },
+  "HardwareIds": [
+    "^VID_303A&PID_1001",
+    "^VID_303A\\+PID_1001\\+.+"
+  ],
+  "Info": {
+    "CanInstallFirmware": false,
+    "CanResetBoard": false,
+    "FirmwareBaseName": "annunciator_c3248w535",
+    "FirmwareExtension": "bin",
+    "FriendlyName": "Annunciator Panel (Caturda C3248W535 3.5in)",
+    "LatestFirmwareVersion": "0.0.1",
+    "MobiFlightType": "Annunciator C3248W535",
+    "MobiFlightTypeLabel": "Annunciator Panel 3.5",
+    "CustomDeviceTypes": [
+      "ANNUN_DOOR",
+      "ANNUN_IRS",
+      "ANNUN_ELEC",
+      "ANNUN_MCS_L",
+      "ANNUN_MCS_R",
+      "ANNUN_MCS_BOTH",
+      "ANNUN_MCS_BOTH_AFDS",
+      "ANNUN_AIR",
+      "ANNUN_FCTL",
+      "ANNUN_ISDU"
+    ],
+    "Community": {
+      "Project": "Annunciator",
+      "Website": "http://www.jczn1688.com/",
+      "Docs": "https://github.com/",
+      "Support": "https://github.com/"
+    }
+  },
+  "ModuleLimits": {
+    "MaxAnalogInputs": 0,
+    "MaxButtons": 1,
+    "MaxEncoders": 0,
+    "MaxInputShifters": 0,
+    "MaxLcdI2C": 0,
+    "MaxLedSegments": 0,
+    "MaxOutputs": 1,
+    "MaxServos": 0,
+    "MaxShifters": 0,
+    "MaxSteppers": 0,
+    "MaxInputMultiplexer": 0,
+    "MaxCustomDevices": 1
+  },
+  "Pins": [
+    {
+      "isAnalog": false,
+      "isI2C": false,
+      "isPWM": true,
+      "Name": "1 (LCD backlight)",
+      "Pin": 1
+    }
+  ]
+}

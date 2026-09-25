@@ -1,0 +1,506 @@
+{
+  "Name": "[791bd1] FlightControls",
+  "ConfigFiles": [
+    {
+      "Label": "[791bd1] FlightControls",
+      "FileName": null,
+      "ReferenceOnly": false,
+      "EmbedContent": true,
+      "ConfigItems": [
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25694,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL",
+            "CustomName": "Flight Controls",
+            "MessageType": 0,
+            "Value": "",
+            "Name": "Flight Controls",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flight Controls",
+          "GUID": "d58fdf2f-c257-5e9f-9b2a-9f300e0beb4b",
+          "Active": true,
+          "Name": "Flight Controls - FLT CONTROL A LOW PRESSURE  [FCTL_annunFC_LOW_PRESSURE[0] 0x645E]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25695,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL",
+            "CustomName": "Flight Controls",
+            "MessageType": 1,
+            "Value": "",
+            "Name": "Flight Controls",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flight Controls",
+          "GUID": "b3d25d59-b4a1-546e-8789-5772fef49f7c",
+          "Active": true,
+          "Name": "Flight Controls - FLT CONTROL B LOW PRESSURE  [FCTL_annunFC_LOW_PRESSURE[1] 0x645F]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25697,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL",
+            "CustomName": "Flight Controls",
+            "MessageType": 2,
+            "Value": "",
+            "Name": "Flight Controls",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flight Controls",
+          "GUID": "3aa14d0d-4065-5d4e-be9a-1f56832b52c7",
+          "Active": true,
+          "Name": "Flight Controls - STANDBY HYD LOW QUANTITY  [FCTL_annunLOW_QUANTITY 0x6461]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25698,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL",
+            "CustomName": "Flight Controls",
+            "MessageType": 3,
+            "Value": "",
+            "Name": "Flight Controls",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flight Controls",
+          "GUID": "308dce1a-0bbb-5c8b-82e5-23ba3375b165",
+          "Active": true,
+          "Name": "Flight Controls - STANDBY HYD LOW PRESSURE  [FCTL_annunLOW_PRESSURE 0x6462]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25699,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL",
+            "CustomName": "Flight Controls",
+            "MessageType": 4,
+            "Value": "",
+            "Name": "Flight Controls",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flight Controls",
+          "GUID": "85a488ac-8c61-523c-b332-9078cd9d621a",
+          "Active": true,
+          "Name": "Flight Controls - STBY RUD ON  [FCTL_annunLOW_STBY_RUD_ON 0x6463]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25700,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL",
+            "CustomName": "Flight Controls",
+            "MessageType": 5,
+            "Value": "",
+            "Name": "Flight Controls",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flight Controls",
+          "GUID": "3dcaf18e-51ab-55a2-b328-1fb6f032a3d1",
+          "Active": true,
+          "Name": "Flight Controls - FEEL DIFF PRESS  [FCTL_annunFEEL_DIFF_PRESS 0x6464]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25701,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL",
+            "CustomName": "Flight Controls",
+            "MessageType": 6,
+            "Value": "",
+            "Name": "Flight Controls",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flight Controls",
+          "GUID": "89455272-5200-5477-9770-9781e71c2355",
+          "Active": true,
+          "Name": "Flight Controls - SPEED TRIM FAIL  [FCTL_annunSPEED_TRIM_FAIL 0x6465]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25702,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL",
+            "CustomName": "Flight Controls",
+            "MessageType": 7,
+            "Value": "",
+            "Name": "Flight Controls",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flight Controls",
+          "GUID": "ac6e5eab-df1c-56f6-898a-393191f3c257",
+          "Active": true,
+          "Name": "Flight Controls - MACH TRIM FAIL  [FCTL_annunMACH_TRIM_FAIL 0x6466]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25703,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL",
+            "CustomName": "Flight Controls",
+            "MessageType": 8,
+            "Value": "",
+            "Name": "Flight Controls",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flight Controls",
+          "GUID": "198781bc-307c-5760-90b5-e82f1aee1909",
+          "Active": true,
+          "Name": "Flight Controls - AUTO SLAT FAIL  [FCTL_annunAUTO_SLAT_FAIL 0x6467]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 2.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL",
+            "CustomName": "Flight Controls",
+            "MessageType": 102,
+            "Value": "",
+            "Name": "Flight Controls",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flight Controls",
+          "GUID": "f6619b05-79c6-51ca-9a8c-3b55dac287ca",
+          "Active": true,
+          "Name": "Flight Controls - Night dimming (lights switch DIM)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=2,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": -1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL",
+            "CustomName": "Flight Controls",
+            "MessageType": 103,
+            "Value": "",
+            "Name": "Flight Controls",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flight Controls",
+          "GUID": "4f154e6d-59c2-5fa2-9595-0bedcc1ccdad",
+          "Active": true,
+          "Name": "Flight Controls - Lamp test (lights switch TEST)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($<=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25816,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 0.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL",
+            "CustomName": "Flight Controls",
+            "MessageType": 107,
+            "Value": "",
+            "Name": "Flight Controls",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flight Controls",
+          "GUID": "138bbd27-bb53-5117-aad1-0ca9e1b87c88",
+          "Active": true,
+          "Name": "Flight Controls - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "Sim": "msfs",
+  "Aircraft": [],
+  "Features": {
+    "FSUIPC": true,
+    "ProSim": false
+  },
+  "_version": "0.9"
+}

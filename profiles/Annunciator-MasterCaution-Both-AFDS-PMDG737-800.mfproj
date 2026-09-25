@@ -1,0 +1,968 @@
+{
+  "Name": "[c30308] MasterCaution-Both-AFDS",
+  "ConfigFiles": [
+    {
+      "Label": "[c30308] MasterCaution-Both-AFDS",
+      "FileName": null,
+      "ReferenceOnly": false,
+      "EmbedContent": true,
+      "ConfigItems": [
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26020,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 0,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "e356949a-8c85-5d38-90c4-0eaa05add384",
+          "Active": true,
+          "Name": "Caution + AFDS - FIRE WARN  [WARN_annunFIRE_WARN[0] 0x65A4]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26022,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 1,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "c9dc8644-b18e-5f28-818f-d718a3289873",
+          "Active": true,
+          "Name": "Caution + AFDS - MASTER CAUTION  [WARN_annunMASTER_CAUTION[0] 0x65A6]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26024,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 2,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "bf51598e-0e62-56aa-a321-626545d4dfd8",
+          "Active": true,
+          "Name": "Caution + AFDS - FLT CONT  [WARN_annunFLT_CONT 0x65A8]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26027,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 3,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "fb8e8603-c10c-5c98-b51e-b58bba6b6345",
+          "Active": true,
+          "Name": "Caution + AFDS - ELEC  [WARN_annunELEC 0x65AB]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26025,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 4,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "abfcd61b-137d-5d78-b02c-5f5e1dd773bf",
+          "Active": true,
+          "Name": "Caution + AFDS - IRS  [WARN_annunIRS 0x65A9]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26028,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 5,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "1232d35f-0737-5d6d-825b-bdfea8ac2f75",
+          "Active": true,
+          "Name": "Caution + AFDS - APU  [WARN_annunAPU 0x65AC]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26026,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 6,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "f631f411-3e06-5fcc-a90e-6ec3181b5884",
+          "Active": true,
+          "Name": "Caution + AFDS - FUEL  [WARN_annunFUEL 0x65AA]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26029,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 7,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "0e0fa207-d0af-536f-a6a8-770882498838",
+          "Active": true,
+          "Name": "Caution + AFDS - OVHT/DET  [WARN_annunOVHT_DET 0x65AD]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26030,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 8,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "48646b80-4852-57ed-8f83-6a75580e0717",
+          "Active": true,
+          "Name": "Caution + AFDS - ANTI-ICE  [WARN_annunANTI_ICE 0x65AE]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26033,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 9,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "38bc8fb9-42d6-5c3d-be95-afbbe4a21d0a",
+          "Active": true,
+          "Name": "Caution + AFDS - ENG  [WARN_annunENG 0x65B1]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26031,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 10,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "9a3e4148-16fd-58ea-a278-66e4e4fbbaa8",
+          "Active": true,
+          "Name": "Caution + AFDS - HYD  [WARN_annunHYD 0x65AF]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26034,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 11,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "26ee8791-ac0c-5a2f-8677-b76b11a649cb",
+          "Active": true,
+          "Name": "Caution + AFDS - OVERHEAD  [WARN_annunOVERHEAD 0x65B2]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26032,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 12,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "f077d3c2-17e1-5880-9bc5-f00d3dc63223",
+          "Active": true,
+          "Name": "Caution + AFDS - DOORS  [WARN_annunDOORS 0x65B0]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26035,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 13,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "1d6778c7-7601-52ad-abe7-060cd1ca0075",
+          "Active": true,
+          "Name": "Caution + AFDS - AIR COND  [WARN_annunAIR_COND 0x65B3]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26097,
+              "Size": 4,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 14,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "4de76ebc-6ca6-5fd2-84c4-11208e0a7312",
+          "Active": true,
+          "Name": "Caution + AFDS - A/P P/RST (red, amber)  [MAIN_annunAP[0] + MAIN_annunAP_Amber[0] 0x65F1]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($%256>0,1,if(floor($/65536)%256>0,3,0))",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26101,
+              "Size": 4,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 15,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "42f2567e-05f6-5870-8c70-5e301c1e5ecd",
+          "Active": true,
+          "Name": "Caution + AFDS - A/T P/RST (red, amber)  [MAIN_annunAT[0] + MAIN_annunAT_Amber[0] 0x65F5]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($%256>0,1,if(floor($/65536)%256>0,3,0))",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26105,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 16,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "55f77f9e-510b-5159-9a81-c07526e61a6c",
+          "Active": true,
+          "Name": "Caution + AFDS - FMC P/RST (amber)  [MAIN_annunFMC[0] 0x65F9]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 2.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 102,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "1c0dd12a-9cea-5d8f-be09-94760324c7c5",
+          "Active": true,
+          "Name": "Caution + AFDS - Night dimming (lights switch DIM)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=2,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": -1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 103,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "aea195e8-8498-5a5b-a296-5f45671dd0b8",
+          "Active": true,
+          "Name": "Caution + AFDS - Lamp test (lights switch TEST)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($<=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25816,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 0.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_MCS_BOTH_AFDS",
+            "CustomName": "Caution + AFDS",
+            "MessageType": 107,
+            "Value": "",
+            "Name": "Caution + AFDS",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Caution + AFDS",
+          "GUID": "3ffe82a4-02b2-5e7c-891d-260ad0744d1a",
+          "Active": true,
+          "Name": "Caution + AFDS - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "34701 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "FIRE WARN",
+            "Type": "Button"
+          },
+          "DeviceName": "FIRE WARN",
+          "DeviceType": "Button",
+          "GUID": "cb6d0fb4-9ade-5d00-b95e-dd905bc57488",
+          "Active": true,
+          "Name": "Caution + AFDS - touch FIRE WARN  [34701 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "34801 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "MASTER CAUTION",
+            "Type": "Button"
+          },
+          "DeviceName": "MASTER CAUTION",
+          "DeviceType": "Button",
+          "GUID": "88b36e00-00c2-54af-a500-83e0851eb7f7",
+          "Active": true,
+          "Name": "Caution + AFDS - touch MASTER CAUTION  [34801 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "34901 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "34904 (>K:ROTOR_BRAKE)"
+            },
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "RECALL L",
+            "Type": "Button"
+          },
+          "DeviceName": "RECALL L",
+          "DeviceType": "Button",
+          "GUID": "7d906fa3-faee-5a2e-85ff-d033cfbbdb7b",
+          "Active": true,
+          "Name": "Caution + AFDS - touch RECALL L  [34901 (>K:ROTOR_BRAKE) + release]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "43701 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "43704 (>K:ROTOR_BRAKE)"
+            },
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "RECALL R",
+            "Type": "Button"
+          },
+          "DeviceName": "RECALL R",
+          "DeviceType": "Button",
+          "GUID": "024b465d-998d-59ee-a434-61acde64fece",
+          "Active": true,
+          "Name": "Caution + AFDS - touch RECALL R  [43701 (>K:ROTOR_BRAKE) + release]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        }
+      ]
+    }
+  ],
+  "Sim": "msfs",
+  "Aircraft": [],
+  "Features": {
+    "FSUIPC": true,
+    "ProSim": false
+  },
+  "_version": "0.9"
+}

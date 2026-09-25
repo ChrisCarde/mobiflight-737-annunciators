@@ -1,0 +1,1054 @@
+{
+  "Name": "[b4e1ca] IRS-DisplayUnit",
+  "ConfigFiles": [
+    {
+      "Label": "[b4e1ca] IRS-DisplayUnit",
+      "FileName": null,
+      "ReferenceOnly": false,
+      "EmbedContent": true,
+      "ConfigItems": [
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25646,
+              "Size": 255,
+              "OffsetType": 2,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 2,
+            "Float64": 0.0,
+            "String": "N47324"
+          },
+          "Device": {
+            "CustomType": "ANNUN_ISDU",
+            "CustomName": "IRS Display Unit",
+            "MessageType": 0,
+            "Value": "",
+            "Name": "IRS Display Unit",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Display Unit",
+          "GUID": "a0b44e29-50d2-5f89-bc31-a784162a3a19",
+          "Active": true,
+          "Name": "IRS Display Unit - Left display  [IRS_DisplayLeft 0x642E]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25653,
+              "Size": 255,
+              "OffsetType": 2,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 2,
+            "Float64": 0.0,
+            "String": "W122123"
+          },
+          "Device": {
+            "CustomType": "ANNUN_ISDU",
+            "CustomName": "IRS Display Unit",
+            "MessageType": 1,
+            "Value": "",
+            "Name": "IRS Display Unit",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Display Unit",
+          "GUID": "92cbec09-5536-529c-843c-0d193e7380bc",
+          "Active": true,
+          "Name": "IRS Display Unit - Right display  [IRS_DisplayRight 0x6435]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25661,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ISDU",
+            "CustomName": "IRS Display Unit",
+            "MessageType": 2,
+            "Value": "",
+            "Name": "IRS Display Unit",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Display Unit",
+          "GUID": "d6adf7dd-e055-576c-b503-1834883f13fe",
+          "Active": true,
+          "Name": "IRS Display Unit - Dots  [IRS_DisplayShowsDots 0x643D]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25632,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ISDU",
+            "CustomName": "IRS Display Unit",
+            "MessageType": 3,
+            "Value": "",
+            "Name": "IRS Display Unit",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Display Unit",
+          "GUID": "0bfc2cf2-b8b2-54be-9a05-be2f4c1de371",
+          "Active": true,
+          "Name": "IRS Display Unit - DSPL SEL  [IRS_DisplaySelector 0x6420]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25633,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ISDU",
+            "CustomName": "IRS Display Unit",
+            "MessageType": 4,
+            "Value": "",
+            "Name": "IRS Display Unit",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Display Unit",
+          "GUID": "753e9d3b-a9e6-5f21-bfc6-7fea29516880",
+          "Active": true,
+          "Name": "IRS Display Unit - SYS DSPL  [IRS_SysDisplay_R 0x6421]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "SimConnectValue": {
+              "UUID": "",
+              "Value": "(L:switch_242_73X, number) 0 >",
+              "VarType": 2
+            },
+            "Type": "SimConnectSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ISDU",
+            "CustomName": "IRS Display Unit",
+            "MessageType": 5,
+            "Value": "",
+            "Name": "IRS Display Unit",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Display Unit",
+          "GUID": "0bccf089-126d-5408-9f44-8f91f17536ed",
+          "Active": true,
+          "Name": "IRS Display Unit - ENT cue lights  [(L:switch_242_73X, number) 0 >]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "SimConnectValue": {
+              "UUID": "",
+              "Value": "(L:switch_245_73X, number) 0 >",
+              "VarType": 2
+            },
+            "Type": "SimConnectSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ISDU",
+            "CustomName": "IRS Display Unit",
+            "MessageType": 6,
+            "Value": "",
+            "Name": "IRS Display Unit",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Display Unit",
+          "GUID": "65f25227-baeb-58bb-986a-0ba495606062",
+          "Active": true,
+          "Name": "IRS Display Unit - CLR cue lights  [(L:switch_245_73X, number) 0 >]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 2.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ISDU",
+            "CustomName": "IRS Display Unit",
+            "MessageType": 102,
+            "Value": "",
+            "Name": "IRS Display Unit",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Display Unit",
+          "GUID": "d05fefbd-0af7-5d8c-a0b1-878153e4f4b9",
+          "Active": true,
+          "Name": "IRS Display Unit - Night dimming (lights switch DIM)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=2,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": -1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ISDU",
+            "CustomName": "IRS Display Unit",
+            "MessageType": 103,
+            "Value": "",
+            "Name": "IRS Display Unit",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Display Unit",
+          "GUID": "05755179-140d-5122-b327-5b031611894e",
+          "Active": true,
+          "Name": "IRS Display Unit - Lamp test (lights switch TEST)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($<=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25816,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 0.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_ISDU",
+            "CustomName": "IRS Display Unit",
+            "MessageType": 107,
+            "Value": "",
+            "Name": "IRS Display Unit",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "IRS Display Unit",
+          "GUID": "786cfafb-3248-572a-b290-841e72f2d948",
+          "Active": true,
+          "Name": "IRS Display Unit - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "23201 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU 1",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU 1",
+          "DeviceType": "Button",
+          "GUID": "80cfa601-8cfd-5a43-9c8c-8234e8a6691d",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU 1  [23201 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "23301 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU 2",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU 2",
+          "DeviceType": "Button",
+          "GUID": "3d17c4d2-30eb-586d-bcec-5e4206549a64",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU 2  [23301 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "23401 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU 3",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU 3",
+          "DeviceType": "Button",
+          "GUID": "6eeb3720-f721-5ff9-af18-95d7e549bb63",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU 3  [23401 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "23501 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU 4",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU 4",
+          "DeviceType": "Button",
+          "GUID": "c13f6f7d-0522-512d-b899-1a46b0f94512",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU 4  [23501 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "23601 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU 5",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU 5",
+          "DeviceType": "Button",
+          "GUID": "789cff72-4348-516b-b3ec-793280cdfaf0",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU 5  [23601 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "23701 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU 6",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU 6",
+          "DeviceType": "Button",
+          "GUID": "1b6cc50f-9c5b-5292-8bd6-8c8704188859",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU 6  [23701 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "23801 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU 7",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU 7",
+          "DeviceType": "Button",
+          "GUID": "7c2e7981-7899-57dc-bfcd-e23629f0e415",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU 7  [23801 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "23901 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU 8",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU 8",
+          "DeviceType": "Button",
+          "GUID": "a7f0258e-7fbc-52f8-959d-5ddd21a634a0",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU 8  [23901 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "24001 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU 9",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU 9",
+          "DeviceType": "Button",
+          "GUID": "8d8afd1a-9185-5d20-a773-565c555c203b",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU 9  [24001 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "24301 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU 0",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU 0",
+          "DeviceType": "Button",
+          "GUID": "9548ba4c-07ed-51e4-8356-8c68f919b6ac",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU 0  [24301 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "24101 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU ENT",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU ENT",
+          "DeviceType": "Button",
+          "GUID": "ba53859b-1025-5d99-938a-9c3d50e04562",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU ENT  [24101 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "24401 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU CLR",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU CLR",
+          "DeviceType": "Button",
+          "GUID": "5c297ccf-2dc1-5936-ba6e-be8f97bf1559",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU CLR  [24401 (>K:ROTOR_BRAKE)]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "0 (L:switch_229_73X,number) - 10 div s0 :1 l0 0 > if{ 22907 (>K:ROTOR_BRAKE) l0 -- s0 g1 } l0 0 < if{ 22908 (>K:ROTOR_BRAKE) l0 ++ s0 g1 }"
+            },
+            "onRelease": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "(L:switch_229_73X,number) 0 == if{ 22907 (>K:ROTOR_BRAKE) }"
+            },
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU DSPL TEST",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU DSPL TEST",
+          "DeviceType": "Button",
+          "GUID": "5ab7af56-47d0-58dc-9477-e71667ceeb0e",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU DSPL TEST  [knob code + release]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "10 (L:switch_229_73X,number) - 10 div s0 :1 l0 0 > if{ 22907 (>K:ROTOR_BRAKE) l0 -- s0 g1 } l0 0 < if{ 22908 (>K:ROTOR_BRAKE) l0 ++ s0 g1 }"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU DSPL TK GS",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU DSPL TK GS",
+          "DeviceType": "Button",
+          "GUID": "c904b475-f506-542d-a2c7-1112a41c3eb9",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU DSPL TK GS  [knob code]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "20 (L:switch_229_73X,number) - 10 div s0 :1 l0 0 > if{ 22907 (>K:ROTOR_BRAKE) l0 -- s0 g1 } l0 0 < if{ 22908 (>K:ROTOR_BRAKE) l0 ++ s0 g1 }"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU DSPL PPOS",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU DSPL PPOS",
+          "DeviceType": "Button",
+          "GUID": "c6d83296-747a-5c06-8f76-30b01d80becf",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU DSPL PPOS  [knob code]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "30 (L:switch_229_73X,number) - 10 div s0 :1 l0 0 > if{ 22907 (>K:ROTOR_BRAKE) l0 -- s0 g1 } l0 0 < if{ 22908 (>K:ROTOR_BRAKE) l0 ++ s0 g1 }"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU DSPL WIND",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU DSPL WIND",
+          "DeviceType": "Button",
+          "GUID": "80b8257e-8975-5d3d-80d0-5429887460da",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU DSPL WIND  [knob code]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "40 (L:switch_229_73X,number) - 10 div s0 :1 l0 0 > if{ 22907 (>K:ROTOR_BRAKE) l0 -- s0 g1 } l0 0 < if{ 22908 (>K:ROTOR_BRAKE) l0 ++ s0 g1 }"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU DSPL HDG STS",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU DSPL HDG STS",
+          "DeviceType": "Button",
+          "GUID": "d4919f33-e08e-5dac-8928-54951386ce0a",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU DSPL HDG STS  [knob code]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "(L:switch_231_73X, number) 0 > if{ 23101 (>K:ROTOR_BRAKE) }"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU SYS DSPL L",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU SYS DSPL L",
+          "DeviceType": "Button",
+          "GUID": "552098e5-b538-56ed-a92a-b17ebb1defc6",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU SYS DSPL L  [knob code]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "(L:switch_231_73X, number) 0 == if{ 23101 (>K:ROTOR_BRAKE) }"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "ISDU SYS DSPL R",
+            "Type": "Button"
+          },
+          "DeviceName": "ISDU SYS DSPL R",
+          "DeviceType": "Button",
+          "GUID": "66e4bedc-4a14-593f-9a80-98a13cf7a6f1",
+          "Active": true,
+          "Name": "IRS Display Unit - touch ISDU SYS DSPL R  [knob code]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        }
+      ]
+    }
+  ],
+  "Sim": "msfs",
+  "Aircraft": [],
+  "Features": {
+    "FSUIPC": true,
+    "ProSim": false
+  },
+  "_version": "0.9"
+}

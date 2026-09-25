@@ -1,0 +1,1082 @@
+{
+  "Name": "[0a2eed] Doors",
+  "ConfigFiles": [
+    {
+      "Label": "[0a2eed] Doors",
+      "FileName": null,
+      "ReferenceOnly": false,
+      "EmbedContent": true,
+      "ConfigItems": [
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25774,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 0,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "c7ad87e4-0076-5e42-94af-d83ebf04cfd4",
+          "Active": true,
+          "Name": "Door Annunciator - GRD PWR  [ELEC_annunGRD_POWER_AVAILABLE 0x64AE]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25978,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 1,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "4fbc7624-b326-587c-a481-c3920bb4cff5",
+          "Active": true,
+          "Name": "Door Annunciator - AIR STAIR  [DOOR_annunAIRSTAIR 0x657A]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25982,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 2,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "f043848b-3e86-54b6-8d4a-054b77412fb8",
+          "Active": true,
+          "Name": "Door Annunciator - EQUIP  [DOOR_annunEQUIP 0x657E]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25976,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 3,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "b6506b58-cc29-59a1-8d33-42cc98c372bd",
+          "Active": true,
+          "Name": "Door Annunciator - FWD ENTRY  [DOOR_annunFWD_ENTRY 0x6578]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25979,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 4,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "da91fbfe-a9ef-5c88-992f-868d6401a84a",
+          "Active": true,
+          "Name": "Door Annunciator - LEFT FWD OVERWING  [DOOR_annunLEFT_FWD_OVERWING 0x657B]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25983,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 5,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "e18b01c0-8b29-5388-97f7-d6ef8eb824ee",
+          "Active": true,
+          "Name": "Door Annunciator - LEFT AFT OVERWING  [DOOR_annunLEFT_AFT_OVERWING 0x657F]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25986,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 6,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "7fcad7ba-86c8-53fd-b8ca-4bf65b9e7875",
+          "Active": true,
+          "Name": "Door Annunciator - AFT ENTRY  [DOOR_annunAFT_ENTRY 0x6582]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25977,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 7,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "3fd144a8-bb12-59c3-bcd7-0ce9fc5e0623",
+          "Active": true,
+          "Name": "Door Annunciator - FWD SERVICE  [DOOR_annunFWD_SERVICE 0x6579]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25980,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 8,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "fda17e0f-dac8-5333-b886-edbb77cd6698",
+          "Active": true,
+          "Name": "Door Annunciator - RIGHT FWD OVERWING  [DOOR_annunRIGHT_FWD_OVERWING 0x657C]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25984,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 9,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "f34270b3-8917-5dca-a93b-3fb9a8833438",
+          "Active": true,
+          "Name": "Door Annunciator - RIGHT AFT OVERWING  [DOOR_annunRIGHT_AFT_OVERWING 0x6580]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25987,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 10,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "bd845288-7c08-5e95-a176-fa04505cdb26",
+          "Active": true,
+          "Name": "Door Annunciator - AFT SERVICE  [DOOR_annunAFT_SERVICE 0x6583]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25981,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 11,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "8b7f4ab6-46a3-5cfc-be4b-3db75aa70d29",
+          "Active": true,
+          "Name": "Door Annunciator - FWD CARGO  [DOOR_annunFWD_CARGO 0x657D]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25985,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 12,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "f1a16865-0700-5ca6-aa08-8b73212a7b34",
+          "Active": true,
+          "Name": "Door Annunciator - AFT CARGO  [DOOR_annunAFT_CARGO 0x6581]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 2.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 102,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "3e8d256c-930f-5425-bd43-9c509e56be7b",
+          "Active": true,
+          "Name": "Door Annunciator - Night dimming (lights switch DIM)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=2,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": -1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 103,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "7d463fa2-9284-548e-a706-3000067f744e",
+          "Active": true,
+          "Name": "Door Annunciator - Lamp test (lights switch TEST)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($<=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25816,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 0.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_DOOR",
+            "CustomName": "Door Annunciator",
+            "MessageType": 107,
+            "Value": "",
+            "Name": "Door Annunciator",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Door Annunciator",
+          "GUID": "ad9cf2f8-4b24-5f4a-bdee-3e6ac8130804",
+          "Active": true,
+          "Name": "Door Annunciator - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "PmdgEventIdInputAction",
+              "AircraftType": "B737",
+              "EventId": 83649,
+              "Param": "536870912"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "AIR STAIR",
+            "Type": "Button"
+          },
+          "DeviceName": "AIR STAIR",
+          "DeviceType": "Button",
+          "GUID": "3bf972e6-a3c3-57fd-a80a-f7c7a5c5ed08",
+          "Active": true,
+          "Name": "Door Annunciator - touch AIR STAIR  [EVT_DOOR_AIRSTAIR 83649]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "PmdgEventIdInputAction",
+              "AircraftType": "B737",
+              "EventId": 83648,
+              "Param": "536870912"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "EQUIP",
+            "Type": "Button"
+          },
+          "DeviceName": "EQUIP",
+          "DeviceType": "Button",
+          "GUID": "3af827e2-fffd-5080-9f8c-5f37a2b24086",
+          "Active": true,
+          "Name": "Door Annunciator - touch EQUIP  [EVT_DOOR_EQUIPMENT_HATCH 83648]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "PmdgEventIdInputAction",
+              "AircraftType": "B737",
+              "EventId": 83637,
+              "Param": "536870912"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "FWD ENTRY",
+            "Type": "Button"
+          },
+          "DeviceName": "FWD ENTRY",
+          "DeviceType": "Button",
+          "GUID": "7c26cf5b-2ce4-53a6-a48c-4c2dba424b89",
+          "Active": true,
+          "Name": "Door Annunciator - touch FWD ENTRY  [EVT_DOOR_FWD_L 83637]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "PmdgEventIdInputAction",
+              "AircraftType": "B737",
+              "EventId": 83641,
+              "Param": "536870912"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "LEFT FWD OVERWING",
+            "Type": "Button"
+          },
+          "DeviceName": "LEFT FWD OVERWING",
+          "DeviceType": "Button",
+          "GUID": "2b85c930-59f9-5b84-b236-393e3f1c21ff",
+          "Active": true,
+          "Name": "Door Annunciator - touch LEFT FWD OVERWING  [EVT_DOOR_OVERWING_EXIT_L 83641]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "PmdgEventIdInputAction",
+              "AircraftType": "B737",
+              "EventId": 83641,
+              "Param": "536870912"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "LEFT AFT OVERWING",
+            "Type": "Button"
+          },
+          "DeviceName": "LEFT AFT OVERWING",
+          "DeviceType": "Button",
+          "GUID": "93ba2549-ceb7-5194-b51e-c0580a5f1462",
+          "Active": true,
+          "Name": "Door Annunciator - touch LEFT AFT OVERWING  [EVT_DOOR_OVERWING_EXIT_L 83641]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "PmdgEventIdInputAction",
+              "AircraftType": "B737",
+              "EventId": 83639,
+              "Param": "536870912"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "AFT ENTRY",
+            "Type": "Button"
+          },
+          "DeviceName": "AFT ENTRY",
+          "DeviceType": "Button",
+          "GUID": "c3b22113-95af-5451-9bb1-4b004d24570c",
+          "Active": true,
+          "Name": "Door Annunciator - touch AFT ENTRY  [EVT_DOOR_AFT_L 83639]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "PmdgEventIdInputAction",
+              "AircraftType": "B737",
+              "EventId": 83638,
+              "Param": "536870912"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "FWD SERVICE",
+            "Type": "Button"
+          },
+          "DeviceName": "FWD SERVICE",
+          "DeviceType": "Button",
+          "GUID": "ee5cd987-704e-599b-a613-278e7b089be4",
+          "Active": true,
+          "Name": "Door Annunciator - touch FWD SERVICE  [EVT_DOOR_FWD_R 83638]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "PmdgEventIdInputAction",
+              "AircraftType": "B737",
+              "EventId": 83642,
+              "Param": "536870912"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "RIGHT FWD OVERWING",
+            "Type": "Button"
+          },
+          "DeviceName": "RIGHT FWD OVERWING",
+          "DeviceType": "Button",
+          "GUID": "7bff2ca7-43a5-536b-856f-729aa4a4d364",
+          "Active": true,
+          "Name": "Door Annunciator - touch RIGHT FWD OVERWING  [EVT_DOOR_OVERWING_EXIT_R 83642]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "PmdgEventIdInputAction",
+              "AircraftType": "B737",
+              "EventId": 83642,
+              "Param": "536870912"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "RIGHT AFT OVERWING",
+            "Type": "Button"
+          },
+          "DeviceName": "RIGHT AFT OVERWING",
+          "DeviceType": "Button",
+          "GUID": "6391c003-e97e-520a-b191-ffedf66151f0",
+          "Active": true,
+          "Name": "Door Annunciator - touch RIGHT AFT OVERWING  [EVT_DOOR_OVERWING_EXIT_R 83642]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "PmdgEventIdInputAction",
+              "AircraftType": "B737",
+              "EventId": 83640,
+              "Param": "536870912"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "AFT SERVICE",
+            "Type": "Button"
+          },
+          "DeviceName": "AFT SERVICE",
+          "DeviceType": "Button",
+          "GUID": "2a4d6359-7e77-5b11-8bb3-d828f53a77cd",
+          "Active": true,
+          "Name": "Door Annunciator - touch AFT SERVICE  [EVT_DOOR_AFT_R 83640]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "PmdgEventIdInputAction",
+              "AircraftType": "B737",
+              "EventId": 83645,
+              "Param": "536870912"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "FWD CARGO",
+            "Type": "Button"
+          },
+          "DeviceName": "FWD CARGO",
+          "DeviceType": "Button",
+          "GUID": "69dc9546-d5f9-5812-9b9f-c72fdf3bec40",
+          "Active": true,
+          "Name": "Door Annunciator - touch FWD CARGO  [EVT_DOOR_CARGO_FWD 83645]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "PmdgEventIdInputAction",
+              "AircraftType": "B737",
+              "EventId": 83646,
+              "Param": "536870912"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "AFT CARGO",
+            "Type": "Button"
+          },
+          "DeviceName": "AFT CARGO",
+          "DeviceType": "Button",
+          "GUID": "55c4e013-e552-55e8-8ae1-28d95266aafc",
+          "Active": true,
+          "Name": "Door Annunciator - touch AFT CARGO  [EVT_DOOR_CARGO_AFT 83646]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        }
+      ]
+    }
+  ],
+  "Sim": "msfs",
+  "Aircraft": [],
+  "Features": {
+    "FSUIPC": true,
+    "ProSim": false
+  },
+  "_version": "0.9"
+}
