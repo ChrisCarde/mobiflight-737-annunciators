@@ -1,5 +1,5 @@
 Import("env")
-import os, zipfile, shutil
+import os, zipfile, shutil, subprocess
 from pathlib import Path
 
 # Get the version number from the build environment.
@@ -62,6 +62,66 @@ def copy_fw_files(source, target, env):
             old.unlink()
     print("Creating zip file " + zip_file_path)
     createZIP(str(build_community), zip_file_path, community_project)
+
+    if platform == "espressif32":
+        write_full_image(env)
+    publish_extras()
+
+
+def write_full_image(env):
+    """A single image a person can flash without building anything.
+
+    The .bin in the Connector package is only the application, which is all the Connector
+    would want and is useless on its own: a blank board also needs the bootloader, the
+    partition table and boot_app0 at their own offsets. This merges all four into one file
+    that goes at 0x0 -- what a browser flasher or a one-line esptool command expects.
+
+    The layout is taken from PlatformIO rather than written down here, because it differs
+    by chip: a classic ESP32's bootloader goes at 0x1000, an ESP32-S3's at 0x0. Flash mode,
+    speed and size are kept exactly as built, for the same reason."""
+    app = Path(env.subst("$BUILD_DIR/${PROGNAME}.bin"))
+    if not app.exists():
+        return
+    chip = env.BoardConfig().get("build.mcu", "esp32")
+    out = Path("./_dist") / (env.subst("${PROGNAME}") + "_full.bin")
+    for old in Path("./_dist").glob(env.subst("$PIOENV") + "_*_full.bin"):
+        if old.name != out.name:
+            old.unlink()
+
+    cmd = [env.subst("$PYTHONEXE"), "-m", "esptool", "--chip", chip, "merge-bin",
+           "-o", str(out), "--flash-mode", "keep", "--flash-freq", "keep",
+           "--flash-size", "keep"]
+    for offset, image in env.get("FLASH_EXTRA_IMAGES", []):
+        cmd += [env.subst(offset), env.subst(image)]
+    cmd += [env.subst("$ESP32_APP_OFFSET") or "0x10000", str(app)]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        print("WARNING: could not write the full flash image:\n" + result.stderr.strip())
+        return
+    print("Full flash image (write at 0x0): " + str(out))
+
+
+def publish_extras():
+    """Files a person downloads alongside the package: the Windows launcher for the 3.2in
+    board, and the licences. Copied into _dist so that everything a release needs is in one
+    place.
+
+    The licences are not optional: the MIT and BSD components ask for their notices to
+    travel with a binary, and the LGPL for its text. THIRD-PARTY-NOTICES.md has all of it.
+    A licence text that is no longer in licenses/ is removed from _dist rather than left to
+    look current -- a release must not claim a licence its binaries no longer carry."""
+    dist = Path("./_dist")
+    for extra in Path("windows").glob("*.bat"):
+        shutil.copy(extra, dist / extra.name)
+    for doc in ("LICENSE", "THIRD-PARTY-NOTICES.md"):
+        if Path(doc).exists():
+            shutil.copy(doc, dist / doc)
+    current = {text.name for text in Path("licenses").glob("*.txt")}
+    for stale in dist.glob("*.txt"):
+        if stale.name not in current:
+            stale.unlink()
+    for text in Path("licenses").glob("*.txt"):
+        shutil.copy(text, dist / text.name)
 
 def createZIP(original_folder_path, zip_file_path, new_folder_name):
     if os.path.exists("./_dist") == False:

@@ -87,10 +87,11 @@ namespace PanelGfx
                          const LegendLine *lines, uint8_t count, PanelFont &loaded,
                          bool pressed = false);
 
-    /* A plate: the metal face an assembly of lights is set into, drawn straight to the
-       screen. It stands proud of the panel, and goes in when the assembly is pressed. */
+    /* A plate: the face a group of lights is set into, drawn straight to the screen.
+       `raised` when it is something you press -- a six-pack -- which then stands proud and
+       goes in when `pressed`. A plate that only holds lights is drawn flat. */
     void drawPlate(int16_t x, int16_t y, int16_t w, int16_t h, int16_t radius,
-                   uint32_t fill, uint32_t edge, bool pressed = false);
+                   uint32_t fill, uint32_t edge, bool raised, bool pressed);
 
     // A 1px outline `inset` px outside a rectangle, or the panel background to erase it.
     void drawRing(int16_t x, int16_t y, int16_t w, int16_t h, int16_t inset, uint32_t colour);

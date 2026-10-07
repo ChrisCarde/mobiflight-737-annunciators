@@ -228,17 +228,43 @@ class Board:
         return None
 
 
+def known_usb_ids():
+    """The USB ids the Annunciator boards can have, read from their definitions' HardwareIds.
+    Those are the same regexes the Connector matches, so a port this accepts is one the
+    Connector would try too."""
+    ids = set()
+    for path in (ROOT / "Annunciator" / "Community" / "boards").glob("*.board.json"):
+        for pattern in json.loads(path.read_text()).get("HardwareIds", []):
+            m = re.search(r"VID_([0-9A-Fa-f]{4})\W+PID_([0-9A-Fa-f]{4})", pattern)
+            if m:
+                ids.add((int(m.group(1), 16), int(m.group(2), 16)))
+    return ids
+
+
 def find_port():
-    # usbserial / wchusbserial / ttyUSB are bridge chips (the E32R32P's CH340C); usbmodem
-    # and ttyACM are a native-USB board such as the C3248W535, which has no bridge at all.
-    candidates = sorted(glob.glob("/dev/cu.usbserial*") + glob.glob("/dev/cu.wchusbserial*")
-                        + glob.glob("/dev/cu.usbmodem*") + glob.glob("/dev/ttyUSB*")
-                        + glob.glob("/dev/ttyACM*"))
-    if not candidates:
-        sys.exit("no USB serial port found -- pass --port (on Windows, e.g. --port COM5)")
-    if len(candidates) > 1:
-        print("several ports found, using %s (pass --port to choose)" % candidates[0])
-    return candidates[0]
+    """The serial port of the one Annunciator board plugged in.
+
+    Chosen by USB vendor and product id, not by device name. Names say only what kind of
+    USB serial chip is there, and other serial devices are often plugged in too -- an FTDI
+    cable shows up as /dev/cu.usbserial-* exactly as a CH340 board does, and picking it
+    would send the board's commands to whatever that cable is connected to."""
+    from serial.tools import list_ports
+
+    wanted = known_usb_ids()
+    ports = list(list_ports.comports())
+    boards = [p for p in ports if p.vid is not None and (p.vid, p.pid) in wanted]
+
+    if len(boards) == 1:
+        return boards[0].device
+    if not boards:
+        seen = ", ".join("%s (%04X:%04X)" % (p.device, p.vid, p.pid) if p.vid is not None
+                         else p.device for p in ports) or "none"
+        sys.exit("no Annunciator board found -- looked for USB ids %s; serial ports present: %s. "
+                 "Pass --port if the board is there."
+                 % (", ".join("%04X:%04X" % i for i in sorted(wanted)), seen))
+    listed = "\n".join("  %s  %04X:%04X  %s" % (p.device, p.vid, p.pid, p.description or "")
+                        for p in boards)
+    sys.exit("several Annunciator boards are plugged in -- choose one with --port:\n" + listed)
 
 
 def board_for(reported_type):

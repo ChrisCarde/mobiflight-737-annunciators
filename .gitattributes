@@ -1,0 +1,9 @@
+# Windows batch files are stored exactly as written, CRLF and all. With `text eol=crlf` git
+# would store them with LF and convert only on checkout -- so the copy GitHub serves as a raw
+# download, which the README links to, would reach Windows with the wrong line endings.
+*.bat  -text
+*.cmd  -text
+
+# Firmware and images are binary.
+*.bin  binary
+*.png  binary

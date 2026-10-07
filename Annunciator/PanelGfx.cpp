@@ -301,9 +301,9 @@ void renderLamp(Gfx::Canvas &spr, const LampStyle &st, PanelFont font,
    proud and a window let into a faceplate.
 
    FIRE WARN and MASTER CAUTION are moulded caps, so they stand proud and go in when
-   pressed. A six-pack is not six buttons: it is one pressable assembly with six lit
-   windows behind a common faceplate, so the assembly stands proud and each light is
-   sunken into it.
+   pressed. A six-pack is not six buttons: it is one pressable assembly with six lights
+   behind a common faceplate, so the assembly stands proud and goes in, and the lights in
+   it are flat.
 
    Kept deliberately shallow. These are small (a 72px cap at 320, 104 at 480) and the panel
    is nearly black, so a strong bevel reads as a cartoon; one pixel of edge and a gradient
@@ -314,16 +314,20 @@ static const uint8_t FACE_LIFT_UNLIT = 44;
 static const uint8_t FACE_DEPTH      = 66; // black mixed into the bottom
 static const uint8_t EDGE_HIGHLIGHT  = 130; // top and left
 static const uint8_t EDGE_SHADOW     = 120; // bottom and right
+static const uint8_t PRESSED_DARKEN  = 34;  // black mixed into a face that has been pushed in
 
+/* `gradient` is off for a plate: an assembly's face is one uniform surface with lights set
+   flush into it, and its depth is in the raised edge round it. A gradient across it would
+   show every flat light as a box that is darker at the top and lighter at the bottom. */
 template <class Target>
 static void reliefFace(Target &spr, int16_t x, int16_t y, int16_t w, int16_t h,
-                       int16_t r, uint32_t face, bool lit, bool sunken)
+                       int16_t r, uint32_t face, bool lit, bool sunken, bool gradient = true)
 {
     if (w <= 2 || h <= 2) return;
 
     // Held down: the light comes from the same place, so a cap that has moved into its
     // bezel is shaded the other way round and sits a shade darker overall.
-    if (sunken) face = Theme::blend(0x000000, face, 34);
+    if (sunken) face = Theme::blend(0x000000, face, PRESSED_DARKEN);
 
     spr.fillRoundRect(x, y, w, h, r, Theme::to565(face));
 
@@ -331,7 +335,7 @@ static void reliefFace(Target &spr, int16_t x, int16_t y, int16_t w, int16_t h,
     // radius are inset so they do not square the corners off again.
     const int16_t  mid  = (int16_t)(h / 2);
     const uint8_t  lift = lit ? FACE_LIFT_LIT : FACE_LIFT_UNLIT;
-    for (int16_t i = 1; i < h - 1; ++i) {
+    for (int16_t i = 1; gradient && i < h - 1; ++i) {
         const int16_t edge   = min<int16_t>(i, (int16_t)(h - 1 - i));
         const int16_t inset  = (int16_t)(edge < r ? 1 + (r - edge) : 1);
         const int16_t run    = (int16_t)(w - 2 * inset);
@@ -395,9 +399,12 @@ void renderLampLines(Gfx::Canvas &spr, const LampStyle &st,
         reliefFace(spr, 2, 2, (int16_t)(w - 4), (int16_t)(h - 4), 2, st.bg, st.glow, pressed);
         break;
     case KIND_LEGEND:
-        // A light in an assembly's faceplate: always sunken, whether or not the assembly it
-        // sits in is being pressed. The assembly's own frame shows the press.
-        reliefFace(spr, 0, 0, w, h, 2, st.bg, st.glow, true);
+        // A light in an assembly's faceplate. It is flat: the relief belongs to the assembly,
+        // which is the thing that is pressed, and giving each light its own would make six
+        // buttons of what is one. When the assembly is pressed the legend still moves with
+        // it -- see `shove` below.
+        // Flush with the face, so it darkens with it when the assembly is pushed in.
+        spr.fillSprite(Theme::to565(pressed ? Theme::blend(0x000000, st.bg, PRESSED_DARKEN) : st.bg));
         break;
     case KIND_LENS:
     default:
@@ -464,10 +471,17 @@ void renderLampLines(Gfx::Canvas &spr, const LampStyle &st,
 }
 
 void drawPlate(int16_t x, int16_t y, int16_t w, int16_t h, int16_t radius,
-               uint32_t fill, uint32_t edge, bool pressed)
+               uint32_t fill, uint32_t edge, bool raised, bool pressed)
 {
     if (!s_ready) return;
-    reliefFace(s_tft, x, y, w, h, radius, fill, false, pressed);
+    if (raised) {
+        // Something you press -- a six-pack: a uniform face with a raised edge round it.
+        reliefFace(s_tft, x, y, w, h, radius, fill, false, pressed, false);
+    } else {
+        // A bezel that only holds lights, like the flight-control clusters: flat, as drawn
+        // before any of this. Relief here would suggest a button that is not there.
+        s_tft.fillRoundRect(x, y, w, h, radius, Theme::to565(fill));
+    }
     s_tft.drawRoundRect(x, y, w, h, radius, Theme::to565(edge));
     s_dirty = true;
 }

@@ -257,6 +257,13 @@ GPIO 18/19/23 are on the SPI header too, but they are the microSD bus; using the
 giving up the card slot, so they are not offered. `tools/check_definitions.py` enforces
 this list — it fails the build config if the board JSON ever offers a committed pin.
 
+Those pins take buttons, encoders, LED outputs and analog inputs. They do **not** take
+stepper motors, servos or character LCDs: the annunciator builds compile that part of the
+MobiFlight core out, on both boards, and the board definitions tell the Connector so. A panel
+board has no use for them, and the stepper library is GPL v3 — linking it would have made
+every firmware image a GPL v3 work. `custom_without` in `Annunciator_platformio.ini` says how
+to put them back if you ever need to.
+
 ### Touch
 
 Two panels, one interface. `Touch.h` declares six functions; `TouchXPT2046.cpp` implements
@@ -437,9 +444,10 @@ right-click the desktop → New → Shortcut, target
   the COM number to the physical port; another socket means another number.
 - **If the Connector was started without it** and lists the board as a compatible module:
   close the Connector, press the board's RESET button (or replug it), then use the batch file.
-- `tools\Reset-Annunciator.ps1` (with `tools\Start-MobiFlight-Annunciator.cmd`) does the same
-  and also finds the board's port and resets a board stuck in its bootloader — where scripts
-  are allowed to run.
+- [`windows/Start-MobiFlight-E32R32P.bat`](../windows/Start-MobiFlight-E32R32P.bat) is that
+  batch file, ready to use: set `PORTS` at the top (several boards, space-separated) and start
+  the Connector from it. It says which port it could not open rather than failing quietly,
+  and it is on every release.
 - The alternative, if you would rather not: edit the Connector's stock definition once — in
   `%LOCALAPPDATA%\MobiFlight\MobiFlight Connector\Boards\arduino_mega.board.json` change
   `"DtrEnable": true` to `false` and restart the Connector. That works for every CH340 port,

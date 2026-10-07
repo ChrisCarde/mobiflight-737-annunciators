@@ -24,6 +24,7 @@ static int8_t s_pressedZone = -1;
 
 static bool lampIsPressed(uint8_t lamp);  // both defined with the touch feedback below
 static bool plateIsPressed(uint8_t plate);
+static bool plateIsPressable(uint8_t plate);
 static void drawPlate(uint8_t plate);
 
 /* Lamps are drawn in a sprite of their own size and pushed. A panel has only a few
@@ -143,7 +144,22 @@ static void drawPlate(uint8_t i)
     if (!s_def || i >= s_def->plateCount) return;
     const Plate  &p = s_def->plates[i];
     const int16_t r = p.radius ? p.radius : 3;
-    PanelGfx::drawPlate(p.x, p.y, p.w, p.h, r, p.fill, p.edge, plateIsPressed(i));
+    PanelGfx::drawPlate(p.x, p.y, p.w, p.h, r, p.fill, p.edge, plateIsPressable(i),
+                        plateIsPressed(i));
+}
+
+/* A plate is something you press -- and so drawn raised -- when a touch zone covers it, as
+   RECALL covers a six-pack. A plate no zone touches only holds lights, and is drawn flat. */
+static bool plateIsPressable(uint8_t plate)
+{
+    if (!s_def || plate >= s_def->plateCount) return false;
+    const Plate &p = s_def->plates[plate];
+    for (uint8_t z = 0; z < s_def->zoneCount; ++z) {
+        const Zone   &zone = s_def->zones[z];
+        const int16_t cx = (int16_t)(zone.x + zone.w / 2), cy = (int16_t)(zone.y + zone.h / 2);
+        if (cx >= p.x && cx < p.x + p.w && cy >= p.y && cy < p.y + p.h) return true;
+    }
+    return false;
 }
 
 /* Does this zone press this lamp? Either the lamp sits inside the zone -- the six-pack's
