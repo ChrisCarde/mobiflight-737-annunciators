@@ -1,10 +1,14 @@
-# Builds both boards and publishes the files a person installs from: the Connector package, a
-# full flash image per board, the 3.2in launcher and the licences -- exactly what `pio run`
-# leaves in _dist/.
+# Builds both boards and publishes what a person installs from: the Connector package, a full
+# flash image per board, the 3.2in launcher and the licences on the release -- exactly what
+# `pio run` leaves in _dist/ -- and the browser installer in _site/ on GitHub Pages.
 #
 #   Release:  push a tag   git tag v0.1.0 && git push origin v0.1.0
 #   Dry run:  Actions -> Release -> Run workflow. Builds the same set as a downloadable
 #             artifact and publishes nothing.
+#
+# Pages needs two repository settings, once: Settings -> Pages -> Source: GitHub Actions; and
+# Settings -> Environments -> github-pages -> add a deployment tag rule "v*", because that
+# environment only accepts deployments from the default branch until told otherwise.
 #
 # The tag is the version: v0.1.0 builds as VERSION=0.1.0, which is stamped into the firmware,
 # the file names and the board definitions (get_version.py, copy_fw_files.py).
@@ -67,7 +71,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: annunciator-${{ env.VERSION }}
-          path: _dist/
+          path: |
+            _dist/
+            _site/
           if-no-files-found: error
 
       - name: Publish the release
@@ -79,5 +85,28 @@ jobs:
           generate_release_notes: true
           body: |
             Firmware and MobiFlight definitions for both boards. Follow the
-            [setup guide](https://github.com/${{ github.repository }}#setup), which says which of
-            the files below you need for your board.
+            [setup guide](https://github.com/${{ github.repository }}#setup): it installs the
+            firmware from the [browser installer](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)
+            and says which of the files below you need for your board.
+
+      - name: Stage the web installer
+        if: github.ref_type == 'tag'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site/
+
+  # Its own job, after the release: Pages deploys through an environment, and a failure here
+  # leaves the release itself published.
+  pages:
+    if: github.ref_type == 'tag'
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

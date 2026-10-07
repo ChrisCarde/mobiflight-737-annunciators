@@ -365,10 +365,35 @@ binary is the **application image**, not a merged flash image — it is there fo
 not for `esptool write_flash 0x0`. Use `pio run -t upload`, or the `_full.bin` image beside
 the zip.
 
-A release is that same `_dist/`, built by GitHub Actions from a clean checkout when a
-`v<version>` tag is pushed (`.github/workflows/release.yml`). Run the workflow by hand from
-the Actions tab for a dry run: it builds and checks the same set and keeps it as a
-downloadable artifact, without publishing anything.
+The same build writes the browser installer into `_site/`: `web/index.html`, a
+`manifest.json`, and each board's four flash parts — bootloader, partition table,
+`boot_app0` and application — at their own offsets. [ESP Web Tools](https://esphome.github.io/esp-web-tools/)
+reads the manifest, finds out which chip is on the port and writes that board's parts, so one
+Install button serves both boards. Two boards on the same chip family could not both be
+offered, and `check_definitions.py` fails if that ever happens.
+
+Parts rather than the full image, deliberately. The full image runs from 0x0 to the end of
+the application, so it also covers the NVS partition at 0x9000 — as 0xFF padding — and every
+flash of it erases what the board keeps there: its MobiFlight configuration (the EEPROM
+emulation) and, on the 3.2″ board, its touch calibration. Written as parts, NVS is untouched
+unless the person ticks *Erase device*, so an update keeps the panel and the calibration.
+`pio run -t upload` behaves the same way. The manifest also sets
+`new_install_prompt_erase` — without it the installer erases every board that does not speak
+Improv, which is this one — and `new_install_improv_wait_time: 0`, so it never sends Improv
+packets to the MobiFlight command parser. It flashes at 115200 baud, well inside what the
+3.2″ board's CH340 manages.
+
+To try it before a release: `python3 -m http.server -d _site`, then open
+`http://localhost:8000` in Chrome or Edge (Web Serial accepts `localhost` without https).
+
+A release is that same `_dist/` and `_site/`, built by GitHub Actions from a clean checkout
+when a `v<version>` tag is pushed (`.github/workflows/release.yml`): `_dist/` is attached to
+the release and `_site/` goes to GitHub Pages. Pages needs two settings, once: *Settings →
+Pages → Source: GitHub Actions*, and under *Settings → Environments → github-pages*, a
+deployment tag rule `v*` — that environment otherwise accepts deployments from the default
+branch only, and a tag build would be refused. Run the workflow by hand from the Actions tab
+for a dry run: it builds and checks the same set and keeps it as a downloadable artifact,
+without publishing anything.
 
 ## Installing into MobiFlight Connector
 

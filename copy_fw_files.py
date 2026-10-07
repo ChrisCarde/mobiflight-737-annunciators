@@ -1,5 +1,5 @@
 Import("env")
-import os, zipfile, shutil, subprocess
+import os, json, zipfile, shutil, subprocess
 from pathlib import Path
 
 # Get the version number from the build environment.
@@ -65,6 +65,7 @@ def copy_fw_files(source, target, env):
 
     if platform == "espressif32":
         write_full_image(env)
+        write_web_installer(env)
     publish_extras()
 
 
@@ -99,6 +100,72 @@ def write_full_image(env):
         print("WARNING: could not write the full flash image:\n" + result.stderr.strip())
         return
     print("Full flash image (write at 0x0): " + str(out))
+
+
+# ESP Web Tools names a chip the way esptool-js reports it.
+CHIP_FAMILY = {"esp32": "ESP32", "esp32s2": "ESP32-S2", "esp32s3": "ESP32-S3",
+               "esp32c3": "ESP32-C3", "esp32c6": "ESP32-C6", "esp32h2": "ESP32-H2"}
+
+
+def write_web_installer(env):
+    """The browser installer: _site/, which the release publishes to GitHub Pages.
+
+    ESP Web Tools is given the four parts at their own offsets rather than the full image,
+    and that is the point of it. The full image runs from 0x0 to the end of the application,
+    so it also covers the NVS partition -- padded with 0xFF -- and every flash of it erases
+    the board's MobiFlight configuration and its touch calibration. Written as parts, NVS is
+    left alone and an update keeps both; the installer asks about erasing instead.
+
+    Like the zip, the manifest lists every board built at this version, not just this env:
+    one Install button serves both boards and picks the build by the chip it finds."""
+    app = Path(env.subst("$BUILD_DIR/${PROGNAME}.bin"))
+    if not app.exists():
+        return
+    site = Path("./_site")
+    pioenv = env.subst("$PIOENV")
+    board_dir = site / "firmware" / pioenv
+    if board_dir.exists():
+        shutil.rmtree(board_dir)
+    board_dir.mkdir(parents=True)
+
+    images = [(env.subst(offset), env.subst(image))
+              for offset, image in env.get("FLASH_EXTRA_IMAGES", [])]
+    images.append((env.subst("$ESP32_APP_OFFSET") or "0x10000", str(app)))
+    parts = []
+    for offset, image in images:
+        shutil.copy(image, board_dir / Path(image).name)
+        parts.append({"path": "firmware/%s/%s" % (pioenv, Path(image).name),
+                      "offset": int(offset, 0)})
+    mcu = env.BoardConfig().get("build.mcu", "esp32")
+    (board_dir / "build.json").write_text(json.dumps(
+        {"version": firmware_version, "chipFamily": CHIP_FAMILY.get(mcu, mcu.upper()),
+         "parts": parts}, indent=2) + "\n")
+
+    # Every board's parts at this version. One left over from an earlier VERSION is removed
+    # rather than listed: it would install as current.
+    builds = []
+    for build_json in sorted(site.glob("firmware/*/build.json")):
+        build = json.loads(build_json.read_text())
+        if build.get("version") != firmware_version:
+            shutil.rmtree(build_json.parent)
+            continue
+        builds.append({"chipFamily": build["chipFamily"], "parts": build["parts"]})
+    manifest = {
+        "name": "737 Annunciator Panels",
+        "version": firmware_version,
+        # Without this the installer erases the whole flash on every install, because the
+        # firmware does not speak Improv -- so every update would lose the board's setup.
+        "new_install_prompt_erase": True,
+        # Improv is ESPHome's Wi-Fi provisioning protocol. Probing for it would send its
+        # packets to the MobiFlight command parser and wait ten seconds for an answer.
+        "new_install_improv_wait_time": 0,
+        "builds": builds,
+    }
+    (site / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    shutil.copy(Path("web/index.html"), site / "index.html")
+    print("Web installer: _site/ (%s)" % ", ".join(
+        "%s at %s" % (b["chipFamily"], " ".join(hex(p["offset"]) for p in b["parts"]))
+        for b in builds))
 
 
 def publish_extras():

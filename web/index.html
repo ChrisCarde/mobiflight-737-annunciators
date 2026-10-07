@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annunciator Firmware Installer</title>
+<meta name="description" content="Install the 737 annunciator panel firmware on an ESP32 display board, from the browser.">
+<!-- The installer reads manifest.json beside this page. Both are written by the build
+     (copy_fw_files.py) into _site/, which the release publishes to GitHub Pages. -->
+<script type="module" src="https://unpkg.com/esp-web-tools@10.4.0/dist/web/install-button.js?module"></script>
+<style>
+  :root {
+    --bg: #f4f3ef;
+    --panel: #ffffff;
+    --ink: #1d1f22;
+    --muted: #5d6167;
+    --rule: #dcdad3;
+    --accent: #b86e00;
+    --accent-ink: #ffffff;
+    --lamp: #f2a900;
+    --warn-bg: #fff4dc;
+    --warn-ink: #6b4200;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141619;
+      --panel: #1d2024;
+      --ink: #e9e7e1;
+      --muted: #9a9ea5;
+      --rule: #2f3338;
+      --accent: #f2a900;
+      --accent-ink: #1a1300;
+      --lamp: #f2a900;
+      --warn-bg: #2d2412;
+      --warn-ink: #f4d391;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 680px; margin: 0 auto; padding: 48px 16px 64px; }
+  a { color: var(--accent); }
+  .eyebrow {
+    margin: 0 0 6px;
+    font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+  }
+  h1 { margin: 0 0 10px; font-size: 30px; line-height: 1.2; }
+  h2 { margin: 36px 0 10px; font-size: 18px; }
+  .lead { margin: 0 0 6px; font-size: 18px; color: var(--muted); }
+  .meta { margin: 0; font-size: 14px; color: var(--muted); }
+
+  .install {
+    margin: 28px 0 8px; padding: 22px;
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 10px;
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  }
+  .lamp {
+    flex: none; width: 92px; height: 46px; border-radius: 4px;
+    display: grid; place-items: center;
+    background: #2a2416; color: var(--lamp);
+    font: 700 12px/1.1 system-ui, sans-serif; letter-spacing: .06em; text-align: center;
+    box-shadow: inset 0 0 0 2px #3a3223;
+  }
+  .install-text { flex: 1 1 260px; }
+  .install-text p { margin: 0 0 12px; color: var(--muted); font-size: 15px; }
+  .btn {
+    appearance: none; border: 0; border-radius: 6px; cursor: pointer;
+    padding: 12px 22px; font: 600 16px/1 system-ui, sans-serif;
+    background: var(--accent); color: var(--accent-ink);
+  }
+  .btn:hover { filter: brightness(1.08); }
+  .btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .warn {
+    margin: 0; padding: 12px 14px; border-radius: 6px;
+    background: var(--warn-bg); color: var(--warn-ink); font-size: 15px;
+  }
+  /* Until the installer script has loaded, all three slots are plain HTML and would all show. */
+  esp-web-install-button:not(:defined) .warn { display: none; }
+
+  ol.steps { margin: 28px 0 0; padding: 0; list-style: none; counter-reset: step; }
+  ol.steps > li {
+    counter-increment: step; position: relative;
+    padding: 0 0 18px 44px; border-left: 2px solid var(--rule); margin-left: 14px;
+  }
+  ol.steps > li:last-child { border-left-color: transparent; padding-bottom: 0; }
+  ol.steps > li::before {
+    content: counter(step); position: absolute; left: -15px; top: -2px;
+    width: 28px; height: 28px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--panel); border: 2px solid var(--rule);
+    font-weight: 700; font-size: 14px;
+  }
+  ol.steps p { margin: 0; }
+  ol.steps .detail { color: var(--muted); font-size: 15px; margin-top: 4px; }
+
+  table { border-collapse: collapse; width: 100%; margin-top: 8px; font-size: 14px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  code { font: 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+  ul.trouble { margin: 0; padding-left: 20px; }
+  ul.trouble li { margin-bottom: 8px; }
+  footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">MobiFlight · PMDG 737-800</p>
+  <h1>Annunciator panel firmware</h1>
+  <p class="lead">Installs the firmware on either display board, straight from this page. It works
+    out which board is plugged in.</p>
+  <p class="meta"><span id="version">Firmware</span> ·
+    <a id="release" href="https://github.com/ChrisCarde/mobiflight-737-annunciators/releases/latest">Release notes</a> ·
+    <a href="https://github.com/ChrisCarde/mobiflight-737-annunciators#setup">Setup guide</a></p>
+
+  <div class="install">
+    <div class="lamp" aria-hidden="true">FWD<br>ENTRY</div>
+    <div class="install-text">
+      <p>3.2″ LCDWIKI E32R32P or 3.5″ Caturda C3248W535. Close MobiFlight Connector first.</p>
+      <esp-web-install-button manifest="manifest.json">
+        <button slot="activate" class="btn">Install firmware</button>
+        <p slot="unsupported" class="warn">This browser can't talk to USB devices. Open this page in
+          <b>Chrome</b> or <b>Edge</b> on a desktop computer.</p>
+        <p slot="not-allowed" class="warn">The installer only works over a secure connection. Open it from
+          <a href="https://chriscarde.github.io/mobiflight-737-annunciators/">its published address</a>.</p>
+      </esp-web-install-button>
+    </div>
+  </div>
+
+  <h2>Step by step</h2>
+  <ol class="steps">
+    <li>
+      <p><b>Close MobiFlight Connector.</b></p>
+      <p class="detail">While it runs it holds the board's port, and the installer cannot open it.</p>
+    </li>
+    <li>
+      <p><b>Plug the board into this computer.</b></p>
+      <p class="detail">For the 3.2″ board use a USB-A to USB-C cable. A C-to-C cable does not work
+        with that board.</p>
+    </li>
+    <li>
+      <p><b>Click Install firmware and choose the board's port.</b></p>
+      <table>
+        <tr><th>Board</th><th>Listed as</th></tr>
+        <tr><td>3.2″</td><td><code>USB-SERIAL CH340</code> or <code>USB Serial</code></td></tr>
+        <tr><td>3.5″</td><td><code>USB JTAG/serial debug unit</code></td></tr>
+      </table>
+    </li>
+    <li>
+      <p><b>Choose Install, then decide about erasing.</b></p>
+      <p class="detail"><b>First install:</b> tick <i>Erase device</i>. It clears out the demo the
+        board shipped with. <b>Updating:</b> leave it unticked, and the board keeps its panel setup
+        and its touch calibration.</p>
+    </li>
+    <li>
+      <p><b>Wait for “Installation complete”, then unplug the board and plug it back in.</b></p>
+      <p class="detail">The screen stays dark until MobiFlight sends it something. That is normal.
+        Carry on with step 3 of the <a href="https://github.com/ChrisCarde/mobiflight-737-annunciators#setup">setup guide</a>.</p>
+    </li>
+  </ol>
+
+  <h2>If it does not connect</h2>
+  <ul class="trouble">
+    <li><b>The board is not in the list.</b> Try another cable; some carry power only. On the
+      3.5″ board, unplug it, hold its <b>BOOT</b> button while you plug it back in, and try again.</li>
+    <li><b>“Failed to initialize”.</b> Check that MobiFlight Connector is closed. On the 3.5″ board,
+      use the BOOT button as above, then click Install firmware again.</li>
+    <li><b>Still stuck?</b> The setup guide explains how to flash the board by hand, or
+      <a href="https://github.com/ChrisCarde/mobiflight-737-annunciators/issues">open an issue</a>.</li>
+  </ul>
+
+  <footer>
+    Open source, MIT licence. The firmware includes third-party components, listed in
+    <a href="https://github.com/ChrisCarde/mobiflight-737-annunciators/blob/main/THIRD-PARTY-NOTICES.md">THIRD-PARTY-NOTICES</a>.
+    The installer is <a href="https://esphome.github.io/esp-web-tools/">ESP Web Tools</a>.
+  </footer>
+</main>
+<script>
+  // The version comes from the manifest, so this page never needs editing for a release.
+  fetch("manifest.json")
+    .then((r) => r.json())
+    .then((m) => {
+      document.getElementById("version").textContent = "Firmware " + m.version;
+      document.getElementById("release").href =
+        "https://github.com/ChrisCarde/mobiflight-737-annunciators/releases/tag/v" + m.version;
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>

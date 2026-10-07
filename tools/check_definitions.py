@@ -53,6 +53,7 @@ NAME_MAX = 16
 NAME_RESERVED = ":.;,#/|"
 
 DIST = ROOT / "_dist"
+SITE = ROOT / "_site"
 
 # GPIOs the E32R32P board commits to on-board hardware. Offering any of these to the
 # Connector lets a user wire a button or LED onto a pin that is already a display trace,
@@ -342,6 +343,35 @@ def check_dist(sources):
                 if not (DIST / (stem + "_full.bin")).exists():
                     err("_dist lacks %s_full.bin, the image a new board is flashed with "
                         "-- build every env (pio run) with the same VERSION" % stem)
+        check_site(ver, [s for s in sources if s.parent == BOARDS])
+
+
+def check_site(ver, board_files):
+    """The browser installer in _site/ must offer every board at the package's version. It
+    picks a build by the chip it finds and nothing else, so two boards on the same chip
+    family cannot both be offered: the second would never be installed."""
+    manifest_path = SITE / "manifest.json"
+    if not manifest_path.exists():
+        err("_site lacks manifest.json, the web installer -- build every env (pio run)")
+        return
+    manifest = json.loads(manifest_path.read_text())
+    if manifest.get("version") != ver:
+        err("_site/manifest.json is version %r, the package %r -- build every env with the "
+            "same VERSION" % (manifest.get("version"), ver))
+    families = [b["chipFamily"] for b in manifest.get("builds", [])]
+    for fam in sorted({f for f in families if families.count(f) > 1}):
+        err("_site/manifest.json offers two builds for %s; the installer can only tell boards "
+            "apart by chip" % fam)
+    for build in manifest.get("builds", []):
+        for part in build["parts"]:
+            if not (SITE / part["path"]).exists():
+                err("_site/manifest.json lists %s, which is not there" % part["path"])
+    built = {Path(p["path"]).parts[1] for b in manifest.get("builds", []) for p in b["parts"]}
+    for src in board_files:
+        base = json.loads(src.read_text())["Info"]["FirmwareBaseName"]
+        if base not in built:
+            err("_site/manifest.json has no build for %s -- build every env (pio run) with "
+                "the same VERSION" % base)
 
 
 def report(fw_types=None, declared_types=None):

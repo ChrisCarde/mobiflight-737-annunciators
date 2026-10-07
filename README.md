@@ -106,29 +106,47 @@ Open the **[latest release](../../releases/latest)** and download:
 | File | Board |
 |---|---|
 | `Annunciator_<version>.zip` — the MobiFlight package | both |
-| `annunciator_e32r32p_<version>_full.bin` — firmware | 3.2″ |
-| `annunciator_c3248w535_<version>_full.bin` — firmware | 3.5″ |
 | `Start-MobiFlight-E32R32P.bat` — Connector launcher | 3.2″ |
 | **Source code (zip)** — the profiles and the tool that makes them | both |
 
 Unzip *Source code* somewhere you will find it again, such as `Documents`. The folder it makes
-is the one steps 6 and 7 refer to.
+is the one steps 6 and 7 refer to. The firmware itself is installed from the browser in step 2.
 
-### 2. Flash the firmware
+### 2. Install the firmware
 
-1. Plug the board into the PC.
+1. Close MobiFlight Connector if it is running. It holds the board's port while it runs.
+2. Plug the board into the PC.
    - **3.2″:** use a **USB-A to USB-C** cable. A C-to-C cable does not work with this board.
+3. In Chrome or Edge, open the
+   **[firmware installer](https://chriscarde.github.io/mobiflight-737-annunciators/)** and click
+   **Install firmware**. It works out which board is plugged in.
+4. Choose the board's port, then **Install**. The 3.2″ board is listed as *USB-SERIAL CH340*
+   or *USB Serial*, the 3.5″ as *USB JTAG/serial debug unit*.
+   - **3.5″:** if it is not listed, or the installer says *Failed to initialize*, unplug the
+     board, hold its **BOOT** button while you plug it back in, then try again.
+5. Tick **Erase device** the first time. When you update later, leave it unticked: the board
+   then keeps its panel setup and its touch calibration.
+6. When it reports *Installation complete*, unplug the board and plug it back in.
+
+The screen stays dark until MobiFlight sends it something. That is normal.
+
+<details>
+<summary>Flashing by hand instead</summary>
+
+If the installer cannot reach the board, flash the full image from the release with
+Espressif's own page. This always erases the board's panel setup and touch calibration.
+
+1. Download your board's firmware from the release: `annunciator_e32r32p_<version>_full.bin`
+   for the 3.2″, `annunciator_c3248w535_<version>_full.bin` for the 3.5″.
 2. In Chrome or Edge, open the **[ESP web flasher](https://espressif.github.io/esptool-js/)**.
 3. Set **Baudrate**:
    - **3.2″:** `230400` — its USB chip fails at faster speeds.
    - **3.5″:** leave it as it is.
 4. Click **Connect** and choose the board's port.
-   - **3.5″:** if it does not appear, unplug the board, hold its **BOOT** button while you plug
-     it back in, then try again.
-5. Set **Flash Address** to `0x0`, choose your board's `_full.bin` file, and click **Program**.
+5. Set **Flash Address** to `0x0`, choose the `_full.bin` file, and click **Program**.
 6. When it reports that it is done, unplug the board and plug it back in.
 
-The screen stays dark until MobiFlight sends it something. That is normal.
+</details>
 
 ### 3. Prepare the sim (once)
 
@@ -287,15 +305,18 @@ pio run -t annunciator_package                 # everything that goes on a relea
 
 The first build clones the MobiFlight core firmware into `./src`. `annunciator_package`
 writes the Connector zip, a full flash image for each board, and the launcher into `_dist/`
-— exactly the set of files a release carries. Set `VERSION` (e.g. `VERSION=1.0.0`) to stamp
+— exactly the set of files a release carries — and the browser installer into `_site/`. To
+try the installer before a release, serve it locally (`python3 -m http.server -d _site`) and
+open `http://localhost:8000` in Chrome or Edge. Set `VERSION` (e.g. `VERSION=1.0.0`) to stamp
 a release number into all of them; without it they are `0.0.1`, which the Connector treats
 as development firmware and never offers to update.
 
 Releases are built by GitHub Actions from a clean checkout
 ([release.yml](.github/workflows/release.yml)): pushing a tag such as `v0.1.0` builds both
-boards as that version, runs the definition checks, and attaches `_dist/` to the release. The
-platform and every library are pinned to exact versions in `Annunciator_platformio.ini`, so
-that build is the same as the one tested on the boards.
+boards as that version, runs the definition checks, attaches `_dist/` to the release and
+publishes `_site/` as the installer on GitHub Pages. The platform and every library are
+pinned to exact versions in `Annunciator_platformio.ini`, so that build is the same as the
+one tested on the boards.
 
 → **[The handbook](docs/handbook.md)** has everything in detail: the pinout for each board,
 the full message reference, how the profiles are generated and bound, touch calibration,
@@ -334,6 +355,7 @@ Annunciator/            the firmware
   Community/              the board and device definitions the Connector reads
 profiles/               ready-made MobiFlight projects for the PMDG 737-800
 windows/                the Connector launcher for the 3.2in board
+web/                    the browser installer page (its manifest is written by the build)
 tools/                  profile generator, definition checks, a bench tool, the host preview
 docs/handbook.md        everything in detail
 .github/workflows/       the release build
