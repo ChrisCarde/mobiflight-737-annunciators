@@ -47,7 +47,7 @@ struct PanelOps {
     uint8_t lampCount; // 0 for panels that are not a lamp table
 };
 
-// The same nine panels as MFCustomDevice.cpp's dispatch table, in the same order.
+// The same ten panels as MFCustomDevice.cpp's dispatch table, in the same order.
 const PanelOps PANELS[] = {
     {"door", DoorPanel::init, LampPanel::clear, LampPanel::set, LampPanel::update, DoorPanel::LAMP_COUNT},
     {"irs", IrsPanel::init, IrsPanel::clear, IrsPanel::set, IrsPanel::update, 11},

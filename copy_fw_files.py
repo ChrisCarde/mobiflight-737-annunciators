@@ -42,7 +42,7 @@ def copy_fw_files(source, target, env):
 
     # Every board's firmware, not just this env's.
     #
-    # One package serves both boards -- they share all nine device definitions, and the
+    # One package serves both boards -- they share all ten device definitions, and the
     # Connector picks a board by its hardware id -- so the zip has to carry a binary per
     # board. This folder is rebuilt from scratch above, so take whatever the other envs
     # have already produced in .pio/build rather than relying on what survived. A board

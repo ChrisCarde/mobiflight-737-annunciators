@@ -8,10 +8,13 @@ with its licence, and reproduces the notices those licences ask to travel with a
 
 ## What the firmware images contain
 
-Code under MIT and BSD licences, plus the Arduino core for the ESP32, which is LGPL 2.1, and
-two pieces of artwork: the DM Sans font (OFL) and the splash logo (CC BY-SA 4.0). Each
-component is listed below with the notices its licence asks to travel with a binary, and the
-LGPL text is in [`licenses/LGPL-2.1.txt`](licenses/LGPL-2.1.txt). As the LGPL requires, the
+Code under MIT and BSD licences; the Arduino core for the ESP32, which is LGPL 2.1, and the
+ESP-IDF it is built on, mostly Apache 2.0; the FreeRTOS kernel (MIT); newlib's C library,
+under BSD-style licences; and two pieces of artwork, the DM Sans font (OFL) and the splash
+logo (CC BY-SA 4.0). Each component is listed below with the notices its licence asks to
+travel with a binary. The licence texts that have to travel in full are in
+[`licenses/`](licenses/), and every release carries them: `LGPL-2.1.txt`, `Apache-2.0.txt`,
+`COPYING.NEWLIB.txt` and `OFL-1.1.txt`. As the LGPL requires, the
 firmware can be rebuilt against a modified Arduino core: the complete source is this
 repository at the release's tag, with the MobiFlight core pinned to a commit in
 `Annunciator/Annunciator_platformio.ini` and the libraries to the versions declared there.
@@ -32,7 +35,10 @@ so it never offers them. Putting them back is described in
 | [MobiFlight core firmware](https://github.com/elral/MobiFlight-FirmwareSource) (elral's `ESP32_support` branch) | `9299abc` | both | MIT |
 | [Arduino-CmdMessenger](https://github.com/MobiFlight/Arduino-CmdMessenger) (MobiFlight's fork) | 4.2.2 | both | MIT |
 | [ArduinoUniqueID](https://github.com/ricaun/ArduinoUniqueID) | 1.3.0 | both | MIT |
-| [Arduino core for the ESP32](https://github.com/espressif/arduino-esp32) | 3.3.7 | both | LGPL-2.1-or-later, bundling ESP-IDF (Apache-2.0 and others) |
+| [Arduino core for the ESP32](https://github.com/espressif/arduino-esp32) | 3.3.7 | both | LGPL-2.1-or-later, with Apache-2.0 parts |
+| [ESP-IDF](https://github.com/espressif/esp-idf) (precompiled in the Arduino core, and the bootloader) | 5.5 | both | Apache-2.0, and others per component |
+| [FreeRTOS kernel](https://github.com/FreeRTOS/FreeRTOS-Kernel) (ESP-IDF's SMP port) | 10.5.1 | both | MIT |
+| [newlib](https://sourceware.org/newlib/) C library (libc, libm), from Espressif's Xtensa toolchain | esp-14.2.0 | both | BSD-style, per file |
 | [TFT_eSPI](https://github.com/Bodmer/TFT_eSPI) | 2.5.43 | 3.2″ only | FreeBSD, BSD and MIT parts — see below |
 | [LovyanGFX](https://github.com/lovyan03/LovyanGFX) | 1.2.29 | 3.5″ only | MIT and BSD-2-Clause |
 | [GFX Library for Arduino](https://github.com/moononournation/Arduino_GFX) | 1.6.8 | 3.5″ only | not stated |
@@ -42,8 +48,10 @@ so it never offers them. Putting them back is described in
 **Not stated** means the package as distributed carries no licence file and declares none.
 It is listed here for attribution; its terms are its author's to state.
 
-Tools used only to build — PlatformIO, esptool, the Xtensa toolchain, FreeType and Pillow —
-are not part of any released file.
+Tools used only to build — PlatformIO, esptool, FreeType and Pillow — are not part of any
+released file. The Xtensa toolchain is, in part: its C library (newlib's libc and libm) is
+linked into the firmware, as are its libgcc and libstdc++, which are under the GCC Runtime
+Library Exception and ask for no notice.
 
 ---
 
@@ -136,10 +144,54 @@ Lesser General Public License, version 2.1 or later; the full text is in
 rebuilt against a modified copy of this library: the complete source and build are in this
 repository.
 
-The core bundles Espressif's ESP-IDF and the components it is built from — FreeRTOS, lwIP,
-mbedTLS and others — each under its own licence, predominantly Apache-2.0. Espressif
-publishes those notices with
-[ESP-IDF](https://github.com/espressif/esp-idf/blob/master/COPYRIGHT.rst).
+Parts of the core's own hardware layer and libraries are under the Apache License 2.0
+instead (`esp32-hal-uart.c` and `Preferences`, for example), and it is built on Espressif's
+ESP-IDF 5.5, which is precompiled into it — as is the second-stage bootloader in every full
+flash image. ESP-IDF and the components it is built from are each under their own licence,
+predominantly Apache-2.0, whose full text is in
+[`licenses/Apache-2.0.txt`](licenses/Apache-2.0.txt). Espressif lists every component and its
+licence on
+[ESP-IDF's copyright page](https://docs.espressif.com/projects/esp-idf/en/v5.5.2/esp32/COPYRIGHT.html).
+FreeRTOS and newlib, which these images link in, have sections of their own below.
+
+## ESP-IDF — Apache-2.0
+
+Copyright (c) Espressif Systems (Shanghai) Co., Ltd., and the ESP-IDF contributors. Licensed
+under the Apache License, Version 2.0; the full text is in
+[`licenses/Apache-2.0.txt`](licenses/Apache-2.0.txt). The firmware images contain ESP-IDF
+libraries in object form, precompiled in the Arduino core, and its second-stage bootloader.
+
+## FreeRTOS kernel — MIT
+
+FreeRTOS Kernel V10.5.1, as modified for symmetric multiprocessing by Espressif in ESP-IDF.
+
+```
+Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
+
+## newlib — BSD-style licences
+
+The C library linked into the firmware (libc and libm) is newlib, as built into Espressif's
+Xtensa toolchain esp-14.2.0. Its files carry many authors' notices, most of them BSD-style;
+the complete set is reproduced in [`licenses/COPYING.NEWLIB.txt`](licenses/COPYING.NEWLIB.txt),
+copied unchanged from the toolchain's `share/licenses/newlib/COPYING.NEWLIB`.
 
 ## TFT_eSPI — FreeBSD, BSD and MIT parts
 
@@ -407,8 +459,10 @@ BSD-licensed.
 ## DM Sans — SIL Open Font License 1.1
 
 Copyright 2014 The DM Sans Project Authors. The full licence is in
-[`fonts/OFL.txt`](fonts/OFL.txt). The firmware embeds glyph bitmaps generated from the font
-by `tools/make_vlw.py`; the font itself is not redistributed in the firmware.
+[`licenses/OFL-1.1.txt`](licenses/OFL-1.1.txt), a copy of [`fonts/OFL.txt`](fonts/OFL.txt),
+and every release carries it. The firmware embeds glyph bitmaps generated from the font by
+`tools/make_vlw.py` — a modified version of the font software, in the licence's terms — and
+not the font file itself.
 
 ## Boeing 737-800 silhouette — CC BY-SA 4.0
 

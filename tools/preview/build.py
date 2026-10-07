@@ -5,7 +5,7 @@
     python3 tools/preview/build.py --res 480  # just one
 
 Produces tools/preview/build/preview320 and preview480. Building both is also the layout
-gate: every static_assert in the nine panels is evaluated against each screen size, so a
+gate: every static_assert in the ten panels is evaluated against each screen size, so a
 480 layout that does not fit fails here rather than on the board.
 """
 

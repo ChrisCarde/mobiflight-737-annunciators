@@ -2,7 +2,7 @@
 /* Just enough Arduino for the panel sources to compile on a Mac.
 
    The host preview builds the real firmware rendering code -- PanelGfx, LampPanel and the
-   nine panels -- against a PNG canvas, so a preview is the firmware's own pixels rather
+   ten panels -- against a PNG canvas, so a preview is the firmware's own pixels rather
    than a second implementation that drifts. Everything here is what those files touch and
    nothing more; if a new include needs something, add it here rather than #ifdef-ing the
    firmware. */

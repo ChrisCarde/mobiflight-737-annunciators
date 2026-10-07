@@ -237,6 +237,7 @@ void Splash::drawNoPanel()
 void          Splash::start() {}
 Splash::Phase Splash::phase() { return DONE; }
 void          Splash::claim() {}
+void          Splash::release() {}
 void          Splash::end() {}
 
 #else
@@ -303,6 +304,8 @@ void Splash::claim()
     s_claimed.store(true);
     while (s_drawing.load()) delay(1);
 }
+
+void Splash::release() { s_claimed.store(false); }
 
 void Splash::end() { s_phase.store(DONE); }
 

@@ -73,12 +73,19 @@ MFCustomDevice::MFCustomDevice()
     does tools/mfsim.py listen). A dark panel is usually by design -- MobiFlight stopped,
     power saving, the bus off -- and this tells a crash or brown-out from those.
 ********************************************************************************** */
+static void reportPinMismatch()
+{
+    char msg[80];
+    snprintf(msg, sizeof(msg), "Annunciator: the backlight is fixed on GPIO %u - set the custom device pin to %u",
+             (unsigned)Board::BACKLIGHT_PIN, (unsigned)Board::BACKLIGHT_PIN);
+    cmdMessenger.sendCmd(kDebug, msg);
+}
+
 static void reportResetReason(bool pinMismatch)
 {
     static bool reported = false;
     if (reported) {
-        if (pinMismatch)
-            cmdMessenger.sendCmd(kDebug, F("Annunciator: the backlight is fixed on GPIO 27 - set the custom device pin to 27"));
+        if (pinMismatch) reportPinMismatch();
         return;
     }
     reported = true;
@@ -102,13 +109,13 @@ static void reportResetReason(bool pinMismatch)
     // dropped as garbage; an empty message first closes it off.
     Serial.print(F("\r\n;"));
     cmdMessenger.sendCmd(kDebug, buf);
-    // (Debug lines reach the Connector's log only at Log Level Debug -- see the README.)
+    // (Debug lines reach the Connector's log only at Log Level Debug -- see the handbook,
+    // "Seeing the board's messages".)
     // What the display backend found when the boot splash brought the screen up, which was
     // before the serial port was open.
     if (const char *report = Gfx::deviceReport())
         cmdMessenger.sendCmd(kDebug, report);
-    if (pinMismatch)
-        cmdMessenger.sendCmd(kDebug, F("Annunciator: the backlight is fixed on GPIO 27 - set the custom device pin to 27"));
+    if (pinMismatch) reportPinMismatch();
 }
 
 /* **********************************************************************************
@@ -165,11 +172,12 @@ void MFCustomDevice::attach(uint16_t adrPin, uint16_t adrType, uint16_t adrConfi
         return;
     }
 
-    /* One pin is configured, the display backlight. The SPI pins for the panel itself
-       are compile time TFT_eSPI settings, not Connector settings. On the E32R32P the
-       backlight is a fixed trace on GPIO 27, so any other pin is a misconfiguration -- say
-       adding a button first took 27, and the custom device was offered the next free
-       pin. Using that pin would leave the panel dark for good, so use 27 regardless. */
+    /* One pin is configured, the display backlight. The display's own pins are compile
+       time settings (Board.h), not Connector settings. The backlight is a fixed trace on
+       every board -- GPIO 27 on the E32R32P, GPIO 1 on the C3248W535 -- so any other pin
+       is a misconfiguration: say adding a button first took it, and the custom device was
+       offered the next free pin. Using that pin would leave the panel dark for good, so
+       use the board's pin regardless. */
     if (!getStringFromMem(adrPin, parameter, configFromFlash)) return;
     params = strtok_r(parameter, "|", &p);
     const uint8_t configured = params ? (uint8_t)atoi(params) : 0;
@@ -208,6 +216,13 @@ void MFCustomDevice::start()
     PanelGfx::setBacklight(_brightness);
 
     _identifying = Splash::phase() == Splash::IDENTIFYING;
+    if (_identifying) {
+        // Lit only once the panel is on the glass. On the 3.5in board the screen keeps
+        // showing the last frame sent -- the splash -- until present(), and lamps are only
+        // drawn by update().
+        PANELS[_panel].update();
+        PanelGfx::present();
+    }
     PanelGfx::setIdentify(_identifying);
     _started = true;
 }
@@ -219,7 +234,10 @@ void MFCustomDevice::detach()
 {
     if (!_initialized) return;
     _initialized = false;
+    // A panel that never started still holds the boot splash's claim on the screen; let it
+    // go, or a board whose panel was removed during the splash would keep it lit for good.
     if (_started) PANELS[_panel].stop();
+    else Splash::release();
     _started = false;
     if (_identifying) {
         _identifying = false;

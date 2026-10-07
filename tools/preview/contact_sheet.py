@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Assemble panel previews into sheets, and refresh the images the README uses.
 
-    python3 tools/preview/contact_sheet.py                 # one sheet of all nine panels
+    python3 tools/preview/contact_sheet.py                 # one sheet of all ten panels
     python3 tools/preview/contact_sheet.py --scene all
     python3 tools/preview/contact_sheet.py --docs          # refresh docs/previews/
     python3 tools/preview/contact_sheet.py --compare door  # 320 beside 480, true relative size
@@ -72,7 +72,7 @@ def main():
     ap.add_argument("--res", type=int, default=320, choices=[320, 480])
     ap.add_argument("--compare", metavar="PANEL", choices=PANELS)
     ap.add_argument("--docs", action="store_true",
-                    help="refresh docs/previews: the nine panels plus the README sheet")
+                    help="refresh docs/previews: the ten panels plus the README sheet")
     ap.add_argument("--out", type=Path)
     args = ap.parse_args()
 

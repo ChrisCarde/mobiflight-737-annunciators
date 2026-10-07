@@ -6,7 +6,7 @@
     The one place a graphics library is named.
 
     Gfx::Device is the screen, Gfx::Canvas an off-screen buffer that gets pushed to it.
-    Everything above this line -- PanelGfx and the nine panels -- draws through those two
+    Everything above this line -- PanelGfx and the ten panels -- draws through those two
     types and never includes a library header, so a board with a different controller is a
     new branch here rather than a second copy of the renderer.
 

@@ -52,6 +52,10 @@ namespace Splash
     // once the splash's task is not drawing.
     void claim();
 
+    // That panel was removed before it ever started -- a config upload during the splash
+    // replaced it with none -- so the splash ends the way it does on a board with no panel.
+    void release();
+
     // MobiFlight is driving the panel: skip whatever is left of the splash.
     void end();
 } // namespace Splash

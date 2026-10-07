@@ -29,7 +29,7 @@
  * So the panel keeps its native 320x480 portrait shape and the SPRITE is rotated instead.
  * LovyanGFX keeps a sprite's buffer exactly as created and applies rotation to the drawing
  * coordinates, so a 320x480 buffer at sprite rotation 1 presents a 480x320 landscape
- * surface to the renderer while staying in the layout the panel wants. The nine panel
+ * surface to the renderer while staying in the layout the panel wants. The ten panel
  * layouts know nothing about any of this.
  *
  * The init sequence is named rather than defaulted. Arduino_GFX's default for this driver
@@ -44,6 +44,10 @@ namespace
 Arduino_DataBus *s_bus   = nullptr;
 Arduino_GFX     *s_panel = nullptr;
 char             s_report[96] = "";
+// The boot splash draws and blits before setup() opens the serial port, where debug lines
+// would be dropped. MFCustomDevice fetches deviceReport() once the port is open, so that is
+// when the frame lines below start too.
+bool             s_portOpen   = false;
 } // namespace
 
 namespace Gfx
@@ -81,7 +85,11 @@ void deviceBegin(Device &device)
              (unsigned)ESP.getFreePsram());
 }
 
-const char *deviceReport() { return s_report[0] ? s_report : nullptr; }
+const char *deviceReport()
+{
+    s_portOpen = true;
+    return s_report[0] ? s_report : nullptr;
+}
 
 void deviceRotate(Device &device, uint8_t rotation)
 {
@@ -96,7 +104,7 @@ void present(Device &device)
     uint16_t *buffer = (uint16_t *)device.getBuffer();
     if (!buffer) {
         static bool moaned = false;
-        if (!moaned) {
+        if (!moaned && s_portOpen) {
             moaned = true;
             cmdMessenger.sendCmd(kDebug, F("Annunciator: no frame buffer - nothing can be drawn"));
         }
@@ -115,7 +123,7 @@ void present(Device &device)
     s_panel->draw16bitBeRGBBitmap(0, 0, buffer, Board::PANEL_H, Board::PANEL_W);
 
     static uint16_t frames = 0;
-    if ((++frames % 100) == 1) {
+    if (s_portOpen && (++frames % 100) == 1) {
         char msg[80];
         snprintf(msg, sizeof(msg), "Annunciator: frame %u sent as %dx%d in %ums",
                  (unsigned)frames, (int)Board::PANEL_H, (int)Board::PANEL_W,

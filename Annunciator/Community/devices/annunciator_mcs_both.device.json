@@ -9,7 +9,7 @@
   },
   "Config": {
     "Pins": [
-      "Backlight (fixed: GPIO 27)"
+      "Backlight (fixed pin)"
     ],
     "I2C": {
       "Enabled": false,

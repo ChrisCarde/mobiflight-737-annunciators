@@ -139,7 +139,8 @@ If the installer cannot reach the board, flash the full image from the release w
 Espressif's own page. This always erases the board's panel setup and touch calibration.
 
 1. Download your board's firmware from the release: `annunciator_e32r32p_<version>_full.bin`
-   for the 3.2″, `annunciator_c3248w535_<version>_full.bin` for the 3.5″.
+   for the 3.2″, `annunciator_c3248w535_<version>_full.bin` for the 3.5″. The version is
+   written with underscores: `annunciator_e32r32p_0_1_0_full.bin` for 0.1.0.
 2. In Chrome or Edge, open the **[ESP web flasher](https://espressif.github.io/esptool-js/)**.
 3. Set **Baudrate**:
    - **3.2″:** `230400` — its USB chip fails at faster speeds.
@@ -306,8 +307,9 @@ pio run -t annunciator_package                 # everything that goes on a relea
 ```
 
 The first build clones the MobiFlight core firmware into `./src`. `annunciator_package`
-writes the Connector zip, a full flash image for each board, and the launcher into `_dist/`
-— exactly the set of files a release carries — and the browser installer into `_site/`. To
+writes the Connector zip, a full flash image for each board, the launcher and the licences
+into `_dist/` — exactly the set of files a release carries — and the browser installer into
+`_site/`. To
 try the installer before a release, serve it locally (`python3 -m http.server -d _site`) and
 open `http://localhost:8000` in Chrome or Edge. Set `VERSION` (e.g. `VERSION=1.0.0`) to stamp
 a release number into all of them; without it they are `0.0.1`, which the Connector treats
@@ -391,8 +393,9 @@ Known gaps are listed at the end of the handbook.
 
 This repository's own code and definitions are [MIT](LICENSE).
 
-The firmware images on each release also contain other people's code — the MobiFlight core
-firmware, the display libraries and the Arduino core for the ESP32 — under MIT, BSD and LGPL
-licences. Every component, its licence and its notices are in
+The firmware images on each release also contain other people's work — the MobiFlight core
+firmware, the display libraries, the Arduino core for the ESP32 and the ESP-IDF, FreeRTOS and
+C library it is built on, the font and the splash logo — under MIT, BSD, Apache 2.0, LGPL,
+OFL and CC BY-SA 4.0 licences. Every component, its licence and its notices are in
 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md), and each release carries that file and the
 licence texts alongside the binaries.

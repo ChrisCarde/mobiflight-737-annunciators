@@ -6,7 +6,7 @@
     Everything that is true of the board rather than of the panel design: screen size,
     which GPIO the backlight is on, which display library can drive it.
 
-    This is the only header that names a pin. The nine panel layouts, the renderer and the
+    This is the only header that names a pin. The ten panel layouts, the renderer and the
     MobiFlight glue all work in terms of Board::PANEL_W / PANEL_H and never learn which
     board they are running on.
 

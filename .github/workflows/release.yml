@@ -66,8 +66,9 @@ jobs:
       - name: Check the definitions and the package
         run: python tools/check_definitions.py
 
+      # Gated on the event, not the ref: a manual run started from a tag is still a dry run.
       - name: Upload the build (dry run)
-        if: github.ref_type != 'tag'
+        if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
           name: annunciator-${{ env.VERSION }}
@@ -77,20 +78,20 @@ jobs:
           if-no-files-found: error
 
       - name: Publish the release
-        if: github.ref_type == 'tag'
+        if: github.event_name == 'push'
         uses: softprops/action-gh-release@v2
         with:
           files: _dist/*
           fail_on_unmatched_files: true
           generate_release_notes: true
-          body: |
+          body: >
             Firmware and MobiFlight definitions for both boards. Follow the
             [setup guide](https://github.com/${{ github.repository }}#setup): it installs the
             firmware from the [browser installer](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)
             and says which of the files below you need for your board.
 
       - name: Stage the web installer
-        if: github.ref_type == 'tag'
+        if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site/
@@ -98,7 +99,7 @@ jobs:
   # Its own job, after the release: Pages deploys through an environment, and a failure here
   # leaves the release itself published.
   pages:
-    if: github.ref_type == 'tag'
+    if: github.event_name == 'push'
     needs: release
     runs-on: ubuntu-latest
     permissions:

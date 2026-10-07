@@ -6,7 +6,7 @@ panel stays dark. The [README](../README.md) is the short version.*
 Turns a cheap all-in-one ESP32 display board into one of the 737-800 panels the Rowsfire
 B107 overhead and the WinCtrl MCP/EFIS leave out, driven from MobiFlight Connector.
 
-Two boards are supported, and the same nine panels run on both: the **LCDWIKI E32R32P**
+Two boards are supported, and the same ten panels run on both: the **LCDWIKI E32R32P**
 (3.2", 240×320 used as 320×240 landscape, resistive touch) and the **Caturda C3248W535**
 (3.5", 320×480 used as 480×320, capacitive touch). Everything below applies to both unless
 it says otherwise.
@@ -24,8 +24,8 @@ it says otherwise.
 | Master caution, both six-packs on one screen | `ANNUN_MCS_BOTH` | the same, a recall per six-pack |
 | Master caution with the AFDS P/RST lights | `ANNUN_MCS_BOTH_AFDS` | the same, plus A/P, A/T and FMC |
 
-All of them ship in one firmware image — every board gets the same `.bin`. Which panel a
-board shows is chosen **in the Connector**, by which custom device you add to it, so any
+All of them ship in one firmware image per board type — every board of a type gets the same
+`.bin`. Which panel a board shows is chosen **in the Connector**, by which custom device you add to it, so any
 board can be any panel without reflashing to change panel. (Do flash each board with the
 current build first — see *Installing*.)
 
@@ -83,6 +83,7 @@ Annunciator/
   TouchXPT2046.cpp             resistive: polling, and the four-point calibration
   TouchAXS15231B.cpp           capacitive: an I2C read, and no calibration to do
   TouchZones.{h,cpp}           touch buttons -> MobiFlight button events, the press ring
+  Splash/                      the boot splash, and the logo bitmaps generated for it
   DoorPanel/                   door lamps (a LampPanel table)
   AirPanel/                    air conditioning / bleed / pressurisation (a LampPanel table)
   FctlPanel/                   flight controls (a LampPanel table)
@@ -182,7 +183,7 @@ So **the panel is never rotated.** It keeps its native 320x480 portrait shape, a
 *sprite* is rotated instead: LovyanGFX keeps a sprite's buffer exactly as created and
 applies rotation to the drawing coordinates, so a 320x480 buffer at sprite rotation 1 hands
 the renderer a 480x320 landscape surface while staying in the layout the panel wants. The
-nine panel layouts know nothing about any of this. If a future board does accept a rotated
+ten panel layouts know nothing about any of this. If a future board does accept a rotated
 window, this is still the better arrangement -- it is one blit of a whole frame either way.
 
 **3. LovyanGFX sprites are already big-endian.** *Symptom: the layout is perfect and every
@@ -352,9 +353,12 @@ enumerates as `303A:1001` — on a Mac that is `/dev/cu.usbmodem*` rather than t
 `/dev/cu.usbserial*` a bridge gives you. If a flash ever fails to start, hold BOOT while
 plugging it in.
 
-A verified image of the factory LVGL demo is in `backup/` (4 MB, SHA-256 alongside) if you
-ever want the board back as shipped:
-`python -m esptool --port <port> --baud 230400 write-flash 0x0 backup/e32r32p_factory_4MB.bin`.
+To be able to put a board back as it shipped, save its factory firmware **before the first
+install** — afterwards it is gone. Read the whole flash with esptool: 4 MB on the 3.2″ board,
+16 MB on the 3.5″:
+`python -m esptool --port <port> --baud 230400 read-flash 0 0x400000 factory_3.2in.bin`
+(`0x1000000` and another name for the 3.5″). To restore it:
+`python -m esptool --port <port> --baud 230400 write-flash 0x0 factory_3.2in.bin`.
 
 Every `pio run` and every upload also writes `_dist/Annunciator_<version>.zip`, rebuilt
 from the current Connector definitions each time (`pio run -t annunciator_package` does
@@ -402,8 +406,10 @@ in the title bar and Help → About). 10.x cannot open the profiles at all. 11.0
 untested: the profiles also carry the older fields those versions match touch buttons on,
 but upgrade rather than troubleshoot.
 
-**0. Flash every board with the current build** — `pio run -e annunciator_e32r32p -t upload`
-(see *Build and flash*). The profiles switch a panel off through message `107`; a board
+**0. Flash every board with the current firmware** — from the
+[browser installer](https://chriscarde.github.io/mobiflight-737-annunciators/), or from
+source with `pio run -e annunciator_e32r32p -t upload` or `-e annunciator_c3248w535` (see
+*Build and flash*). The profiles switch a panel off through message `107`; a board
 flashed before `107` existed ignores it and stays lit with the battery off. On the bench,
 `tools/mfsim.py send 107 1` must darken the panel.
 
@@ -417,11 +423,11 @@ definitions — so that you end up with:
 
 ```
 %LOCALAPPDATA%\MobiFlight\MobiFlight Connector\Community\Annunciator\
-    boards\annunciator_e32r32p.board.json
-    devices\annunciator_door.device.json        (and one per panel: irs, elec, air,
-    devices\annunciator_irs.device.json          fctl, isdu, mcs_l, mcs_r, mcs_both)
+    boards\annunciator_e32r32p.board.json       (and annunciator_c3248w535.board.json)
+    devices\annunciator_door.device.json        (and one per panel: irs, elec, air, fctl,
+    devices\annunciator_irs.device.json          isdu, mcs_l, mcs_r, mcs_both, mcs_both_afds)
     ...
-    firmware\annunciator_e32r32p_<version>.bin      (not used by the Connector)
+    firmware\annunciator_e32r32p_0_1_0.bin       (one per board; not used by the Connector)
 ```
 
 **Restart the Connector afterwards** — it reads definitions once at startup. Without a
@@ -488,12 +494,13 @@ right-click the desktop → New → Shortcut, target
 **3. Choose the panel.** Each board carries exactly one custom device, and its type is the
 choice. In **Extras → Settings → MobiFlight Modules** select the board, then *Add device →
 Custom Devices* and pick the panel (the table at the top of this file). Add it **before** any buttons or other
-devices on the board and leave its pin at **27**: the backlight is fixed on GPIO 27, and the
-firmware drives 27 whatever the pin is set to — so never give 27 to a button, output or any
-other device on this board (it logs a debug line if the pin is not 27). Then upload the
-config to the board.
+devices on the board and leave its pin as offered: the backlight is on a fixed pin — GPIO 27
+on the 3.2″ board, GPIO 1 on the 3.5″ — and the firmware drives that pin whatever the pin is
+set to, so never give it to a button, output or any other device on the board (it logs a
+debug line if the setting differs). Then upload the config to the board.
 
-**How the Connector shows it.** The board is the controller (*Annunciator*); the whole screen
+**How the Connector shows it.** The board is the controller (*Annunciator*, or *Annunciator
+35* for the 3.5″ board); the whole screen
 is its one custom device (*Door Annunciator*). The lamps are not devices of their own — a
 MobiFlight device is something on pins, and the lamps exist only on the screen — they are
 the device's message types: an output config picks *Door Annunciator* as its display, then
@@ -503,7 +510,7 @@ Annunciator - touch FWD ENTRY …*) bind them by that name.
 
 **To switch a board to another panel:** Extras → Settings → MobiFlight Modules; expand the
 board, select its device, **Remove device**; select the board, **Add device → Custom Devices
-→** the new panel (pin 27, name as offered); **Upload config** (Stop first, Run afterwards).
+→** the new panel (pin and name as offered); **Upload config** (Stop first, Run afterwards).
 Then, in the project, remove the old panel's tab (⋮ → Remove) and merge the new panel's file
 (+ → From existing project). Every file in `profiles/` is generated for this board's serial,
 so it binds to the board whichever panel it is.
@@ -513,7 +520,8 @@ picture until then.
 
 The device gets the panel's name — `Door Annunciator`, `IRS Annunciator`, `Electrical
 Meter`, `Air Conditioning`, `Flight Controls`, `IRS Display Unit`, `Master Caution L`,
-`Master Caution R`, `Master Caution` — and that is exactly the name the profiles look for.
+`Master Caution R`, `Master Caution`, `Caution + AFDS` — and that is exactly the name the
+profiles look for.
 **Don't rename it** (or regenerate the profiles with `--name`, see below). A board set up
 with the current `tools/mfsim.py setup` already shows its device, under the same name,
 because the Connector reads the config back from the board.
@@ -565,6 +573,7 @@ Connector with the batch file from step 2.
 | `Annunciator-MasterCaution-Captain-PMDG737-800.mfproj` | 8 lamps | 3 |
 | `Annunciator-MasterCaution-FO-PMDG737-800.mfproj` | 8 lamps | 3 |
 | `Annunciator-MasterCaution-Both-PMDG737-800.mfproj` | 14 lamps | 4 |
+| `Annunciator-MasterCaution-Both-AFDS-PMDG737-800.mfproj` | 17 lamps | 4 (the A/P, A/T and FMC presses are not bound yet) |
 
 Each also has the same three **shared** outputs: **night dimming** (`102`) and **lamp test**
 (`103`), both following the main panel's TEST / BRT / DIM lights switch; and **bus
@@ -674,7 +683,8 @@ Test Mode.
 **First evening, in order** — each step settles something before the next depends on it:
 
 1. Every board flashed with the current build; Connector 11.2 or later; the board listed as
-   **Annunciator**, with its device named exactly as in *Installing* step 3.
+   **Annunciator** (**Annunciator 35** for the 3.5″ board), with its device named exactly as
+   in *Installing* step 3.
 2. Merge the panel file into your project; Run. Load the -800 cold and dark: the panel is
    dark. Battery on: it lights. (If not, look at the *Bus unpowered* row's **Final Value**:
    it should be 0 with the battery on. Its Raw Value — the PMDG's bus-powered flag — shows
@@ -922,7 +932,8 @@ of it the logo.
 
 ## When the panel is lit
 
-Only while **all three** hold — otherwise the backlight is off and the screen is black:
+After the boot splash, the panel is lit only while **all three** hold — otherwise the
+backlight is off and the screen is black:
 
 1. **MobiFlight is running** — it has sent the panel a value since the last Stop. Merely
    having the Connector open is not enough: it reads the board on connect without sending
@@ -940,8 +951,8 @@ Only while **all three** hold — otherwise the backlight is off and the screen 
    On the bench, `tools/mfsim.py` behaves the same way (see below).
 
 A board with no config at all stays dark too, once the boot splash has said *No panel
-configured*. Its backlight is driven low from `initVariant()`, the earliest point
-application code runs, before `setup()`.
+configured*: `initVariant()`, the earliest point application code runs, drives the backlight
+low; the splash lights it; and the splash's own task turns it off again at 20 s.
 
 Lamps keep being drawn while dark, so the panel reappears instantly showing the current
 state. On waking at Run it also waits for MobiFlight's opening burst of values to land — the
@@ -952,9 +963,28 @@ never shows a stale frame, and never flashes on when the bus turns out to be off
 The board says why it last started — `Annunciator started: power on`, `CRASH (panic)`,
 `BROWN-OUT (supply dipped)`, … — as a debug line when it boots. The 3.5″ board follows it
 with the frame buffer it got, `Annunciator: frame 480x320 buf=… psram free …`; a buffer of 0
-there is why a screen would stay black. The Connector logs both at Log Level Debug only (see
-*Seeing the board's messages*); `tools/mfsim.py listen` shows them, with the ESP32's own boot
-text, if it was already running when the board restarted.
+there is why a screen would stay black. The Connector logs both at Log Level Debug only, and `tools/mfsim.py listen` shows them —
+see *Seeing the board's messages*.
+
+## Seeing the board's messages
+
+The board reports a few things as MobiFlight debug messages, sent once as it starts or when
+something is wrong:
+
+- why it last started: `Annunciator started: power on`, `software reset`, `CRASH (panic)`,
+  `CRASH (watchdog)`, `BROWN-OUT (supply dipped)`;
+- on the 3.5″ board, the frame buffer it got: `Annunciator: frame 480x320 buf=… psram free …`
+  (a buffer of 0 means the screen cannot draw);
+- a custom device set to the wrong pin: `Annunciator: the backlight is fixed on GPIO …`.
+
+**In the Connector** they reach the log only with logging on and the log level set to
+**Debug**, in the Connector's settings; at the default level they are dropped. Debug logging
+is verbose, so set it back afterwards.
+
+**On the bench**, `tools/mfsim.py listen` prints them, with the ESP32's own boot text, if it
+is already listening when the board restarts (see *Bench testing without the Connector*).
+The start-up messages are sent once, as the board boots, so a tool that connects later does
+not see them.
 
 Brightness (`101`) and bus power (`105`/`107`) are separate on purpose. Bus power is naturally a
 0/1 (or a voltage), brightness a level, and keeping them apart lets each bind straight to
@@ -976,7 +1006,7 @@ machine. It needs pyserial, which PlatformIO's own interpreter already has:
 PY=~/.platformio/penv/bin/python
 $PY tools/mfsim.py info           # identify the board, its device and names; check them against the JSON
 $PY tools/mfsim.py setup door     # upload + activate a config: door, irs, elec, air, fctl,
-                                  #   isdu, mcs_l, mcs_r, mcs_both
+                                  #   isdu, mcs_l, mcs_r, mcs_both, mcs_both_afds
 $PY tools/mfsim.py demo door      # walk through a few states over MobiFlight messages
 $PY tools/mfsim.py lamp 3 1       # one lamp: id, then 0 off / 1 on / 2 blink
 $PY tools/mfsim.py send 102 1     # any message ID -- here, night dimming
@@ -1063,18 +1093,21 @@ above. Which sim variables drive which lamp lives in the MobiFlight profile; the
 
 ## Fonts
 
-Text is **DM Sans Bold**, the face the design specified, embedded as TFT_eSPI smooth
-(anti-aliased) fonts at three sizes:
+Text is **DM Sans Bold**, the face the design specified, embedded as anti-aliased fonts in
+the `.vlw` format both display libraries read — TFT_eSPI on the 3.2″ board, LovyanGFX on the
+3.5″ — at three sizes per screen:
 
-- **11 px** — door legends and every header. The door lamps are width-bound here, not
-  height-bound: `RIGHT FWD` is 61 px of ink in a 71 px lamp, and would need 66 at 12 px.
-- **14 px** — the IRS lamps and the glareshield push-lights, which have more room.
-- **8 px** — small print on a lens: MASTER CAUTION's `PUSH TO RESET`, FIRE WARN's
-  `BELL CUTOUT`.
+| Role | 3.2″ | 3.5″ | Used for |
+|---|---|---|---|
+| `FONT_SMALL` | 11 px | 15 px | door legends and every header. The door lamps are width-bound, not height-bound: at 11 px `RIGHT FWD` is 61 px of ink in a 71 px lamp, and would need 66 at 12 px. |
+| `FONT_LARGE` | 14 px | 19 px | the IRS lamps and the glareshield push-lights, which have more room |
+| `FONT_TINY` | 8 px | 11 px | small print on a lens — MASTER CAUTION's `PUSH TO RESET`, FIRE WARN's `BELL CUTOUT` — and the boot splash's credits |
+
+Each size carries only capitals, digits and `- . / : ( ) + _`: every legend is in capitals.
 
 The source is the official static *DM Sans 9pt Bold* from `googlefonts/dm-fonts@d0520ba`
 — the commit Google Fonts pins for v4.004 — in `fonts/`, under the SIL Open Font License
-(`fonts/OFL.txt`).
+(`fonts/OFL.txt`, which every release also carries as `OFL-1.1.txt`).
 
 The generated headers in `Annunciator/fonts/` are committed, so building needs nothing
 extra. To change a size or the character set, regenerate them. TFT_eSPI normally expects
