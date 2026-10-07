@@ -128,7 +128,9 @@ is the one steps 6 and 7 refer to. The firmware itself is installed from the bro
    then keeps its panel setup and its touch calibration.
 6. When it reports *Installation complete*, unplug the board and plug it back in.
 
-The screen stays dark until MobiFlight sends it something. That is normal.
+When the board restarts it shows a splash for 10 seconds, with the firmware version and build
+date. For the next 10 seconds it shows the panel it is set up as, or *No panel configured* on a
+new board. Then the screen stays dark until MobiFlight sends it something. That is normal.
 
 <details>
 <summary>Flashing by hand instead</summary>
@@ -350,6 +352,7 @@ Annunciator/            the firmware
   PanelGfx.{h,cpp}        display bring-up, lamp and text rendering
   LampPanel.{h,cpp}       the engine for panels that are just lamps, run from a table
   Touch*.{h,cpp}          touch polling, calibration, and zones -> button events
+  Splash/                 the boot splash, and the logo bitmaps generated for it
   <Name>Panel/            one directory per panel
   fonts/                  DM Sans Bold, embedded, with the metrics the renderer measures by
   Community/              the board and device definitions the Connector reads
@@ -357,6 +360,7 @@ profiles/               ready-made MobiFlight projects for the PMDG 737-800
 windows/                the Connector launcher for the 3.2in board
 web/                    the browser installer page (its manifest is written by the build)
 tools/                  profile generator, definition checks, a bench tool, the host preview
+art/                    the splash logo's source image and its licence
 docs/handbook.md        everything in detail
 .github/workflows/       the release build
 ```
@@ -376,6 +380,12 @@ Known gaps are listed at the end of the handbook.
 - [DM Sans](https://fonts.google.com/specimen/DM+Sans) by the DM Sans Project Authors,
   under the SIL Open Font License 1.1 — see [`fonts/OFL.txt`](fonts/OFL.txt). The embedded
   font headers are generated from it by `tools/make_vlw.py`.
+- The splash logo is
+  [Boeing 737-800 silhouette](https://commons.wikimedia.org/wiki/File:Boeing_737-800_silhouette.svg)
+  by Peter James Lowden, under
+  [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). `tools/make_logo.py`
+  crops it, scales it, and converts it into the firmware's bitmaps, which are CC BY-SA 4.0 too
+  — see [`art/README.md`](art/README.md).
 
 ## Licence
 

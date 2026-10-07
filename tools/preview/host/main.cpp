@@ -1,13 +1,17 @@
 /* Host preview: renders a panel to a PPM using the firmware's own panel code.
 
    Usage:  preview <panel> <scene> <out.ppm>
+           preview splash <on|nopanel> <out.ppm>
 
-   panels  door irs elec mcs_l mcs_r mcs_both air fctl isdu
+   panels  door irs elec mcs_l mcs_r mcs_both mcs_both_afds air fctl isdu
    scenes  off      nothing lit, the way the panel sits with the aircraft quiet
            demo     a representative mix of lit, unlit and blinking lamps
            all      every lamp on, as the lamp-test message drives it
            dim      the demo scene with night dimming applied
            press    the demo scene with a finger held on one of the buttons
+
+   splash  the boot splash (on), and what a board with no panel shows after it (nopanel).
+           A configured board shows its panel's off scene there instead.
 
    Both resolutions are the same binary built twice; see build.py. Layout, measurements and
    text all come from the firmware sources, so what appears here is what the board draws --
@@ -25,6 +29,7 @@
 #include "AirPanel.h"
 #include "FctlPanel.h"
 #include "IsduPanel.h"
+#include "Splash.h"
 
 #include <cstdio>
 #include <cstring>
@@ -104,6 +109,23 @@ int main(int argc, char **argv)
         return 2;
     }
     const std::string want = argv[1], scene = argv[2];
+
+    if (want == "splash") {
+        if (scene != "on" && scene != "nopanel") {
+            fprintf(stderr, "the splash scenes are on and nopanel\n");
+            return 2;
+        }
+        PanelGfx::begin(0);
+        if (scene == "on") Splash::draw();
+        else Splash::drawNoPanel();
+        if (!PanelGfx::tft().writePpm(argv[3])) {
+            fprintf(stderr, "cannot write %s\n", argv[3]);
+            return 1;
+        }
+        printf("splash %s -> %s (%dx%d)\n", scene.c_str(), argv[3],
+               (int)Board::PANEL_W, (int)Board::PANEL_H);
+        return 0;
+    }
 
     const PanelOps *p = nullptr;
     for (const PanelOps &c : PANELS)

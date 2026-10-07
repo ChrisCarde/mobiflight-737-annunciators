@@ -1,4 +1,5 @@
 #include "PanelGfx.h"
+#include "Splash.h"
 #include "Touch.h"
 
 // The fonts for this board's screen: the .vlw blobs the display library parses, the
@@ -10,7 +11,8 @@
 // Arduino-ESP32 calls initVariant() from initArduino(), just before setup() -- the earliest
 // point application code runs. Driving the backlight low here keeps the panel dark from
 // boot, even on a board with no panel configured yet whose backlight pin would otherwise be
-// left to the board's hardware default until attach() ran.
+// left to the board's hardware default until attach() ran. Then the boot splash, which has
+// to start here to show on a board with no panel at all -- see Splash.h.
 extern "C" void initVariant()
 {
     pinMode(Board::BACKLIGHT_PIN, OUTPUT);
@@ -22,6 +24,7 @@ extern "C" void initVariant()
         pinMode(Board::TOUCH_CS_PIN, OUTPUT);
         digitalWrite(Board::TOUCH_CS_PIN, HIGH);
     }
+    Splash::start();
 }
 
 namespace PanelGfx
@@ -42,6 +45,9 @@ static uint8_t  s_backlightLevel = 255;
 static bool s_running    = false; // no MobiFlight values yet -- dark from boot
 static bool s_busPowered = true;  // assume powered until a bus-power output says otherwise
 static bool s_powerSave  = false;
+// And the exception to them: the boot splash's identify phase lights the panel for ten
+// seconds so you can see what the board is configured as. See Splash.h.
+static bool s_identify   = false;
 
 // On waking at Run, MobiFlight sends every output in one burst, in config order -- with a
 // Windows timer tick (about 16 ms) before each message, so 20 outputs take 300 ms or more.
@@ -76,7 +82,7 @@ void present()
 }
 bool      ready() { return s_ready; }
 
-bool isLit() { return s_running && !s_settling && s_busPowered && !s_powerSave; }
+bool isLit() { return s_identify || (s_running && !s_settling && s_busPowered && !s_powerSave); }
 
 // Dark is the backlight off, and nothing else: lamps keep being drawn into the panel's own
 // memory while it is dark, so it comes back instantly showing the current state.
@@ -103,9 +109,12 @@ bool begin(uint8_t backlightPin)
         // landscape the design is drawn for. If the image lands 180 degrees out relative to
         // the ribbon cable, use 3 here and in the MSG_ROTATION default.
         Gfx::deviceRotate(s_tft, Board::DEFAULT_ROTATION);
-        useFont(s_tft, FONT_SMALL); // headers are drawn straight to the TFT
         s_ready = true;
     }
+    // Headers are drawn straight to the screen in this size. Loaded every time, not only
+    // the first: the boot splash brings the screen up first and draws in other sizes.
+    s_tft.unloadFont();
+    useFont(s_tft, FONT_SMALL);
     s_tft.fillScreen(Theme::to565(Theme::PanelBg));
     s_dirty = true;
     applyBacklight();
@@ -147,6 +156,12 @@ void setBusPowered(bool powered)
 void setPowerSave(bool on)
 {
     s_powerSave = on;
+    applyBacklight();
+}
+
+void setIdentify(bool on)
+{
+    s_identify = on;
     applyBacklight();
 }
 

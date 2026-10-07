@@ -45,8 +45,9 @@ TTF_SHA256 = "14c74f014dbe7538cb8dce12eeabcf387f6d63e5ac61bd82a461689560196dc7"
 OUT_DIR = ROOT / "Annunciator" / "fonts"
 
 # Every legend and header is capitals; digits and a little punctuation are cheap insurance.
-# 'H' must stay in: the renderer takes cap height from it.
-CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-./:()+"
+# 'H' must stay in: the renderer takes cap height from it. '_' is for the boot splash's
+# credits, which name TFT_eSPI and Arduino_GFX.
+CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-./:()+_"
 
 # One size triple per screen resolution, in PanelFont order. The renderer names roles, never
 # pixel sizes, so a second board is a row here plus a regenerated FontSet header.

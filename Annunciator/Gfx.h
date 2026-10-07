@@ -25,6 +25,10 @@ namespace Gfx
 {
     using Device = TFT_eSPI;
     using Canvas = TFT_eSprite;
+
+    // How the boot splash credits the display library: in capitals, as the panel fonts
+    // carry no lower case.
+    constexpr char LIBRARY_CREDIT[] = "DISPLAY: TFT_ESPI";
 } // namespace Gfx
 
 #elif ANNUN_BACKEND_LGFX
@@ -37,6 +41,8 @@ namespace Gfx
        present() below and PanelGfxLGFX.cpp. */
     using Device = LGFX_Sprite;
     using Canvas = LGFX_Sprite;
+
+    constexpr char LIBRARY_CREDIT[] = "DISPLAY: LOVYANGFX + ARDUINO_GFX";
 } // namespace Gfx
 
 #elif ANNUN_BACKEND_HOST
@@ -46,6 +52,13 @@ namespace Gfx
 {
     using Device = HostCanvas;
     using Canvas = HostCanvas;
+
+    // The preview draws each board's screen, so it credits that board's libraries.
+#if ANNUN_PANEL_RES == 480
+    constexpr char LIBRARY_CREDIT[] = "DISPLAY: LOVYANGFX + ARDUINO_GFX";
+#else
+    constexpr char LIBRARY_CREDIT[] = "DISPLAY: TFT_ESPI";
+#endif
 } // namespace Gfx
 
 #endif
@@ -92,10 +105,17 @@ namespace Gfx
    The E32R32P draws straight to its controller, so present() does nothing. The C3248W535
    cannot: its AXS15231B is written over QSPI a whole frame at a time -- some batches
    ignore the window-address commands altogether -- so its Device is a sprite in PSRAM and
-   present() blits the frame. Everything above that is the same code either way. */
+   present() blits the frame. Everything above that is the same code either way.
+
+   And one for diagnostics. The boot splash brings the screen up before setup() has opened
+   the serial port, so anything a backend has to say about bringing it up -- the frame
+   buffer it got, say -- would be lost if it were sent then. deviceReport() hands it over
+   later instead, for MFCustomDevice to send once the port is open; nullptr if there is
+   nothing to say. */
 namespace Gfx
 {
-    void deviceBegin(Device &device);
-    void deviceRotate(Device &device, uint8_t rotation);
-    void present(Device &device);
+    void        deviceBegin(Device &device);
+    void        deviceRotate(Device &device, uint8_t rotation);
+    void        present(Device &device);
+    const char *deviceReport();
 } // namespace Gfx

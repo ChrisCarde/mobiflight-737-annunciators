@@ -13,6 +13,7 @@
 #include "AirPanel.h"
 #include "FctlPanel.h"
 #include "IsduPanel.h"
+#include "Splash.h"
 #include <string.h>
 #include <stdlib.h>
 #include <esp_system.h>
@@ -63,6 +64,8 @@ bool MFCustomDevice::getStringFromMem(uint16_t addrMem, char *buffer, bool confi
 MFCustomDevice::MFCustomDevice()
 {
     _initialized = false;
+    _started     = false;
+    _identifying = false;
 }
 
 /* **********************************************************************************
@@ -100,6 +103,10 @@ static void reportResetReason(bool pinMismatch)
     Serial.print(F("\r\n;"));
     cmdMessenger.sendCmd(kDebug, buf);
     // (Debug lines reach the Connector's log only at Log Level Debug -- see the README.)
+    // What the display backend found when the boot splash brought the screen up, which was
+    // before the serial port was open.
+    if (const char *report = Gfx::deviceReport())
+        cmdMessenger.sendCmd(kDebug, report);
     if (pinMismatch)
         cmdMessenger.sendCmd(kDebug, F("Annunciator: the backlight is fixed on GPIO 27 - set the custom device pin to 27"));
 }
@@ -177,14 +184,32 @@ void MFCustomDevice::attach(uint16_t adrPin, uint16_t adrType, uint16_t adrConfi
         if (value > 0) brightness = (uint8_t)constrain(value, 16, 255);
     }
 
+    _brightness  = brightness;
+    _initialized = true;
+
+    // The boot splash has the screen for its first ten seconds; the panel comes up when it
+    // ends -- see update(). Configured later than that, it comes up now.
+    Splash::claim();
+    if (Splash::phase() != Splash::SHOWING_SPLASH) start();
+
+    reportResetReason(pinMismatch);
+}
+
+/* **********************************************************************************
+    Brings the panel up. Dark, as always until MobiFlight sends values -- except during the
+    splash's identify phase, when it is lit to show what this board is configured as.
+********************************************************************************** */
+void MFCustomDevice::start()
+{
     PANELS[_panel].init(_backlightPin);
 
-    // Only the level: the panel stays dark until MobiFlight starts sending values. Set
-    // directly rather than as a message, since any message counts as MobiFlight running.
-    PanelGfx::setBacklight(brightness);
+    // Only the level. Set directly rather than as a message, since any message counts as
+    // MobiFlight running.
+    PanelGfx::setBacklight(_brightness);
 
-    _initialized = true;
-    reportResetReason(pinMismatch);
+    _identifying = Splash::phase() == Splash::IDENTIFYING;
+    PanelGfx::setIdentify(_identifying);
+    _started = true;
 }
 
 /* **********************************************************************************
@@ -194,7 +219,12 @@ void MFCustomDevice::detach()
 {
     if (!_initialized) return;
     _initialized = false;
-    PANELS[_panel].stop();
+    if (_started) PANELS[_panel].stop();
+    _started = false;
+    if (_identifying) {
+        _identifying = false;
+        PanelGfx::setIdentify(false);
+    }
 
     // A newly configured panel has no lamp states yet -- showing it lit with every lamp off
     // could contradict the aircraft. Stay dark until MobiFlight sends real values. The bus
@@ -211,6 +241,14 @@ void MFCustomDevice::detach()
 void MFCustomDevice::update()
 {
     if (!_initialized) return;
+    if (!_started) {
+        if (Splash::phase() == Splash::SHOWING_SPLASH) return; // the splash has the screen
+        start();
+    }
+    if (_identifying && Splash::phase() != Splash::IDENTIFYING) {
+        _identifying = false; // ten seconds up: dark until MobiFlight runs
+        PanelGfx::setIdentify(false);
+    }
     PanelGfx::tick();
     PANELS[_panel].update();
     PanelGfx::present(); // sends the frame on a board that buffers one
@@ -224,6 +262,16 @@ void MFCustomDevice::update()
 void MFCustomDevice::set(int16_t messageID, char *setPoint)
 {
     if (!_initialized) return;
+
+    // MobiFlight is driving the panel, so whatever is left of the boot splash gives way to
+    // it now. Merely connecting never gets here: the Connector reads the board on connect
+    // without sending the panel anything.
+    if (!_started || _identifying) {
+        Splash::end();
+        if (!_started) start();
+        _identifying = false;
+        PanelGfx::setIdentify(false);
+    }
 
     switch (messageID) {
     case MSG_STOP: // MobiFlight stopped or shutting down; sent with no value at all

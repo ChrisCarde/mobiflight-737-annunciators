@@ -8,7 +8,8 @@ with its licence, and reproduces the notices those licences ask to travel with a
 
 ## What the firmware images contain
 
-Code under MIT and BSD licences, plus the Arduino core for the ESP32, which is LGPL 2.1. Each
+Code under MIT and BSD licences, plus the Arduino core for the ESP32, which is LGPL 2.1, and
+two pieces of artwork: the DM Sans font (OFL) and the splash logo (CC BY-SA 4.0). Each
 component is listed below with the notices its licence asks to travel with a binary, and the
 LGPL text is in [`licenses/LGPL-2.1.txt`](licenses/LGPL-2.1.txt). As the LGPL requires, the
 firmware can be rebuilt against a modified Arduino core: the complete source is this
@@ -36,6 +37,7 @@ so it never offers them. Putting them back is described in
 | [LovyanGFX](https://github.com/lovyan03/LovyanGFX) | 1.2.29 | 3.5″ only | MIT and BSD-2-Clause |
 | [GFX Library for Arduino](https://github.com/moononournation/Arduino_GFX) | 1.6.8 | 3.5″ only | not stated |
 | [DM Sans](https://fonts.google.com/specimen/DM+Sans) (embedded as glyph data) | 4.004 | both | SIL Open Font License 1.1 |
+| [Boeing 737-800 silhouette](https://commons.wikimedia.org/wiki/File:Boeing_737-800_silhouette.svg) (the boot splash's logo, embedded as a bitmap) | 2016 | both | CC BY-SA 4.0 |
 
 **Not stated** means the package as distributed carries no licence file and declares none.
 It is listed here for attribution; its terms are its author's to state.
@@ -407,3 +409,21 @@ BSD-licensed.
 Copyright 2014 The DM Sans Project Authors. The full licence is in
 [`fonts/OFL.txt`](fonts/OFL.txt). The firmware embeds glyph bitmaps generated from the font
 by `tools/make_vlw.py`; the font itself is not redistributed in the firmware.
+
+## Boeing 737-800 silhouette — CC BY-SA 4.0
+
+"Boeing 737-800 silhouette" by Peter James Lowden, from Wikimedia Commons
+(<https://commons.wikimedia.org/wiki/File:Boeing_737-800_silhouette.svg>), licensed under the
+Creative Commons Attribution-ShareAlike 4.0 International licence
+(<https://creativecommons.org/licenses/by-sa/4.0/>).
+
+The firmware shows it on the boot splash, which credits its author and licence on screen.
+
+**Changes made:** cropped to the aircraft, scaled to 110×120 (3.2″) and 146×160 (3.5″)
+pixels, flattened onto the panel's black background and reduced to RGB565, by
+`tools/make_logo.py`. That adaptation is in `Annunciator/Splash/Logo320.h` and `Logo480.h`,
+and it is licensed CC BY-SA 4.0 as well.
+
+The source image is in `art/`, with its provenance in [`art/README.md`](art/README.md). The
+share-alike condition applies to the image and adaptations of it, not to the rest of the
+firmware.

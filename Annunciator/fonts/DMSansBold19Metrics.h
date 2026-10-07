@@ -52,8 +52,9 @@ inline constexpr GlyphMetric DMSansBold19_glyphs[] = {
     {'X',  13,  13,  13,   0,  13},
     {'Y',  12,  13,  12,   0,  13},
     {'Z',  11,  13,  11,   0,  13},
+    {'_',  11,   3,  13,   1,   0},
 };
 
 inline constexpr FontMetrics DMSansBold19Metrics = {
-    DMSansBold19_glyphs, 43, 19, 5, 13, 13, 4,
+    DMSansBold19_glyphs, 44, 19, 5, 13, 13, 4,
 };

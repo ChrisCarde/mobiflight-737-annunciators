@@ -26,6 +26,11 @@ void present(Device &)
     // Nothing: TFT_eSPI writes straight to the controller.
 }
 
+const char *deviceReport()
+{
+    return nullptr; // nothing to allocate, so nothing that can go wrong quietly
+}
+
 } // namespace Gfx
 
 #endif

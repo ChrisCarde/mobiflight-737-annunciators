@@ -56,4 +56,5 @@ namespace Gfx
 void deviceBegin(Device &device) { device.init(); }
 void deviceRotate(Device &, uint8_t) {}
 void present(Device &) {}
+const char *deviceReport() { return nullptr; }
 } // namespace Gfx

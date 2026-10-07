@@ -44,6 +44,9 @@ namespace PanelGfx
     void setRunning(bool running);
     void setBusPowered(bool powered); // also ends the wait after waking
     void setPowerSave(bool on);
+    // The boot splash's identify phase: lit regardless of the three above, so the panel
+    // shows what the board is configured as. See Splash.h.
+    void setIdentify(bool on);
     bool isLit();
     void tick(); // call regularly: ends the short settle delay after waking
     void setRotation(uint8_t rotation);

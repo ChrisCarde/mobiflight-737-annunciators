@@ -707,8 +707,9 @@ Test Mode.
   firmware from before message `107`. Reflash it.
 - **After a Stop, Test Mode, or 15 minutes with the Connector not running:** dark by design
   (MobiFlight's Stop and power saving).
-- **The board restarted** (a crash or a brown-out): it is dark until values change; Stop,
-  wait two seconds, Run resends them. At Log Level Debug the log names the reason —
+- **The board restarted** (a crash or a brown-out): it shows the boot splash, which gives
+  way to the panel as soon as MobiFlight sends a value, and it is dark until values change;
+  Stop, wait two seconds, Run resends them. At Log Level Debug the log names the reason —
   `Annunciator started: CRASH (panic)`, `CRASH (watchdog)`, `BROWN-OUT (supply dipped)`,
   `power on` (see *Seeing the board's messages*). If Debug logging shows nothing after a
   restart and the module is not listed as Annunciator, it is in its bootloader: close the
@@ -867,6 +868,58 @@ MobiFlight's own reserved IDs are handled too: `-1` (Stop pressed / Connector sh
 down) and `-2` (power saving) both turn the panel dark. Stop also forgets the bus state, so a
 test after a battery-off flight does not find the panel still dark.
 
+## The boot splash
+
+Every time the board starts, before MobiFlight has sent it anything, it shows:
+
+| | |
+|---|---|
+| 0–10 s | the splash: the logo, the project name, the firmware version, the build date and the credits |
+| 10–20 s | the panel the board is set up as, lit, its lamps as they are (all unlit at power-up), or *No panel configured* on a board without one |
+| after | dark until MobiFlight sends a value, as described under *When the panel is lit* below |
+
+The second phase shows at a glance which panel a board was given in the Connector, without
+starting the sim. It uses the brightness from the custom device's config. The splash itself
+is at full brightness, because that config is not read until the board has started.
+
+**MobiFlight sending the panel any value ends all of this at once.** A board that restarts
+mid-flight therefore puts its lamps back the moment the Connector sends them. Merely
+connecting does not end it: the Connector reads the board on connect without sending
+anything, so opening the Connector, or uploading a config, leaves the splash running.
+
+The build date is the day the firmware was built. For a release, it is the date of the
+commit its tag points at. `get_version.py` writes it into the build directory as
+`BuildInfo.h`, and rewrites it only when the date changes, so only the splash recompiles.
+
+**Changing the logo.** The logo is `art/boeing-737-800-silhouette.png`, converted for each
+screen into `Annunciator/Splash/Logo320.h` and `Logo480.h` by `tools/make_logo.py`. Put
+another image in its place, with a transparent background since the tool crops to what is
+opaque, and run:
+
+```bash
+.venv/bin/python tools/make_logo.py                   # both screens, in the image's colours
+.venv/bin/python tools/make_logo.py --colour B8BEC6   # the same, in the panels' placard grey
+```
+
+It is fitted into a 120 px square at 320 and a 160 px square at 480 (the same size in the
+hand). `Splash.cpp` lays the screen out around those squares and does not compile if the
+logo, or any line of text, does not fit. A different image needs its own credit, in the
+`CREDITS` table in `Splash.cpp` and in `THIRD-PARTY-NOTICES.md`. The current one is CC BY-SA
+4.0, and its author and licence must stay credited while it is used: see `art/README.md`.
+
+**How it works.** The splash has to show on a board with no panel configured, where the
+MobiFlight core never calls the custom device. So it starts from `initVariant()`, before
+`setup()`, and keeps time in a small FreeRTOS task of its own. A configured panel waits for
+it: `MFCustomDevice` defers the panel's `init()` until the first phase is over, then starts
+the panel lit for the second.
+
+Only one task ever draws. The splash's task draws only while no panel is configured, and a
+panel configured at the moment it is drawing waits for it to finish. See
+`Annunciator/Splash/Splash.h`.
+
+The splash costs about 28 KB of flash on the 3.2″ board and 48 KB on the 3.5″, nearly all
+of it the logo.
+
 ## When the panel is lit
 
 Only while **all three** hold — otherwise the backlight is off and the screen is black:
@@ -886,8 +939,9 @@ Only while **all three** hold — otherwise the backlight is off and the screen 
    Connector is killed without a clean Stop, the timeout darkens the panel 15 minutes later.
    On the bench, `tools/mfsim.py` behaves the same way (see below).
 
-A board with no config at all stays dark too: its backlight is driven low from
-`initVariant()`, the earliest point application code runs, before `setup()`.
+A board with no config at all stays dark too, once the boot splash has said *No panel
+configured*. Its backlight is driven low from `initVariant()`, the earliest point
+application code runs, before `setup()`.
 
 Lamps keep being drawn while dark, so the panel reappears instantly showing the current
 state. On waking at Run it also waits for MobiFlight's opening burst of values to land — the
@@ -896,9 +950,11 @@ until the bus-power message, which is last in every profile, or 500 ms without o
 never shows a stale frame, and never flashes on when the bus turns out to be off.
 
 The board says why it last started — `Annunciator started: power on`, `CRASH (panic)`,
-`BROWN-OUT (supply dipped)`, … — as a debug line when it boots. The Connector logs it at Log
-Level Debug only (see *Seeing the board's messages*); `tools/mfsim.py listen` shows it, with
-the ESP32's own boot text, if it was already running when the board restarted.
+`BROWN-OUT (supply dipped)`, … — as a debug line when it boots. The 3.5″ board follows it
+with the frame buffer it got, `Annunciator: frame 480x320 buf=… psram free …`; a buffer of 0
+there is why a screen would stay black. The Connector logs both at Log Level Debug only (see
+*Seeing the board's messages*); `tools/mfsim.py listen` shows them, with the ESP32's own boot
+text, if it was already running when the board restarted.
 
 Brightness (`101`) and bus power (`105`/`107`) are separate on purpose. Bus power is naturally a
 0/1 (or a voltage), brightness a level, and keeping them apart lets each bind straight to

@@ -23,6 +23,10 @@ GOLDEN = ROOT / "tools" / "preview" / "golden"
 PANELS = ["door", "irs", "elec", "mcs_l", "mcs_r", "mcs_both", "mcs_both_afds",
           "air", "fctl", "isdu"]
 SCENES = ["off", "demo", "all", "dim", "press"]
+# The boot splash is not a panel and has scenes of its own: the splash, and what a board
+# with no panel shows after it. Rendered with every full run; --panel and --scene leave it
+# out unless they name it.
+SPLASH_SCENES = ["on", "nopanel"]
 
 
 def diff_pixels(a, b):
@@ -38,8 +42,8 @@ def diff_pixels(a, b):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--res", type=int, choices=[320, 480])
-    ap.add_argument("--panel", choices=PANELS)
-    ap.add_argument("--scene", choices=SCENES)
+    ap.add_argument("--panel", choices=PANELS + ["splash"])
+    ap.add_argument("--scene", choices=SCENES + SPLASH_SCENES)
     ap.add_argument("--check", action="store_true",
                     help="compare against tools/preview/golden and fail on any difference")
     ap.add_argument("--bless", action="store_true",
@@ -54,8 +58,18 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     rendered = []
     resolutions = [args.res] if args.res else [320, 480]
-    panels = [args.panel] if args.panel else PANELS
-    scenes = [args.scene] if args.scene else SCENES
+    if args.panel == "splash":
+        if args.scene and args.scene not in SPLASH_SCENES:
+            sys.exit(f"the splash scenes are {', '.join(SPLASH_SCENES)}")
+        targets = [("splash", sc) for sc in ([args.scene] if args.scene else SPLASH_SCENES)]
+    else:
+        if args.panel and args.scene and args.scene not in SCENES:
+            sys.exit(f"the panel scenes are {', '.join(SCENES)}")
+        panels = [args.panel] if args.panel else PANELS
+        scenes = [args.scene] if args.scene else SCENES
+        targets = [(pn, sc) for pn in panels for sc in scenes if sc in SCENES]
+        if not args.panel:
+            targets += [("splash", sc) for sc in SPLASH_SCENES if args.scene in (None, sc)]
 
     made = 0
     for res in resolutions:
@@ -63,19 +77,18 @@ def main():
         if not binary.exists():
             print(f"skipping {res}: {binary.name} not built")
             continue
-        for panel in panels:
-            for scene in scenes:
-                ppm = OUT / f"{panel}-{scene}-{res}.ppm"
-                run = subprocess.run([str(binary), panel, scene, str(ppm)],
-                                     capture_output=True, text=True)
-                if run.returncode != 0:
-                    sys.exit(f"{panel} {scene} {res}: {run.stderr.strip()}")
-                png = ppm.with_suffix(".png")
-                Image.open(ppm).save(png)
-                ppm.unlink()
-                made += 1
-                if args.check or args.bless:
-                    rendered.append(png)
+        for panel, scene in targets:
+            ppm = OUT / f"{panel}-{scene}-{res}.ppm"
+            run = subprocess.run([str(binary), panel, scene, str(ppm)],
+                                 capture_output=True, text=True)
+            if run.returncode != 0:
+                sys.exit(f"{panel} {scene} {res}: {run.stderr.strip()}")
+            png = ppm.with_suffix(".png")
+            Image.open(ppm).save(png)
+            ppm.unlink()
+            made += 1
+            if args.check or args.bless:
+                rendered.append(png)
     print(f"{made} images in {OUT.relative_to(ROOT)}")
 
     if args.bless:

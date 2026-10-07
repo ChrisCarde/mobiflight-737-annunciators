@@ -1,6 +1,7 @@
 Import("env")
 import os
 import re
+import time
 
 # Get the version number from the build environment.
 firmware_version = os.environ.get('VERSION', "")
@@ -52,3 +53,30 @@ env.Append(CPPDEFINES=[
 
 # Set the output filename to the name of the board and the version
 env.Replace(PROGNAME=f'{env["PIOENV"]}_{firmware_version.replace(".", "_")}')
+
+# The build date, for the boot splash (Annunciator/Splash). A header in the build directory
+# rather than a -D flag or __DATE__: a flag that changed every day would recompile every
+# file every day, and __DATE__ only changes when its file happens to be recompiled. This is
+# rewritten only when the date moves, so it recompiles the one file that shows it.
+#
+# A release sets SOURCE_DATE_EPOCH to its commit's time (.github/workflows/release.yml), so
+# the date is the commit's and the same tag always builds to the same bytes. Without it,
+# today -- by the local clock, since that is the date the person building expects to see.
+MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+source_date = os.environ.get("SOURCE_DATE_EPOCH", "")
+when = time.gmtime(int(source_date)) if source_date.isdigit() else time.localtime()
+build_date = f"{when.tm_mday} {MONTHS[when.tm_mon - 1]} {when.tm_year}"
+
+generated = os.path.join(env.subst("$BUILD_DIR"), "generated")
+os.makedirs(generated, exist_ok=True)
+build_info = os.path.join(generated, "BuildInfo.h")
+text = ("// Written by get_version.py for every build -- do not edit.\n"
+        "#pragma once\n"
+        "#ifndef ANNUN_BUILD_DATE\n"
+        f'#define ANNUN_BUILD_DATE "{build_date}"\n'
+        "#endif\n")
+if not os.path.exists(build_info) or open(build_info).read() != text:
+  with open(build_info, "w") as f:
+    f.write(text)
+env.Append(CPPPATH=[generated])
+print(f'Using build date {build_date}')

@@ -34,17 +34,23 @@ SOURCES = [
     ANN / "AirPanel" / "AirPanel.cpp",
     ANN / "FctlPanel" / "FctlPanel.cpp",
     ANN / "IsduPanel" / "IsduPanel.cpp",
+    ANN / "Splash" / "Splash.cpp",
 ]
 
 INCLUDES = [HOST, HOST / "shim", ANN, ANN / "DoorPanel", ANN / "IrsPanel", ANN / "ElecPanel",
-            ANN / "McsPanel", ANN / "AirPanel", ANN / "FctlPanel", ANN / "IsduPanel"]
+            ANN / "McsPanel", ANN / "AirPanel", ANN / "FctlPanel", ANN / "IsduPanel",
+            ANN / "Splash"]
+
+# What the splash shows as its version and build date. Fixed, unlike a firmware build's, so
+# its goldens do not change with every release or every day.
+SPLASH_DEFINES = ["-DBUILD_VERSION=0.1.0", '-DANNUN_BUILD_DATE="7 OCT 2026"']
 
 
 def build(res):
     BUILD.mkdir(parents=True, exist_ok=True)
     out = BUILD / f"preview{res}"
     cmd = ["c++", "-std=c++17", "-O1", "-Wall", "-Wno-unused-function",
-           "-DANNUN_BOARD_HOST", f"-DANNUN_PANEL_RES={res}"]
+           "-DANNUN_BOARD_HOST", f"-DANNUN_PANEL_RES={res}"] + SPLASH_DEFINES
     for inc in INCLUDES:
         cmd += ["-I", str(inc)]
     cmd += [str(s) for s in SOURCES] + ["-o", str(out)]

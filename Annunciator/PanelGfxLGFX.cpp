@@ -43,6 +43,7 @@ namespace
 {
 Arduino_DataBus *s_bus   = nullptr;
 Arduino_GFX     *s_panel = nullptr;
+char             s_report[96] = "";
 } // namespace
 
 namespace Gfx
@@ -73,13 +74,14 @@ void deviceBegin(Device &device)
     /* Report what actually happened. A failed allocation here is silent otherwise: every
        draw goes to a zero-sized sprite, present() blits from nothing, and the panel shows
        a near-black screen with a few stray pixels -- which looks like a display fault
-       rather than an out-of-memory one. */
-    char msg[96];
-    snprintf(msg, sizeof(msg), "Annunciator: frame %dx%d buf=%p psram free %u",
+       rather than an out-of-memory one. Kept rather than sent: this runs for the boot
+       splash, before the serial port is open -- see deviceReport(). */
+    snprintf(s_report, sizeof(s_report), "Annunciator: frame %dx%d buf=%p psram free %u",
              (int)device.width(), (int)device.height(), buffer,
              (unsigned)ESP.getFreePsram());
-    cmdMessenger.sendCmd(kDebug, msg);
 }
+
+const char *deviceReport() { return s_report[0] ? s_report : nullptr; }
 
 void deviceRotate(Device &device, uint8_t rotation)
 {

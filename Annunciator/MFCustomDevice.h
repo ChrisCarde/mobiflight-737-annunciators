@@ -27,7 +27,11 @@ public:
 
 private:
     bool    getStringFromMem(uint16_t addreeprom, char *buffer, bool configFromFlash);
-    bool    _initialized  = false;
-    int8_t  _panel        = -1; // index into PANELS in MFCustomDevice.cpp
+    void    start();
+    bool    _initialized  = false; // configured
+    bool    _started      = false; // the panel is up -- not until the boot splash lets it
+    bool    _identifying  = false; // lit for the splash's identify phase
+    int8_t  _panel        = -1;    // index into PANELS in MFCustomDevice.cpp
     uint8_t _backlightPin = 0;
+    uint8_t _brightness   = 255;
 };
