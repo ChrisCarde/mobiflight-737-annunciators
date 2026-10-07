@@ -326,6 +326,22 @@ def check_dist(sources):
             for extra in sorted(set(names) - {s.name for s in sources}):
                 err("%s carries %s, which is no longer in Annunciator/Community -- %s"
                     % (zpath.name, extra, refresh))
+            # One zip serves every board, so it must carry every board's firmware; and each
+            # board needs a full image beside it for a first flash. A build of only one env
+            # packages without complaint, so this is where a half-built release is caught.
+            packed_names = {Path(n).name for n in z.namelist()}
+            for src in sources:
+                if src.parent != BOARDS:
+                    continue
+                info = json.loads(src.read_text())["Info"]
+                stem = "%s_%s" % (info["FirmwareBaseName"], ver.replace(".", "_"))
+                app = "%s.%s" % (stem, info["FirmwareExtension"])
+                if app not in packed_names:
+                    err("%s lacks firmware %s -- build every env (pio run) with the same VERSION"
+                        % (zpath.name, app))
+                if not (DIST / (stem + "_full.bin")).exists():
+                    err("_dist lacks %s_full.bin, the image a new board is flashed with "
+                        "-- build every env (pio run) with the same VERSION" % stem)
 
 
 def report(fw_types=None, declared_types=None):

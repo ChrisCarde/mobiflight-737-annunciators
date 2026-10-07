@@ -4,7 +4,7 @@
     "Label": "Caution + AFDS",
     "Type": "ANNUN_MCS_BOTH_AFDS",
     "Author": "chris",
-    "URL": "https://github.com/",
+    "URL": "https://github.com/ChrisCarde/mobiflight-737-annunciators",
     "Version": "1.0.0",
     "Description": "Both glareshield master caution units on one screen, with the autoflight P/RST lights below the warning caps: A/P, A/T and FMC. Lamps 0-13 are the same as Master Caution, so a binding made for that panel still fits. A/P and A/T take \"3\" for their amber caution colour and \"4\" to blink it; \"1\" and \"2\" are red."
   },

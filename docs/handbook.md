@@ -358,10 +358,17 @@ ever want the board back as shipped:
 
 Every `pio run` and every upload also writes `_dist/Annunciator_<version>.zip`, rebuilt
 from the current Connector definitions each time (`pio run -t annunciator_package` does
-only that). One package serves both boards: it carries both board definitions, the nine
-device definitions they share, and a firmware binary for each board that has been built. That binary is the **application image**, not a merged
-flash image — it is there for reference, not for `esptool write_flash 0x0`. Use
-`pio run -t upload`.
+only that). One package serves both boards: it carries both board definitions, the ten
+device definitions they share, and a firmware binary for each board — so build every env
+with the same `VERSION`; `tools/check_definitions.py` fails a package that lacks one. That
+binary is the **application image**, not a merged flash image — it is there for reference,
+not for `esptool write_flash 0x0`. Use `pio run -t upload`, or the `_full.bin` image beside
+the zip.
+
+A release is that same `_dist/`, built by GitHub Actions from a clean checkout when a
+`v<version>` tag is pushed (`.github/workflows/release.yml`). Run the workflow by hand from
+the Actions tab for a dry run: it builds and checks the same set and keeps it as a
+downloadable artifact, without publishing anything.
 
 ## Installing into MobiFlight Connector
 

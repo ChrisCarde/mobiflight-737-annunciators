@@ -279,7 +279,7 @@ Test Mode, power saving, and the full message reference.
 ## Building from source
 
 ```bash
-git clone <this repo> && cd door-annunciator
+git clone https://github.com/ChrisCarde/mobiflight-737-annunciators.git && cd mobiflight-737-annunciators
 pio run -e annunciator_e32r32p   -t upload     # the 3.2in board
 pio run -e annunciator_c3248w535 -t upload     # the 3.5in board
 pio run -t annunciator_package                 # everything that goes on a release, in _dist/
@@ -290,6 +290,12 @@ writes the Connector zip, a full flash image for each board, and the launcher in
 — exactly the set of files a release carries. Set `VERSION` (e.g. `VERSION=1.0.0`) to stamp
 a release number into all of them; without it they are `0.0.1`, which the Connector treats
 as development firmware and never offers to update.
+
+Releases are built by GitHub Actions from a clean checkout
+([release.yml](.github/workflows/release.yml)): pushing a tag such as `v0.1.0` builds both
+boards as that version, runs the definition checks, and attaches `_dist/` to the release. The
+platform and every library are pinned to exact versions in `Annunciator_platformio.ini`, so
+that build is the same as the one tested on the boards.
 
 → **[The handbook](docs/handbook.md)** has everything in detail: the pinout for each board,
 the full message reference, how the profiles are generated and bound, touch calibration,
@@ -330,6 +336,7 @@ profiles/               ready-made MobiFlight projects for the PMDG 737-800
 windows/                the Connector launcher for the 3.2in board
 tools/                  profile generator, definition checks, a bench tool, the host preview
 docs/handbook.md        everything in detail
+.github/workflows/       the release build
 ```
 
 Known gaps are listed at the end of the handbook.

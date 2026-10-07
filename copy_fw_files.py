@@ -46,8 +46,8 @@ def copy_fw_files(source, target, env):
     # Connector picks a board by its hardware id -- so the zip has to carry a binary per
     # board. This folder is rebuilt from scratch above, so take whatever the other envs
     # have already produced in .pio/build rather than relying on what survived. A board
-    # whose env has not been built yet simply has no binary in the zip, which is what
-    # check_definitions.py reports.
+    # whose env has not been built yet simply has no binary in the zip, which
+    # check_definitions.py reports as an error.
     suffix = ("uf2" if platform == "raspberrypi" else "bin")
     version_tag = firmware_version.replace(".", "_")
     built = sorted(Path(".pio/build").glob(f"*/*_{version_tag}.{suffix}"))

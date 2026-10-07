@@ -1,0 +1,83 @@
+# Builds both boards and publishes the files a person installs from: the Connector package, a
+# full flash image per board, the 3.2in launcher and the licences -- exactly what `pio run`
+# leaves in _dist/.
+#
+#   Release:  push a tag   git tag v0.1.0 && git push origin v0.1.0
+#   Dry run:  Actions -> Release -> Run workflow. Builds the same set as a downloadable
+#             artifact and publishes nothing.
+#
+# The tag is the version: v0.1.0 builds as VERSION=0.1.0, which is stamped into the firmware,
+# the file names and the board definitions (get_version.py, copy_fw_files.py).
+
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # The platform and every library are pinned in Annunciator_platformio.ini, so the cache
+      # only saves downloading them again; it cannot change what gets built.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio/.cache
+            ~/.platformio/packages
+            ~/.platformio/platforms
+          key: pio-${{ runner.os }}-${{ hashFiles('platformio.ini', 'Annunciator/Annunciator_platformio.ini') }}
+
+      - name: Install PlatformIO
+        run: pip install platformio==6.1.19
+
+      - name: Set the version
+        run: |
+          if [ "$GITHUB_REF_TYPE" = tag ]; then v="${GITHUB_REF_NAME#v}"; else v=0.0.1; fi
+          # The Connector reads it with System.Version: two to four dotted numbers, nothing else.
+          if ! echo "$v" | grep -Eq '^[0-9]+(\.[0-9]+){1,3}$'; then
+            echo "::error::$GITHUB_REF_NAME is not a version tag like v0.1.0"; exit 1
+          fi
+          echo "VERSION=$v" >> "$GITHUB_ENV"
+          # __DATE__ and __TIME__ are compiled in. Taking them from the commit rather than the
+          # clock means the same tag always builds to the same bytes.
+          echo "SOURCE_DATE_EPOCH=$(git log -1 --format=%ct)" >> "$GITHUB_ENV"
+
+      - name: Build and package both boards
+        run: pio run
+
+      # Firmware flags against the board and device definitions, and the package against both:
+      # every definition current, every board's firmware in the zip, a full image per board.
+      - name: Check the definitions and the package
+        run: python tools/check_definitions.py
+
+      - name: Upload the build (dry run)
+        if: github.ref_type != 'tag'
+        uses: actions/upload-artifact@v4
+        with:
+          name: annunciator-${{ env.VERSION }}
+          path: _dist/
+          if-no-files-found: error
+
+      - name: Publish the release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: _dist/*
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          body: |
+            Firmware and MobiFlight definitions for both boards. Follow the
+            [setup guide](https://github.com/${{ github.repository }}#setup), which says which of
+            the files below you need for your board.

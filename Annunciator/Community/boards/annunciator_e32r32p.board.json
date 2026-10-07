@@ -39,8 +39,8 @@
     "Community": {
       "Project": "Annunciator",
       "Website": "https://www.lcdwiki.com/3.2inch_ESP32-32E_Display",
-      "Docs": "https://github.com/",
-      "Support": "https://github.com/"
+      "Docs": "https://github.com/ChrisCarde/mobiflight-737-annunciators#readme",
+      "Support": "https://github.com/ChrisCarde/mobiflight-737-annunciators/issues"
     }
   },
   "ModuleLimits": {
