@@ -37,4 +37,18 @@ namespace TouchZones
 
     // The panel repainted the whole screen, ring and all.
     void screenCleared();
+
+    /* The boot splash's demo (see Demo.h). While it is on:
+         - presses show their usual feedback, but nothing is sent to MobiFlight;
+         - the calibration gesture and MSG_TOUCH_CAL do nothing;
+         - the panels' own poll() returns at once, and the demo calls demoPoll() once per
+           frame instead -- so touch works the same on every panel, including those with
+           no zones, which never poll at all. */
+    void setDemo(bool on);
+    // How long a finger has been down, in ms; 0 when none is.
+    uint32_t demoPoll();
+    // A press by the demo's script, drawn exactly as a finger's. Skipped while a finger is
+    // down; a zone of another name, or none, presses nothing.
+    void pressScripted(const char *zoneName);
+    void releaseScripted();
 }

@@ -4,6 +4,7 @@
 #include "Theme.h"
 #include "commandmessenger.h"
 #include "config.h" // getBoardReady()
+#include <string.h>
 
 namespace TouchZones
 {
@@ -23,9 +24,15 @@ static uint32_t    s_ringUntil = 0;
 static bool        s_holdAway  = false; // a press that landed on no zone
 static uint32_t    s_holdSince = 0;
 
+static bool        s_demo      = false; // see setDemo()
+static bool        s_fingerDown = false;
+static uint32_t    s_downSince = 0;
+static bool        s_scripted  = false; // a scripted press is showing
+
 static void sendButton(const char *name, uint8_t event)
 {
-    if (!getBoardReady()) return;
+    // A demo must never open a door or press a key in the sim.
+    if (s_demo || !getBoardReady()) return;
     cmdMessenger.sendCmdStart(kButtonChange);
     cmdMessenger.sendCmdArg(name);
     cmdMessenger.sendCmdArg(event); // 0 press, 1 release: MobiFlight's btnOnPress / btnOnRelease
@@ -56,29 +63,35 @@ static void ring(int8_t zone, bool on)
     PanelGfx::drawRing(z.x, z.y, z.w, z.h, RING_INSET, on ? Theme::PressRing : Theme::PanelBg);
 }
 
-static void release()
+static void letGo()
 {
     if (s_pressed >= 0 && s_zones) sendButton(s_zones[s_pressed].name, 1);
     s_pressed  = -1;
     s_holdAway = false;
 }
 
+static void ensureTouch()
+{
+    if (s_ready) return;
+    Touch::begin();
+    s_ready = true;
+}
+
 void attach(const Zone *zones, uint8_t count, const Hooks *hooks)
 {
-    release();
+    letGo();
     s_zones    = zones;
     s_count    = zones ? count : 0;
     s_hooks    = hooks;
     s_ringZone = -1;
-    if (s_count && !s_ready) {
-        Touch::begin();
-        s_ready = true;
-    }
+    s_scripted = false;
+    if (s_count) ensureTouch();
 }
 
 void detach()
 {
-    release();
+    letGo();
+    s_scripted = false;
     s_zones = nullptr;
     s_count = 0;
     s_hooks = nullptr;
@@ -88,14 +101,15 @@ void screenCleared() { s_ringZone = -1; }
 
 void startCalibration()
 {
-    release();
+    if (s_demo) return;
+    letGo();
     Touch::startCalibration();
 }
 
 bool poll(bool &redraw)
 {
     redraw = false;
-    if (!s_count) return false;
+    if (s_demo || !s_count) return false;
 
     if (Touch::calibrating()) {
         if (Touch::stepCalibration()) {
@@ -112,7 +126,7 @@ bool poll(bool &redraw)
     // Presses count only while the panel is lit: dark, there is nothing to aim at, and
     // MobiFlight is not running anyway. Going dark mid-press releases the button.
     if (!PanelGfx::isLit()) {
-        release();
+        letGo();
         if (s_ringZone >= 0) ring(s_ringZone, false);
         return false;
     }
@@ -129,7 +143,7 @@ bool poll(bool &redraw)
             s_holdSince = now;
         }
     } else if (e == Touch::UP) {
-        release();
+        letGo();
     }
 
     if (s_pressed < 0 && s_ringZone >= 0 && (int32_t)(now - s_ringUntil) >= 0) ring(s_ringZone, false);
@@ -140,6 +154,62 @@ bool poll(bool &redraw)
         return true;
     }
     return false;
+}
+
+/* ---- The demo ------------------------------------------------------------------------ */
+void setDemo(bool on)
+{
+    letGo();
+    s_demo       = on;
+    s_fingerDown = false;
+    s_scripted   = false;
+    if (on) ensureTouch();
+}
+
+uint32_t demoPoll()
+{
+    if (!s_demo) return 0;
+    const uint32_t     now = millis();
+    int16_t            x, y;
+    const Touch::Event e = Touch::poll(x, y);
+
+    if (e == Touch::DOWN) {
+        s_fingerDown = true;
+        s_downSince  = now;
+        if (s_scripted) releaseScripted(); // the finger wins
+        s_pressed = s_count ? hit(x, y) : -1;
+        if (s_pressed >= 0) {
+            if (s_ringZone >= 0 && s_ringZone != s_pressed) ring(s_ringZone, false);
+            ring(s_pressed, true);
+            s_ringUntil = now + RING_MIN_MS;
+        }
+    } else if (e == Touch::UP) {
+        s_fingerDown = false;
+        s_pressed    = -1;
+    }
+
+    if (!s_scripted && s_pressed < 0 && s_ringZone >= 0 && (int32_t)(now - s_ringUntil) >= 0)
+        ring(s_ringZone, false);
+    return s_fingerDown ? now - s_downSince : 0;
+}
+
+void pressScripted(const char *zoneName)
+{
+    if (!s_demo || s_fingerDown || !zoneName) return;
+    for (uint8_t i = 0; i < s_count; ++i) {
+        if (strcmp(s_zones[i].name, zoneName) != 0) continue;
+        if (s_ringZone >= 0 && s_ringZone != (int8_t)i) ring(s_ringZone, false);
+        ring((int8_t)i, true);
+        s_scripted = true;
+        return;
+    }
+}
+
+void releaseScripted()
+{
+    if (!s_scripted) return;
+    s_scripted = false;
+    if (s_ringZone >= 0) ring(s_ringZone, false);
 }
 
 } // namespace TouchZones
