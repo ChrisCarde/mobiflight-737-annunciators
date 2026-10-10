@@ -84,6 +84,7 @@ Annunciator/
   TouchAXS15231B.cpp           capacitive: an I2C read, and no calibration to do
   TouchZones.{h,cpp}           touch buttons -> MobiFlight button events, the press ring
   Splash/                      the boot splash, and the logo bitmaps generated for it
+  Demo/                        the splash's DEMO: the player and the ten scenes
   DoorPanel/                   door lamps (a LampPanel table)
   AirPanel/                    air conditioning / bleed / pressurisation (a LampPanel table)
   FctlPanel/                   flight controls (a LampPanel table)
@@ -290,6 +291,11 @@ input config to it by the board's serial and that name alone — the name does n
 a device in the board's config. So each touch zone is a named button, and the profiles bind
 it to a PMDG event. A thin ring shows round the zone while it is held; the lamp itself only
 changes when the sim says so.
+
+**During the boot splash's demo**, presses show the same feedback but send **no** button
+event, so a demo never opens a door or presses a key in the sim. The calibration gesture is
+off, and holding a finger anywhere for 3 seconds stops the demo (see *The boot splash*). The
+splash's DEMO button itself is read by the splash, not by `TouchZones`.
 
 The names:
 
@@ -884,18 +890,57 @@ Every time the board starts, before MobiFlight has sent it anything, it shows:
 
 | | |
 |---|---|
-| 0–10 s | the splash: the logo, the project name, the firmware version, the build date and the credits |
-| 10–20 s | the panel the board is set up as, lit, its lamps as they are (all unlit at power-up), or *No panel configured* on a board without one |
+| 0–10 s | the splash: the logo, the project name, the firmware version, the build date, the credits and a **DEMO** button |
+| 10–20 s | the panel the board is set up as, lit, its lamps as they are (all unlit at power-up), or *No panel configured*, with the DEMO button, on a board without one |
 | after | dark until MobiFlight sends a value, as described under *When the panel is lit* below |
 
 The second phase shows at a glance which panel a board was given in the Connector, without
 starting the sim. It uses the brightness from the custom device's config. The splash itself
 is at full brightness, because that config is not read until the board has started.
 
-**MobiFlight sending the panel any value ends all of this at once.** A board that restarts
-mid-flight therefore puts its lamps back the moment the Connector sends them. Merely
-connecting does not end it: the Connector reads the board on connect without sending
-anything, so opening the Connector, or uploading a config, leaves the splash running.
+**MobiFlight sending the panel a value ends all of this at once**, demo included. A board
+that restarts mid-flight therefore puts its lamps back the moment the Connector sends them.
+Nothing else ends it:
+- connecting doesn't, because the Connector reads the board on connect without sending
+  anything, so opening the Connector or uploading a config leaves the splash running;
+- Stop (`-1`) and power saving (`-2`) don't, because they carry no lamp state. A demo left
+  running is not ended 15 minutes later by the core's own power saving.
+
+### The demo
+
+Tap **DEMO** on the splash, or on *No panel configured*, and the board plays a scene on each
+of the ten panels in turn, round and round, with no Connector and no sim. It is for showing
+the panels to people, for photos and video, and for checking a freshly flashed board. Any
+board can play it, whatever panel it is configured as.
+
+| Panel | Scene |
+|---|---|
+| Doors | a turnaround: ground power on; the entry, cargo and service doors open one by one round the airframe, then close for pushback; ground power off |
+| IRS | alignment: ON DC during each IRU's battery test, ALIGN, ALIGN flashing for a present position, steady once one is entered, then out (NAV) |
+| ISDU | that present position keyed in, as the FCOM has it: DSPL SEL to PPOS, N 4 7 3 2 4, ENT; W 1 2 2 1 2 3, ENT; then HDG/STS, left and right |
+| Electrical | on the battery (BAT DISCHARGE); ground power shown, then switched on, the TRs at 28 V; the APU generator coming up to 115 V and 400 Hz and taking the load |
+| Flight controls | both LOW PRESSURE on a cold aircraft, out as the B and A pumps come on; then the standby-rudder check, each switch in turn (STBY RUD ON) |
+| Air conditioning | ram doors full open on the ground; DUAL BLEED at engine start; ram doors closing after takeoff; a pressure controller failure (AUTO FAIL, ALTN) and ALTN selected |
+| Master caution (each) | a caution and its reset, a recall, the fault back and cleared, then the fire test and its bell cutout |
+| Master caution with AFDS | autopilot and autothrottle disconnects (A/P, A/T flashing red), an A/T airspeed error (flashing amber), an FMC alert, then a caution |
+
+Each scene runs 23–33 seconds, about four and a half minutes a loop. The buttons a scene
+uses are pressed on screen, the cap going in as under a finger; touch works too, and
+shows the same. **Nothing reaches MobiFlight during the demo:** a press opens no door and
+presses no key in the sim.
+
+**Holding a finger anywhere for 3 seconds** stops the demo and goes back to the start:
+the splash with its button, then identify, then dark. The same hold can't press DEMO again
+or reach the touch calibration: touch is ignored until the finger lifts, and the
+calibration gesture is off during the demo. **A value from MobiFlight** stops it at once, and
+the configured panel takes over from a fresh start.
+
+The scenes are in `Annunciator/Demo/DemoScenes.cpp`: timelines of the messages MobiFlight
+would send, played through each panel's own code, plus presses of its touch buttons by
+name. `tools/preview/render_demo.py` renders every scene as a GIF, with a sheet of its
+keyframes, without a board (see *Previewing without hardware* in the README). Once per
+loop, when the serial line is quiet, the board logs `Annunciator: demo loop N heap free …
+largest … stack free …`, for checking one left running for hours.
 
 The build date is the day the firmware was built. For a release, it is the date of the
 commit its tag points at. `get_version.py` writes it into the build directory as
@@ -992,10 +1037,12 @@ one variable with no MobiFlight transform juggling two.
 
 ## Self test
 
-The panel runs nothing by itself on power-up. Message `104`, or `tools/mfsim.py selftest`,
-cycles a few demo states — the original design's for the door and IRS panels, real
-situations for the others (engine start on APU bleed, a fire, a master caution recall, the
-FCOM's PPOS readout…) — at 2.5 s each, and the next value from MobiFlight ends it.
+Message `104`, or `tools/mfsim.py selftest`, cycles a few demo states on the configured
+panel — the original design's for the door and IRS panels, real situations for the others
+(engine start on APU bleed, a fire, a master caution recall, the FCOM's PPOS readout…) — at
+2.5 s each, and the next value from MobiFlight ends it. It is for the Connector side: a
+profile can trigger it. The boot splash's **demo** (see *The boot splash*) is the board's
+own, richer show, and needs no Connector at all.
 
 ## Bench testing without the Connector
 

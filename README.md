@@ -132,6 +132,9 @@ When the board restarts it shows a splash for 10 seconds, with the firmware vers
 date. For the next 10 seconds it shows the panel it is set up as, or *No panel configured* on a
 new board. Then the screen stays dark until MobiFlight sends it something. That is normal.
 
+Tap **DEMO** on the splash to see every panel in action, with no sim: the board plays a short
+scene on each in turn. Hold a finger on the screen for 3 seconds to stop it.
+
 <details>
 <summary>Flashing by hand instead</summary>
 
@@ -335,6 +338,7 @@ flashing a board is slow. So the renderer builds for the desktop too:
 python3 tools/preview/build.py          # compiles the real panel sources, both screen sizes
 python3 tools/preview/render_all.py     # every panel, every state, as PNGs
 python3 tools/preview/contact_sheet.py  # the sheet at the top of this page
+python3 tools/preview/render_demo.py    # the DEMO's scenes, as a GIF and keyframes per panel
 ```
 
 The previews come from the firmware's own layout tables, its own glyph metrics and the
@@ -355,6 +359,7 @@ Annunciator/            the firmware
   LampPanel.{h,cpp}       the engine for panels that are just lamps, run from a table
   Touch*.{h,cpp}          touch polling, calibration, and zones -> button events
   Splash/                 the boot splash, and the logo bitmaps generated for it
+  Demo/                   the splash's DEMO: the player and the ten scenes
   <Name>Panel/            one directory per panel
   fonts/                  DM Sans Bold, embedded, with the metrics the renderer measures by
   Community/              the board and device definitions the Connector reads
