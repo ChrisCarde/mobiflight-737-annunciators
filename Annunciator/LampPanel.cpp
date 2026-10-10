@@ -107,7 +107,7 @@ static void drawLamp(uint8_t i)
     const uint8_t st  = s_lampTest ? (uint8_t)LS_ON : s_state[i];
     const bool lit   = st != LS_OFF;
     const bool alt   = (st == LS_ALT || st == LS_ALT_BLINK) && L.alt != L.colour;
-    const bool blink = (st == LS_BLINK || st == LS_ALT_BLINK);
+    const bool blink = isBlinking(st);
     // A lamp with no second colour just lights in its own: a profile that sends 3 or 4 to
     // one gets the lit and blinking states rather than nothing at all.
     const LampMode colour = alt ? L.alt : L.colour;
@@ -359,7 +359,7 @@ void update()
         s_blinkAt = now;
         s_blinkOn = !s_blinkOn;
         for (uint8_t i = 0; i < s_def->lampCount; ++i)
-            if (s_state[i] == LS_BLINK) s_dirty |= (1u << i);
+            if (isBlinking(s_state[i])) s_dirty |= (1u << i);
     }
 
     // Keeps drawing while dark, so the panel reappears instantly showing current state.

@@ -207,7 +207,7 @@ static void drawLamp(uint8_t i)
 
     const uint8_t st = s_lampTest ? LS_ON : s_lamp[i];
     LampStyle style = Theme::lamp(st != LS_OFF ? LAMP_AMBER : LAMP_OFF, s_dim);
-    if (st == LS_BLINK && !s_blinkOn) {
+    if (isBlinking(st) && !s_blinkOn) {
         style.fg   = Theme::blend(style.fg, style.bg, BLINK_OFF_ALPHA);
         style.glow = false;
     }
@@ -417,7 +417,7 @@ void update()
         s_blinkAt = now;
         s_blinkOn = !s_blinkOn;
         for (uint8_t i = 0; i < LAMP_COUNT; ++i) {
-            if (s_lamp[i] == LS_BLINK) s_dirtyLamps |= (uint8_t)(1u << i);
+            if (isBlinking(s_lamp[i])) s_dirtyLamps |= (uint8_t)(1u << i);
         }
     }
 

@@ -51,6 +51,9 @@ enum LampState : uint8_t {
     LS_ALT_BLINK = 4,
 };
 
+// Blinking in either colour. A one-colour lamp shows LS_ALT_BLINK as LS_BLINK.
+inline bool isBlinking(uint8_t state) { return state == LS_BLINK || state == LS_ALT_BLINK; }
+
 /* Blink cadence from the design: `lampblink 1s steps(1,end) infinite`, 50% duty. */
 static const uint32_t BLINK_PERIOD_MS = 1000;
 
