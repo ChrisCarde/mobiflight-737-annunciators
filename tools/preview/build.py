@@ -35,11 +35,14 @@ SOURCES = [
     ANN / "FctlPanel" / "FctlPanel.cpp",
     ANN / "IsduPanel" / "IsduPanel.cpp",
     ANN / "Splash" / "Splash.cpp",
+    ANN / "Panels.cpp",
+    ANN / "Demo" / "Demo.cpp",
+    ANN / "Demo" / "DemoScenes.cpp",
 ]
 
 INCLUDES = [HOST, HOST / "shim", ANN, ANN / "DoorPanel", ANN / "IrsPanel", ANN / "ElecPanel",
             ANN / "McsPanel", ANN / "AirPanel", ANN / "FctlPanel", ANN / "IsduPanel",
-            ANN / "Splash"]
+            ANN / "Splash", ANN / "Demo"]
 
 # What the splash shows as its version and build date. Fixed, unlike a firmware build's, so
 # its goldens do not change with every release or every day.

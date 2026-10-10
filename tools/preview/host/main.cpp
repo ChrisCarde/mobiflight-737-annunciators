@@ -2,6 +2,7 @@
 
    Usage:  preview <panel> <scene> <out.ppm>
            preview splash <on|press|nopanel> <out.ppm>
+           preview demo <panel> <out-dir> [every-ms]
 
    panels  door irs elec mcs_l mcs_r mcs_both mcs_both_afds air fctl isdu
    scenes  off      nothing lit, the way the panel sits with the aircraft quiet
@@ -13,6 +14,11 @@
    splash  the boot splash (on), the same with its DEMO button held in (press), and what a
            board with no panel shows after it (nopanel). A configured board shows its
            panel's off scene there instead.
+
+   demo    a panel's demo scene, played from the start in 20 ms steps exactly as the board
+           plays it. Writes f<ms>.ppm every `every-ms` (250 by default) for an animation,
+           and k<ms>.ppm 300 and 800 ms after each step: its change on the screen, caught
+           in both phases of a blink.
 
    Both resolutions are the same binary built twice; see build.py. Layout, measurements and
    text all come from the firmware sources, so what appears here is what the board draws --
@@ -31,8 +37,13 @@
 #include "FctlPanel.h"
 #include "IsduPanel.h"
 #include "Splash.h"
+#include "Demo.h"
+#include "TouchZones.h"
 
+#include <cctype>
 #include <cstdio>
+#include <cstdlib>
+#include <set>
 #include <cstring>
 #include <string>
 
@@ -110,6 +121,45 @@ int main(int argc, char **argv)
         return 2;
     }
     const std::string want = argv[1], scene = argv[2];
+
+    if (want == "demo") {
+        std::string type = "ANNUN_";
+        for (char c : scene) type += (char)toupper((unsigned char)c);
+        const int8_t index = Demo::findScene(type.c_str());
+        if (index < 0) {
+            fprintf(stderr, "no demo scene for %s\n", scene.c_str());
+            return 2;
+        }
+        const std::string dir   = argv[3];
+        const uint32_t    every = argc == 5 ? (uint32_t)atoi(argv[4]) : 250;
+        const Demo::Scene &sc   = Demo::scene((uint8_t)index);
+        std::set<uint32_t> keys;
+        // Two keyframes a step, half a blink apart, so a lamp set flashing is caught lit in one.
+        for (uint8_t i = 0; i < sc.count; ++i)
+            for (uint32_t after : {300u, 800u}) keys.insert((sc.steps[i].at + after + 19) / 20 * 20);
+
+        hostSetMillis(0);
+        TouchZones::setDemo(true);
+        Demo::begin((uint8_t)index, 0);
+        char path[512];
+        for (uint32_t t = 0; t <= sc.length; t += 20) {
+            if (t) {
+                hostSetMillis(t);
+                Demo::advance(t);
+            }
+            if (every && t % every == 0) {
+                snprintf(path, sizeof(path), "%s/f%06u.ppm", dir.c_str(), (unsigned)t);
+                if (!PanelGfx::tft().writePpm(path)) return 1;
+            }
+            if (keys.count(t)) {
+                snprintf(path, sizeof(path), "%s/k%06u.ppm", dir.c_str(), (unsigned)t);
+                if (!PanelGfx::tft().writePpm(path)) return 1;
+            }
+        }
+        printf("demo %s -> %s (%u ms, %dx%d)\n", scene.c_str(), dir.c_str(), (unsigned)sc.length,
+               (int)Board::PANEL_W, (int)Board::PANEL_H);
+        return 0;
+    }
 
     if (want == "splash") {
         if (scene != "on" && scene != "press" && scene != "nopanel") {
