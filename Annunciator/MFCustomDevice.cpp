@@ -57,8 +57,10 @@ bool MFCustomDevice::getStringFromMem(uint16_t addrMem, char *buffer, bool confi
 MFCustomDevice::MFCustomDevice()
 {
     _initialized = false;
-    _started     = false;
-    _identifying = false;
+    _started       = false;
+    _identifying   = false;
+    _powerSave     = false;
+    _powerSaveHeld = false;
 }
 
 /* **********************************************************************************
@@ -159,10 +161,11 @@ void MFCustomDevice::attach(uint16_t adrPin, uint16_t adrType, uint16_t adrConfi
     _brightness  = brightness;
     _initialized = true;
 
-    // The boot splash has the screen for its first ten seconds; the panel comes up when it
-    // ends -- see update(). Configured later than that, it comes up now.
+    // The boot splash has the screen for its first ten seconds, and its demo for as long as
+    // it runs; the panel comes up when they end -- see update(). Configured later, it comes
+    // up now.
     Splash::claim();
-    if (Splash::phase() != Splash::SHOWING_SPLASH) start();
+    if (!Splash::ownsScreen()) start();
 
     reportResetReason(pinMismatch);
 }
@@ -173,12 +176,15 @@ void MFCustomDevice::attach(uint16_t adrPin, uint16_t adrType, uint16_t adrConfi
 ********************************************************************************** */
 void MFCustomDevice::start()
 {
+    Splash::waitIdle();          // a frame of the splash's still on its way to the glass
     PanelGfx::setShowing(false); // the splash's light: the panel has the screen now
     Panels::at(_panel).init(_backlightPin);
 
     // Only the level. Set directly rather than as a message, since any message counts as
     // MobiFlight running.
     PanelGfx::setBacklight(_brightness);
+    if (_powerSaveHeld) PanelGfx::setPowerSave(_powerSave); // received while the splash had it
+    _powerSaveHeld = false;
 
     _identifying = Splash::phase() == Splash::IDENTIFYING;
     if (_identifying) {
@@ -201,8 +207,12 @@ void MFCustomDevice::detach()
     _initialized = false;
     // A panel that never started still holds the boot splash's claim on the screen; let it
     // go, or a board whose panel was removed during the splash would keep it lit for good.
-    if (_started) Panels::at(_panel).stop();
-    else Splash::release();
+    if (!_started) {
+        // The splash or its demo has the screen, and its backlight: leave both alone.
+        Splash::release();
+        return;
+    }
+    Panels::at(_panel).stop();
     _started = false;
     if (_identifying) {
         _identifying = false;
@@ -225,7 +235,7 @@ void MFCustomDevice::update()
 {
     if (!_initialized) return;
     if (!_started) {
-        if (Splash::phase() == Splash::SHOWING_SPLASH) return; // the splash has the screen
+        if (Splash::ownsScreen()) return; // the splash or its demo has the screen
         start();
     }
     if (_identifying && Splash::phase() != Splash::IDENTIFYING) {
@@ -249,9 +259,25 @@ void MFCustomDevice::set(int16_t messageID, char *setPoint)
     // MobiFlight is driving the panel, so whatever is left of the boot splash gives way to
     // it now. Merely connecting never gets here: the Connector reads the board on connect
     // without sending the panel anything.
-    if (!_started || _identifying) {
+    //
+    // Stop (-1) and power save (-2) are not values: they carry no lamp state, and the core
+    // sends power save by itself after 15 minutes. So they never end the splash or its demo
+    // -- a demo left running keeps running. Power save is remembered for when the panel
+    // starts; Stop has nothing to clear on a panel that has not.
+    const bool control = messageID == MSG_STOP || messageID == MSG_POWERSAVE;
+    if (!_started) {
+        if (control) {
+            if (messageID == MSG_POWERSAVE) {
+                _powerSave     = setPoint && atoi(setPoint) != 0;
+                _powerSaveHeld = true;
+            }
+            return;
+        }
         Splash::end();
-        if (!_started) start();
+        start();
+    }
+    if (_identifying && !control) {
+        Splash::end();
         _identifying = false;
         PanelGfx::setIdentify(false);
     }

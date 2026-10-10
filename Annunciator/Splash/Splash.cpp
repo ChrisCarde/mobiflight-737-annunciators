@@ -296,50 +296,198 @@ void Splash::drawNoPanel()
 
 #if ANNUN_BACKEND_HOST
 
-// The preview renders the two screens and has no clock: nothing here runs.
+// The preview renders the screens and has no clock: nothing here runs.
 void          Splash::start() {}
 Splash::Phase Splash::phase() { return DONE; }
+bool          Splash::ownsScreen() { return false; }
 void          Splash::claim() {}
 void          Splash::release() {}
+void          Splash::waitIdle() {}
 void          Splash::end() {}
 
 #else
 
 #include <atomic>
+#include "Demo.h"
+#include "Touch.h"
+#include "TouchZones.h"
+#include "commandmessenger.h"
+#include <esp_heap_caps.h>
+#include <string.h>
 
 namespace
 {
+constexpr uint32_t FRAME_MS        = 20;   // the task's cadence: touch, the demo, the clock
+constexpr uint32_t HOLD_TO_STOP_MS = 3000; // a finger held this long anywhere stops the demo
+constexpr uint32_t SERIAL_QUIET_MS = 2000; // see reportHealth()
+
 // DONE until start(), so nothing waits on a splash that never began.
 std::atomic<uint8_t> s_phase{Splash::DONE};
-std::atomic<bool>    s_claimed{false}; // a panel has been configured
-std::atomic<bool>    s_drawing{false}; // the task is drawing NO PANEL CONFIGURED
+std::atomic<bool>    s_claimed{false};  // a panel has been configured
+std::atomic<bool>    s_drawing{false};  // the task is in the middle of a frame
+std::atomic<bool>    s_stopDemo{false}; // end() asks the demo to stop
 
-// Moves the phase on, unless end() has already finished it. Exactly one of the two wins.
-bool advance(Splash::Phase from, Splash::Phase to)
+// Moves the phase on, unless something else already has. Exactly one of the two wins.
+bool advance(uint8_t from, uint8_t to)
 {
     uint8_t expected = from;
     return s_phase.compare_exchange_strong(expected, to);
 }
 
+// Whether the screen is the task's: the splash and the demo always are; NO PANEL CONFIGURED
+// only while no panel has claimed it.
+bool taskOwns()
+{
+    const uint8_t phase = s_phase.load();
+    return phase == Splash::SHOWING_SPLASH || phase == Splash::DEMO ||
+           (phase == Splash::IDENTIFYING && !s_claimed.load());
+}
+
+/* A frame of the task's. The flag goes up before ownership is looked at, and claim() and
+   end() change ownership before they look at the flag, so whatever happens at the same
+   moment either stops this frame or waits for it -- the two tasks never draw at once. */
+bool beginFrame()
+{
+    s_drawing.store(true);
+    if (taskOwns()) return true;
+    s_drawing.store(false);
+    return false;
+}
+void endFrame() { s_drawing.store(false); }
+
+/* The DEMO button. A press on it shows it pushed in; letting go on it starts the demo,
+   letting go elsewhere does nothing. After the demo has been stopped by a hold, the finger
+   is still down: nothing counts until it lifts. */
+bool s_pressing = false, s_waitLift = false;
+int16_t s_touchX = 0, s_touchY = 0;
+
+bool buttonTapped()
+{
+    int16_t            x, y;
+    const Touch::Event e = Touch::poll(x, y);
+    if (e == Touch::DOWN && !s_waitLift && Splash::buttonHit(x, y)) {
+        s_pressing = true;
+        Splash::pressButton(true);
+        PanelGfx::present();
+    }
+    if (s_pressing && e != Touch::UP) {
+        s_touchX = x; // follows the finger while it is down
+        s_touchY = y;
+    }
+    if (e != Touch::UP) return false;
+    s_waitLift = false;
+    if (!s_pressing) return false;
+    s_pressing = false;
+    Splash::pressButton(false);
+    PanelGfx::present();
+    return Splash::buttonHit(s_touchX, s_touchY);
+}
+
+/* One line per demo loop, for checking a board left running for hours: the heap the panels'
+   sprites come and go from, and this task's stack. CmdMessenger is not safe to share between
+   tasks, so it is written in one piece, and only when the Connector has been quiet a while:
+   the main task only ever writes in reply to it. */
+void reportHealth(uint32_t &reported)
+{
+    const uint32_t loops = Demo::loops();
+    if (loops == reported) return;
+    reported = loops;
+    if (millis() - getLastCommandMillis() < SERIAL_QUIET_MS) return;
+    char line[120];
+    snprintf(line, sizeof(line),
+             "%d,Annunciator: demo loop %lu heap free %u largest %u stack free %u;\r\n", (int)kDebug,
+             (unsigned long)loops, (unsigned)ESP.getFreeHeap(),
+             (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT),
+             (unsigned)uxTaskGetStackHighWaterMark(nullptr));
+    Serial.write((const uint8_t *)line, strlen(line));
+}
+
+void startDemo(uint32_t now)
+{
+    s_pressing = false;
+    TouchZones::setDemo(true);
+    Demo::start(now);
+}
+
+void stopDemo()
+{
+    Demo::stop();
+    TouchZones::setDemo(false);
+}
+
 void splashClock(void *)
 {
-    vTaskDelay(pdMS_TO_TICKS(Splash::PHASE_MS));
-    if (advance(Splash::SHOWING_SPLASH, Splash::IDENTIFYING)) {
-        // A configured panel identifies itself: the main task brings it up now, lit. Without
-        // one, say so. The flag is raised before the claim is looked at, and claim() sets the
-        // claim before it looks at the flag, so a panel configured at this very moment either
-        // stops this drawing or waits for it to finish -- never both drawing at once.
-        s_drawing.store(true);
-        if (!s_claimed.load()) {
-            Splash::drawNoPanel();
-            PanelGfx::present();
+    uint32_t phaseAt  = millis();
+    uint32_t reported = 0;
+
+    for (;;) {
+        vTaskDelay(pdMS_TO_TICKS(FRAME_MS));
+        const uint32_t now   = millis();
+        const uint8_t  phase = s_phase.load();
+        if (phase == Splash::DONE) break;
+
+        if (phase == Splash::DEMO) {
+            if (!beginFrame()) continue;
+            if (s_stopDemo.load()) {
+                // MobiFlight sent a value: the configured panel takes over, from a fresh init.
+                stopDemo();
+                s_phase.store(Splash::DONE);
+                endFrame();
+                break;
+            }
+            if (TouchZones::demoPoll() >= HOLD_TO_STOP_MS) {
+                // Held: back to the start -- the splash and its button, identify, dark.
+                stopDemo();
+                s_waitLift = true;
+                Splash::draw();
+                PanelGfx::present();
+                PanelGfx::setShowing(true);
+                if (advance(Splash::DEMO, Splash::SHOWING_SPLASH)) phaseAt = now;
+                endFrame();
+                continue;
+            }
+            Demo::tick(now);
+            endFrame();
+            reportHealth(reported);
+            continue;
         }
-        s_drawing.store(false);
+
+        // The splash, or NO PANEL CONFIGURED: watch the button.
+        if (beginFrame()) {
+            const bool tapped = buttonTapped();
+            if (tapped) {
+                s_stopDemo.store(false);
+                if (advance(phase, Splash::DEMO)) {
+                    reported = 0;
+                    startDemo(now);
+                }
+            }
+            endFrame();
+            if (tapped) continue;
+        }
+
+        if (s_pressing || now - phaseAt < Splash::PHASE_MS) continue;
+
+        if (phase == Splash::SHOWING_SPLASH) {
+            // A configured panel identifies itself: the main task brings it up now, lit.
+            // Without one, say so.
+            if (!advance(Splash::SHOWING_SPLASH, Splash::IDENTIFYING)) continue;
+            phaseAt = now;
+            if (beginFrame()) {
+                Splash::drawNoPanel();
+                PanelGfx::present();
+                endFrame();
+            }
+        } else if (phase == Splash::IDENTIFYING) {
+            if (!advance(Splash::IDENTIFYING, Splash::DONE)) continue;
+            // A panel turns its own backlight off, in the main task, when it sees the change;
+            // without one, nothing else ever will.
+            s_drawing.store(true);
+            if (!s_claimed.load()) PanelGfx::setShowing(false);
+            s_drawing.store(false);
+            break;
+        }
     }
-    vTaskDelay(pdMS_TO_TICKS(Splash::PHASE_MS));
-    // A panel turns its own backlight off, in the main task, when it sees the phase change.
-    if (advance(Splash::IDENTIFYING, Splash::DONE) && !s_claimed.load())
-        PanelGfx::setShowing(false);
     vTaskDelete(nullptr);
 }
 } // namespace
@@ -350,14 +498,15 @@ void Splash::start()
     // has run, the pin belongs to the LEDC peripheral, and a plain digitalWrite() from here
     // would no longer reach it.
     PanelGfx::begin(Board::BACKLIGHT_PIN);
+    Touch::begin(); // for the DEMO button
     draw();
     PanelGfx::present();
     s_phase.store(SHOWING_SPLASH);
     PanelGfx::setShowing(true);
 
-    // A task rather than a timer, because the second phase may have to draw, and drawing
-    // wants more stack than a timer callback is given.
-    if (xTaskCreate(splashClock, "splash", 8192, nullptr, 1, nullptr) != pdPASS) {
+    // A task of its own, because the splash has to run on a board where the main loop never
+    // calls the custom device, and its demo draws for minutes at a time.
+    if (xTaskCreate(splashClock, "splash", 12288, nullptr, 1, nullptr) != pdPASS) {
         s_phase.store(DONE); // nothing to end it: better no splash than one that stays
         PanelGfx::setShowing(false);
     }
@@ -365,14 +514,39 @@ void Splash::start()
 
 Splash::Phase Splash::phase() { return (Phase)s_phase.load(); }
 
+bool Splash::ownsScreen()
+{
+    const uint8_t phase = s_phase.load();
+    return phase == SHOWING_SPLASH || phase == DEMO;
+}
+
 void Splash::claim()
 {
     s_claimed.store(true);
-    while (s_drawing.load()) delay(1);
+    waitIdle();
 }
 
 void Splash::release() { s_claimed.store(false); }
 
-void Splash::end() { s_phase.store(DONE); }
+void Splash::waitIdle()
+{
+    while (s_drawing.load()) delay(1);
+}
+
+void Splash::end()
+{
+    for (;;) {
+        uint8_t phase = s_phase.load();
+        if (phase == DONE) break;
+        if (phase == DEMO) {
+            // The task stops the demo between frames, stops its panel, and moves to DONE.
+            s_stopDemo.store(true);
+            delay(1);
+            continue;
+        }
+        if (s_phase.compare_exchange_strong(phase, (uint8_t)DONE)) break;
+    }
+    waitIdle();
+}
 
 #endif

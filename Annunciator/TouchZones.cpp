@@ -193,16 +193,18 @@ uint32_t demoPoll()
     return s_fingerDown ? now - s_downSince : 0;
 }
 
-void pressScripted(const char *zoneName)
+bool pressScripted(const char *zoneName)
 {
-    if (!s_demo || s_fingerDown || !zoneName) return;
+    if (!zoneName) return false;
     for (uint8_t i = 0; i < s_count; ++i) {
         if (strcmp(s_zones[i].name, zoneName) != 0) continue;
+        if (!s_demo || s_fingerDown) return true; // there, but a finger has the screen
         if (s_ringZone >= 0 && s_ringZone != (int8_t)i) ring(s_ringZone, false);
         ring((int8_t)i, true);
         s_scripted = true;
-        return;
+        return true;
     }
+    return false;
 }
 
 void releaseScripted()

@@ -34,4 +34,6 @@ private:
     int8_t  _panel        = -1;    // index into Panels (Panels.h)
     uint8_t _backlightPin = 0;
     uint8_t _brightness   = 255;
+    bool    _powerSave     = false; // MobiFlight's power save, received before the panel started
+    bool    _powerSaveHeld = false;
 };

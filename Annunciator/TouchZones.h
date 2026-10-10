@@ -48,7 +48,7 @@ namespace TouchZones
     // How long a finger has been down, in ms; 0 when none is.
     uint32_t demoPoll();
     // A press by the demo's script, drawn exactly as a finger's. Skipped while a finger is
-    // down; a zone of another name, or none, presses nothing.
-    void pressScripted(const char *zoneName);
+    // down. False when the panel has no zone of that name.
+    bool pressScripted(const char *zoneName);
     void releaseScripted();
 }

@@ -6,26 +6,30 @@
     What the board shows when it powers up, before MobiFlight has sent it anything:
 
       0-10 s   the splash: the logo, the project name, the firmware version, the build
-               date and the credits
+               date, the credits, and a DEMO button
      10-20 s   identify: the panel this board is configured as, lit and showing its lamps
-               as they are -- or NO PANEL CONFIGURED on a board without one
+               as they are -- or NO PANEL CONFIGURED, with the DEMO button, on a board
+               without one
      after     dark until MobiFlight sends a value, exactly as before there was a splash
 
-    MobiFlight sending the panel a value ends all of this at once (end()). Merely connecting
-    does not: the Connector reads the board on connect without sending anything. So a board
-    that resets mid-flight never hides live lamps behind a splash -- the first value it gets
-    puts the panel back.
+    DEMO plays every panel in turn, by itself (Demo.h), until a finger is held on the screen
+    for 3 s -- back to the splash -- or MobiFlight sends a value.
+
+    MobiFlight sending the panel a value ends all of this at once (end()). Nothing else does:
+    connecting sends the panel nothing, and Stop and power save are not values. So a board
+    that resets mid-flight never hides live lamps behind a splash or a demo -- the first
+    value puts the panel back.
 
     It has to work on a board with no panel configured, where the core never calls the
     custom device at all, and on a board with one, where setup() would bring the panel up
-    and draw over it. So the splash starts before setup(), from initVariant(), runs its
-    clock in a small task of its own, and a configured panel waits for it: MFCustomDevice
-    defers the panel's init until phase() has left SHOWING_SPLASH.
+    and draw over it. So the splash starts before setup(), from initVariant(), runs in a
+    task of its own -- clock, touch and demo -- and a configured panel waits for it:
+    MFCustomDevice defers the panel's init while ownsScreen().
 
-    Who draws, and when. The main task draws the panel; the splash's task draws only when no
-    panel has claim()ed the screen -- the splash itself, and NO PANEL CONFIGURED -- and turns
-    the backlight off at the end only on such a board. claim() waits for the task to finish
-    a drawing it has already begun, so the two never draw at once.
+    Who draws, and when. The main task draws the panel; the splash's task draws the splash,
+    the demo, and NO PANEL CONFIGURED only while no panel has claimed the screen. Each of the
+    task's frames is fenced (see beginFrame() in Splash.cpp), and claim() and end() wait out
+    a frame in progress, so the two never draw at once.
 ********************************************************************************** */
 
 namespace Splash
@@ -34,6 +38,7 @@ namespace Splash
 
     enum Phase : uint8_t {
         SHOWING_SPLASH,
+        DEMO, // the DEMO button was tapped: every panel in turn, until a hold or a value
         IDENTIFYING,
         DONE,
     };
@@ -53,6 +58,9 @@ namespace Splash
 
     Phase phase();
 
+    // Whether the splash or its demo has the screen. A configured panel waits while it does.
+    bool ownsScreen();
+
     // A panel has been configured and takes the screen from the identify phase on. Returns
     // once the splash's task is not drawing.
     void claim();
@@ -61,6 +69,11 @@ namespace Splash
     // replaced it with none -- so the splash ends the way it does on a board with no panel.
     void release();
 
-    // MobiFlight is driving the panel: skip whatever is left of the splash.
+    // Returns once the splash's task is not in the middle of a frame.
+    void waitIdle();
+
+    // MobiFlight is driving the panel: skip whatever is left of the splash -- including a
+    // demo, which stops between frames and leaves the screen to the panel. Returns once it
+    // has.
     void end();
 } // namespace Splash
