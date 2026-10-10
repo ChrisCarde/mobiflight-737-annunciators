@@ -1,7 +1,7 @@
 /* Host preview: renders a panel to a PPM using the firmware's own panel code.
 
    Usage:  preview <panel> <scene> <out.ppm>
-           preview splash <on|nopanel> <out.ppm>
+           preview splash <on|press|nopanel> <out.ppm>
 
    panels  door irs elec mcs_l mcs_r mcs_both mcs_both_afds air fctl isdu
    scenes  off      nothing lit, the way the panel sits with the aircraft quiet
@@ -10,8 +10,9 @@
            dim      the demo scene with night dimming applied
            press    the demo scene with a finger held on one of the buttons
 
-   splash  the boot splash (on), and what a board with no panel shows after it (nopanel).
-           A configured board shows its panel's off scene there instead.
+   splash  the boot splash (on), the same with its DEMO button held in (press), and what a
+           board with no panel shows after it (nopanel). A configured board shows its
+           panel's off scene there instead.
 
    Both resolutions are the same binary built twice; see build.py. Layout, measurements and
    text all come from the firmware sources, so what appears here is what the board draws --
@@ -111,13 +112,17 @@ int main(int argc, char **argv)
     const std::string want = argv[1], scene = argv[2];
 
     if (want == "splash") {
-        if (scene != "on" && scene != "nopanel") {
-            fprintf(stderr, "the splash scenes are on and nopanel\n");
+        if (scene != "on" && scene != "press" && scene != "nopanel") {
+            fprintf(stderr, "the splash scenes are on, press and nopanel\n");
             return 2;
         }
         PanelGfx::begin(0);
-        if (scene == "on") Splash::draw();
-        else Splash::drawNoPanel();
+        if (scene == "nopanel") {
+            Splash::drawNoPanel();
+        } else {
+            Splash::draw();
+            if (scene == "press") Splash::pressButton(true);
+        }
         if (!PanelGfx::tft().writePpm(argv[3])) {
             fprintf(stderr, "cannot write %s\n", argv[3]);
             return 1;

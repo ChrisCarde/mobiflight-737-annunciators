@@ -46,6 +46,11 @@ namespace Splash
     void draw();
     void drawNoPanel();
 
+    // The DEMO button, on whichever of the two was drawn last: whether a point is on it,
+    // and drawing it pressed in or standing proud.
+    bool buttonHit(int16_t x, int16_t y);
+    void pressButton(bool pressed);
+
     Phase phase();
 
     // A panel has been configured and takes the screen from the identify phase on. Returns

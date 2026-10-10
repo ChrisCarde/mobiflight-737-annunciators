@@ -48,6 +48,7 @@ static bool s_powerSave  = false;
 // And the exception to them: the boot splash's identify phase lights the panel for ten
 // seconds so you can see what the board is configured as. See Splash.h.
 static bool s_identify   = false;
+static bool s_showing    = false; // the splash or its demo has the screen
 
 // On waking at Run, MobiFlight sends every output in one burst, in config order -- with a
 // Windows timer tick (about 16 ms) before each message, so 20 outputs take 300 ms or more.
@@ -82,7 +83,7 @@ void present()
 }
 bool      ready() { return s_ready; }
 
-bool isLit() { return s_identify || (s_running && !s_settling && s_busPowered && !s_powerSave); }
+bool isLit() { return s_showing || s_identify || (s_running && !s_settling && s_busPowered && !s_powerSave); }
 
 // Dark is the backlight off, and nothing else: lamps keep being drawn into the panel's own
 // memory while it is dark, so it comes back instantly showing the current state.
@@ -162,6 +163,12 @@ void setPowerSave(bool on)
 void setIdentify(bool on)
 {
     s_identify = on;
+    applyBacklight();
+}
+
+void setShowing(bool on)
+{
+    s_showing = on;
     applyBacklight();
 }
 

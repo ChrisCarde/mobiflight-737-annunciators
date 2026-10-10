@@ -50,6 +50,10 @@ constexpr int16_t CREDIT_PITCH  = 15;
 constexpr int16_t CREDIT_SEP    = 16;  // between two credits that share a line
 constexpr int16_t RULE_GAP      = 12;  // the rule to the text either side of it
 constexpr int16_t NOTE_PITCH    = 29;  // NO PANEL CONFIGURED to the line under it
+constexpr int16_t BUTTON_W      = 107; // the DEMO push-light
+constexpr int16_t BUTTON_H      = 53;
+constexpr int16_t INFO_TO_BUTTON = 21; // the BUILT line's centre to the button's top
+constexpr int16_t NOTE_TO_BUTTON = 27; // the hint line's centre to the button's top
 #else
 constexpr int16_t LOGO_BOX      = 120;
 constexpr int16_t LOGO_GAP      = 16;
@@ -61,6 +65,10 @@ constexpr int16_t CREDIT_PITCH  = 11;
 constexpr int16_t CREDIT_SEP    = 12;
 constexpr int16_t RULE_GAP      = 9;
 constexpr int16_t NOTE_PITCH    = 22;
+constexpr int16_t BUTTON_W      = 80;
+constexpr int16_t BUTTON_H      = 40;
+constexpr int16_t INFO_TO_BUTTON = 16;
+constexpr int16_t NOTE_TO_BUTTON = 20;
 #endif
 constexpr int16_t TITLE_TRACK = 1; // letter-spaced a pixel, like a panel header
 
@@ -70,6 +78,8 @@ constexpr char LABEL_VERSION[] = "FIRMWARE";
 constexpr char LABEL_DATE[]    = "BUILT";
 constexpr char NO_PANEL[]      = "NO PANEL CONFIGURED";
 constexpr char NO_PANEL_HINT[] = "ADD ONE IN MOBIFLIGHT CONNECTOR";
+constexpr char BUTTON_LEGEND[] = "DEMO";
+constexpr char BUTTON_SUB[]    = "PUSH TO START";
 
 /* The credits. The display library differs by board, and Gfx.h is the one place a library
    is named, so that line comes from there. The silhouette's licence asks for its author and
@@ -98,7 +108,6 @@ constexpr int16_t creditWidth(const Credit &c)
 }
 
 constexpr int16_t CAP_LARGE = fontOf(FONT_LARGE).capHeight;
-constexpr int16_t CAP_SMALL = fontOf(FONT_SMALL).capHeight;
 constexpr int16_t CAP_TINY  = fontOf(FONT_TINY).capHeight;
 
 // The credits: the last line's caps rest on the bottom padding, the rest stack up from it.
@@ -116,13 +125,20 @@ constexpr int16_t LOGO_Y    = (int16_t)(UPPER_TOP + (UPPER_H - Logo::H) / 2);
 constexpr int16_t COLUMN_X  = (int16_t)(MARGIN + LOGO_BOX + LOGO_GAP);
 constexpr int16_t COLUMN_W  = (int16_t)(PANEL_W - MARGIN - COLUMN_X);
 constexpr int16_t BLOCK_H   = (int16_t)(CAP_LARGE / 2 + TITLE_PITCH + TITLE_TO_INFO + INFO_PITCH +
-                                        (CAP_SMALL + 1) / 2);
+                                        INFO_TO_BUTTON + BUTTON_H);
 constexpr int16_t TITLE_MID = (int16_t)(UPPER_TOP + (UPPER_H - BLOCK_H) / 2 + CAP_LARGE / 2);
 constexpr int16_t INFO_MID  = (int16_t)(TITLE_MID + TITLE_PITCH + TITLE_TO_INFO);
 constexpr int16_t LABEL_W   = widthOf(FONT_SMALL, LABEL_VERSION) > widthOf(FONT_SMALL, LABEL_DATE)
                                   ? widthOf(FONT_SMALL, LABEL_VERSION)
                                   : widthOf(FONT_SMALL, LABEL_DATE);
 constexpr int16_t VALUE_X   = (int16_t)(COLUMN_X + LABEL_W + LABEL_GAP);
+constexpr int16_t BUTTON_Y  = (int16_t)(INFO_MID + INFO_PITCH + INFO_TO_BUTTON);
+
+// NO PANEL CONFIGURED: the two lines and the button under them, centred as one block.
+constexpr int16_t NOTE_BLOCK_H = (int16_t)(NOTE_PITCH + NOTE_TO_BUTTON + BUTTON_H);
+constexpr int16_t NOTE_MID     = (int16_t)((PANEL_H - NOTE_BLOCK_H) / 2);
+constexpr int16_t NOTE_BUTTON_X = (int16_t)((PANEL_W - BUTTON_W) / 2);
+constexpr int16_t NOTE_BUTTON_Y = (int16_t)(NOTE_MID + NOTE_PITCH + NOTE_TO_BUTTON);
 
 // The widest the two values can be: a four-part version (the most the Connector accepts),
 // and a date in each month -- get_version.py writes them as "7 OCT 2026".
@@ -154,6 +170,18 @@ static_assert(widthOf(FONT_LARGE, TITLE_1, TITLE_TRACK) <= COLUMN_W &&
               "the name is wider than the column beside the logo");
 static_assert(valuesFit(), "a version or a build date would run off the screen");
 static_assert(creditsFit(), "a credit line is wider than the screen");
+// The button is something to press: at least the smallest target the panels allow, with
+// its legend inside the cap (2 px of bezel each side, as renderLampLines() draws it).
+static_assert(BUTTON_W >= LY::MIN_TOUCH_PX && BUTTON_H >= LY::MIN_TOUCH_PX,
+              "the DEMO button is smaller than a fingertip");
+static_assert(BUTTON_W <= COLUMN_W, "the DEMO button is wider than the column it sits in");
+static_assert(widthOf(FONT_LARGE, BUTTON_LEGEND) + 8 <= BUTTON_W - 4 &&
+                  widthOf(FONT_TINY, BUTTON_SUB) + 8 <= BUTTON_W - 4,
+              "the DEMO button's legend does not fit its cap");
+static_assert(CAP_LARGE + (CAP_LARGE + 1) / 2 + 2 + CAP_TINY <= BUTTON_H - 8,
+              "the DEMO button's two lines do not fit its height");
+static_assert(NOTE_BUTTON_Y + BUTTON_H <= PANEL_H - MARGIN,
+              "NO PANEL CONFIGURED and its button do not fit the screen");
 static_assert(widthOf(FONT_LARGE, NO_PANEL, TITLE_TRACK) <= PANEL_W - 2 * MARGIN &&
                   widthOf(FONT_SMALL, NO_PANEL_HINT) <= PANEL_W - 2 * MARGIN,
               "NO PANEL CONFIGURED does not fit across the screen");
@@ -190,7 +218,41 @@ void drawLogo()
     }
 }
 
+/* The DEMO button: a push-light, drawn by the same code as MASTER CAUTION -- a cap standing
+   proud of its bezel that goes in when pressed. Unlit, because it is a button, not a
+   warning; its legend is the white of the panels' printing, so it reads at a glance. */
+int16_t s_buttonX = -1, s_buttonY = -1; // where the last screen put it; -1 for nowhere
+
+void drawButton(int16_t x, int16_t y, bool pressed)
+{
+    s_buttonX = x;
+    s_buttonY = y;
+    Gfx::Canvas cap(&PanelGfx::tft());
+    cap.setColorDepth(16);
+    if (cap.createSprite(BUTTON_W, BUTTON_H) == nullptr) return;
+    PanelFont loaded = FONT_LARGE;
+    PanelGfx::useFont(cap, loaded);
+    LampStyle style = Theme::style(KIND_FILLED, LAMP_AMBER, false, false);
+    style.fg        = Theme::blend(Theme::Placard, style.bg, 210);
+    const LegendLine lines[] = {{BUTTON_LEGEND, FONT_LARGE}, {BUTTON_SUB, FONT_TINY}};
+    PanelGfx::renderLampLines(cap, style, lines, 2, loaded, pressed);
+    PanelGfx::push(cap, x, y);
+    cap.unloadFont();
+    cap.deleteSprite();
+}
+
 } // namespace
+
+bool Splash::buttonHit(int16_t x, int16_t y)
+{
+    return s_buttonX >= 0 && x >= s_buttonX - LY::HIT_SLOP && x < s_buttonX + BUTTON_W + LY::HIT_SLOP &&
+           y >= s_buttonY - LY::HIT_SLOP && y < s_buttonY + BUTTON_H + LY::HIT_SLOP;
+}
+
+void Splash::pressButton(bool pressed)
+{
+    if (s_buttonX >= 0 && PanelGfx::ready()) drawButton(s_buttonX, s_buttonY, pressed);
+}
 
 void Splash::draw()
 {
@@ -207,6 +269,7 @@ void Splash::draw()
     text(VALUE_X, INFO_MID, SPLASH_VERSION, Theme::Placard);
     text(COLUMN_X, (int16_t)(INFO_MID + INFO_PITCH), LABEL_DATE, Theme::HeaderFg);
     text(VALUE_X, (int16_t)(INFO_MID + INFO_PITCH), ANNUN_BUILD_DATE, Theme::Placard);
+    drawButton(COLUMN_X, BUTTON_Y, false);
 
     PanelGfx::drawRule(MARGIN, RULE_Y, (int16_t)(PANEL_W - 2 * MARGIN), Theme::Rule);
 
@@ -224,11 +287,11 @@ void Splash::drawNoPanel()
 {
     if (!PanelGfx::ready()) return;
     PanelGfx::clearPanel();
-    const int16_t top = (int16_t)((PANEL_H - NOTE_PITCH) / 2);
     useScreenFont(FONT_LARGE);
-    centred(top, NO_PANEL, Theme::Placard, TITLE_TRACK);
+    centred(NOTE_MID, NO_PANEL, Theme::Placard, TITLE_TRACK);
     useScreenFont(FONT_SMALL);
-    centred((int16_t)(top + NOTE_PITCH), NO_PANEL_HINT, Theme::HeaderFg);
+    centred((int16_t)(NOTE_MID + NOTE_PITCH), NO_PANEL_HINT, Theme::HeaderFg);
+    drawButton(NOTE_BUTTON_X, NOTE_BUTTON_Y, false);
 }
 
 #if ANNUN_BACKEND_HOST
@@ -276,24 +339,27 @@ void splashClock(void *)
     vTaskDelay(pdMS_TO_TICKS(Splash::PHASE_MS));
     // A panel turns its own backlight off, in the main task, when it sees the phase change.
     if (advance(Splash::IDENTIFYING, Splash::DONE) && !s_claimed.load())
-        digitalWrite(Board::BACKLIGHT_PIN, LOW);
+        PanelGfx::setShowing(false);
     vTaskDelete(nullptr);
 }
 } // namespace
 
 void Splash::start()
 {
-    PanelGfx::begin(0); // the display but not its backlight: that pin is driven from here
+    // The backlight goes through PanelGfx from the start, like a panel's. Once a demo panel
+    // has run, the pin belongs to the LEDC peripheral, and a plain digitalWrite() from here
+    // would no longer reach it.
+    PanelGfx::begin(Board::BACKLIGHT_PIN);
     draw();
     PanelGfx::present();
     s_phase.store(SHOWING_SPLASH);
-    digitalWrite(Board::BACKLIGHT_PIN, HIGH); // initVariant() made it an output
+    PanelGfx::setShowing(true);
 
     // A task rather than a timer, because the second phase may have to draw, and drawing
     // wants more stack than a timer callback is given.
     if (xTaskCreate(splashClock, "splash", 8192, nullptr, 1, nullptr) != pdPASS) {
         s_phase.store(DONE); // nothing to end it: better no splash than one that stays
-        digitalWrite(Board::BACKLIGHT_PIN, LOW);
+        PanelGfx::setShowing(false);
     }
 }
 

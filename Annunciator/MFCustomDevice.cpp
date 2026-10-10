@@ -173,6 +173,7 @@ void MFCustomDevice::attach(uint16_t adrPin, uint16_t adrType, uint16_t adrConfi
 ********************************************************************************** */
 void MFCustomDevice::start()
 {
+    PanelGfx::setShowing(false); // the splash's light: the panel has the screen now
     Panels::at(_panel).init(_backlightPin);
 
     // Only the level. Set directly rather than as a message, since any message counts as
