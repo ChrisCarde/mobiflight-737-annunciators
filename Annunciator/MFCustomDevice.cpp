@@ -5,14 +5,7 @@
 #include "MFEEPROM.h"
 #include "Panel.h"
 #include "PanelGfx.h"
-#include "LampPanel.h"
-#include "DoorPanel.h"
-#include "IrsPanel.h"
-#include "ElecPanel.h"
-#include "McsPanel.h"
-#include "AirPanel.h"
-#include "FctlPanel.h"
-#include "IsduPanel.h"
+#include "Panels.h"
 #include "Splash.h"
 #include <string.h>
 #include <stdlib.h>
@@ -119,33 +112,6 @@ static void reportResetReason(bool pinMismatch)
 }
 
 /* **********************************************************************************
-    Every panel this firmware can be, by the custom device type the Connector configured.
-    The panels built from a lamp table share the LampPanel engine for everything but init.
-********************************************************************************** */
-struct PanelOps {
-    const char *type;
-    void (*init)(uint8_t backlightPin);
-    void (*stop)();
-    void (*clear)();
-    void (*set)(int16_t messageID, char *payload);
-    void (*update)();
-};
-
-static const PanelOps PANELS[] = {
-    {CUSTOMDEVICE_TYPE_DOOR, DoorPanel::init, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
-    {CUSTOMDEVICE_TYPE_IRS, IrsPanel::init, IrsPanel::stop, IrsPanel::clear, IrsPanel::set, IrsPanel::update},
-    {CUSTOMDEVICE_TYPE_ELEC, ElecPanel::init, ElecPanel::stop, ElecPanel::clear, ElecPanel::set, ElecPanel::update},
-    {CUSTOMDEVICE_TYPE_MCS_L, McsPanel::initLeft, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
-    {CUSTOMDEVICE_TYPE_MCS_R, McsPanel::initRight, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
-    {CUSTOMDEVICE_TYPE_MCS_BOTH, McsPanel::initBoth, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
-    {CUSTOMDEVICE_TYPE_MCS_BOTH_AFDS, McsPanel::initBothAfds, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
-    {CUSTOMDEVICE_TYPE_AIR, AirPanel::init, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
-    {CUSTOMDEVICE_TYPE_FCTL, FctlPanel::init, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
-    {CUSTOMDEVICE_TYPE_ISDU, IsduPanel::init, IsduPanel::stop, IsduPanel::clear, IsduPanel::set, IsduPanel::update},
-};
-static const int8_t PANEL_COUNT = (int8_t)(sizeof(PANELS) / sizeof(PANELS[0]));
-
-/* **********************************************************************************
     The Connector stores a custom device as
 
         17.<Type>.<Pin|Pin|...>.<Config>.<Name>:
@@ -163,9 +129,7 @@ void MFCustomDevice::attach(uint16_t adrPin, uint16_t adrType, uint16_t adrConfi
 
     /* Which panel? The type string comes straight from Info.Type in the device JSON. */
     if (!getStringFromMem(adrType, parameter, configFromFlash)) return;
-    _panel = -1;
-    for (int8_t i = 0; i < PANEL_COUNT; ++i)
-        if (strcmp(parameter, PANELS[i].type) == 0) _panel = i;
+    _panel = Panels::find(parameter);
 
     if (_panel < 0) {
         cmdMessenger.sendCmd(kStatus, F("Custom Device is not supported by this firmware version"));
@@ -209,7 +173,7 @@ void MFCustomDevice::attach(uint16_t adrPin, uint16_t adrType, uint16_t adrConfi
 ********************************************************************************** */
 void MFCustomDevice::start()
 {
-    PANELS[_panel].init(_backlightPin);
+    Panels::at(_panel).init(_backlightPin);
 
     // Only the level. Set directly rather than as a message, since any message counts as
     // MobiFlight running.
@@ -220,7 +184,7 @@ void MFCustomDevice::start()
         // Lit only once the panel is on the glass. On the 3.5in board the screen keeps
         // showing the last frame sent -- the splash -- until present(), and lamps are only
         // drawn by update().
-        PANELS[_panel].update();
+        Panels::at(_panel).update();
         PanelGfx::present();
     }
     PanelGfx::setIdentify(_identifying);
@@ -236,7 +200,7 @@ void MFCustomDevice::detach()
     _initialized = false;
     // A panel that never started still holds the boot splash's claim on the screen; let it
     // go, or a board whose panel was removed during the splash would keep it lit for good.
-    if (_started) PANELS[_panel].stop();
+    if (_started) Panels::at(_panel).stop();
     else Splash::release();
     _started = false;
     if (_identifying) {
@@ -268,7 +232,7 @@ void MFCustomDevice::update()
         PanelGfx::setIdentify(false);
     }
     PanelGfx::tick();
-    PANELS[_panel].update();
+    Panels::at(_panel).update();
     PanelGfx::present(); // sends the frame on a board that buffers one
 }
 
@@ -298,7 +262,7 @@ void MFCustomDevice::set(int16_t messageID, char *setPoint)
         // so the next Run sends everything again -- but a test sends only its own row, and
         // must not find the last flight's lamps, dimming or battery-off still in force.
         PanelGfx::setBusPowered(true);
-        PANELS[_panel].clear();
+        Panels::at(_panel).clear();
         return;
 
     case MSG_POWERSAVE: // "1" enter, "0" leave
@@ -337,5 +301,5 @@ void MFCustomDevice::set(int16_t messageID, char *setPoint)
         break;
     }
 
-    PANELS[_panel].set(messageID, setPoint);
+    Panels::at(_panel).set(messageID, setPoint);
 }

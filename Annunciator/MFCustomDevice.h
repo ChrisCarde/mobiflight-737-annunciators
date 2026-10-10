@@ -31,7 +31,7 @@ private:
     bool    _initialized  = false; // configured
     bool    _started      = false; // the panel is up -- not until the boot splash lets it
     bool    _identifying  = false; // lit for the splash's identify phase
-    int8_t  _panel        = -1;    // index into PANELS in MFCustomDevice.cpp
+    int8_t  _panel        = -1;    // index into Panels (Panels.h)
     uint8_t _backlightPin = 0;
     uint8_t _brightness   = 255;
 };
