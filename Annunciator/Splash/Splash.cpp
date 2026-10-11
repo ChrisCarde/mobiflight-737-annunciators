@@ -50,8 +50,8 @@ constexpr int16_t CREDIT_PITCH  = 15;
 constexpr int16_t CREDIT_SEP    = 16;  // between two credits that share a line
 constexpr int16_t RULE_GAP      = 12;  // the rule to the text either side of it
 constexpr int16_t NOTE_PITCH    = 29;  // NO PANEL CONFIGURED to the line under it
-constexpr int16_t BUTTON_W      = 107; // the DEMO push-light
-constexpr int16_t BUTTON_H      = 53;
+constexpr int16_t BUTTON_W      = 200; // the DEMO push-light
+constexpr int16_t BUTTON_H      = 69;
 constexpr int16_t INFO_TO_BUTTON = 21; // the BUILT line's centre to the button's top
 constexpr int16_t NOTE_TO_BUTTON = 27; // the hint line's centre to the button's top
 #else
@@ -65,8 +65,8 @@ constexpr int16_t CREDIT_PITCH  = 11;
 constexpr int16_t CREDIT_SEP    = 12;
 constexpr int16_t RULE_GAP      = 9;
 constexpr int16_t NOTE_PITCH    = 22;
-constexpr int16_t BUTTON_W      = 80;
-constexpr int16_t BUTTON_H      = 40;
+constexpr int16_t BUTTON_W      = 150;
+constexpr int16_t BUTTON_H      = 52;
 constexpr int16_t INFO_TO_BUTTON = 16;
 constexpr int16_t NOTE_TO_BUTTON = 20;
 #endif
@@ -78,8 +78,8 @@ constexpr char LABEL_VERSION[] = "FIRMWARE";
 constexpr char LABEL_DATE[]    = "BUILT";
 constexpr char NO_PANEL[]      = "NO PANEL CONFIGURED";
 constexpr char NO_PANEL_HINT[] = "ADD ONE IN MOBIFLIGHT CONNECTOR";
-constexpr char BUTTON_LEGEND[] = "DEMO";
-constexpr char BUTTON_SUB[]    = "PUSH TO START";
+constexpr char BUTTON_LINE_1[] = "PRESS FOR";
+constexpr char BUTTON_LINE_2[] = "DEMO MODE";
 
 /* The credits. The display library differs by board, and Gfx.h is the one place a library
    is named, so that line comes from there. The silhouette's licence asks for its author and
@@ -132,6 +132,8 @@ constexpr int16_t LABEL_W   = widthOf(FONT_SMALL, LABEL_VERSION) > widthOf(FONT_
                                   ? widthOf(FONT_SMALL, LABEL_VERSION)
                                   : widthOf(FONT_SMALL, LABEL_DATE);
 constexpr int16_t VALUE_X   = (int16_t)(COLUMN_X + LABEL_W + LABEL_GAP);
+// Centred in the space beside the logo, under the version.
+constexpr int16_t BUTTON_X  = (int16_t)(COLUMN_X + (COLUMN_W - BUTTON_W) / 2);
 constexpr int16_t BUTTON_Y  = (int16_t)(INFO_MID + INFO_PITCH + INFO_TO_BUTTON);
 
 // NO PANEL CONFIGURED: the two lines and the button under them, centred as one block.
@@ -175,10 +177,10 @@ static_assert(creditsFit(), "a credit line is wider than the screen");
 static_assert(BUTTON_W >= LY::MIN_TOUCH_PX && BUTTON_H >= LY::MIN_TOUCH_PX,
               "the DEMO button is smaller than a fingertip");
 static_assert(BUTTON_W <= COLUMN_W, "the DEMO button is wider than the column it sits in");
-static_assert(widthOf(FONT_LARGE, BUTTON_LEGEND) + 8 <= BUTTON_W - 4 &&
-                  widthOf(FONT_TINY, BUTTON_SUB) + 8 <= BUTTON_W - 4,
+static_assert(widthOf(FONT_LARGE, BUTTON_LINE_1) + 16 <= BUTTON_W - 4 &&
+                  widthOf(FONT_LARGE, BUTTON_LINE_2) + 16 <= BUTTON_W - 4,
               "the DEMO button's legend does not fit its cap");
-static_assert(CAP_LARGE + (CAP_LARGE + 1) / 2 + 2 + CAP_TINY <= BUTTON_H - 8,
+static_assert(2 * CAP_LARGE + (CAP_LARGE + 1) / 2 <= BUTTON_H - 12,
               "the DEMO button's two lines do not fit its height");
 static_assert(NOTE_BUTTON_Y + BUTTON_H <= PANEL_H - MARGIN,
               "NO PANEL CONFIGURED and its button do not fit the screen");
@@ -219,8 +221,9 @@ void drawLogo()
 }
 
 /* The DEMO button: a push-light, drawn by the same code as MASTER CAUTION -- a cap standing
-   proud of its bezel that goes in when pressed. Unlit, because it is a button, not a
-   warning; its legend is the white of the panels' printing, so it reads at a glance. */
+   proud of its bezel. Unlit at rest, because it is a button, not a warning, with its legend
+   in the white of the panels' printing so it reads at a glance. Held, it goes in and lights
+   white -- unmistakable even under a fingertip. */
 int16_t s_buttonX = -1, s_buttonY = -1; // where the last screen put it; -1 for nowhere
 
 void drawButton(int16_t x, int16_t y, bool pressed)
@@ -233,8 +236,15 @@ void drawButton(int16_t x, int16_t y, bool pressed)
     PanelFont loaded = FONT_LARGE;
     PanelGfx::useFont(cap, loaded);
     LampStyle style = Theme::style(KIND_FILLED, LAMP_AMBER, false, false);
-    style.fg        = Theme::blend(Theme::Placard, style.bg, 210);
-    const LegendLine lines[] = {{BUTTON_LEGEND, FONT_LARGE}, {BUTTON_SUB, FONT_TINY}};
+    if (pressed) {
+        style.bg   = 0xE9EDF1; // lit white face, dark legend, as a lit push-light reads
+        style.fg   = 0x1A1E23;
+        style.lit  = true;
+        style.glow = true;
+    } else {
+        style.fg = Theme::blend(Theme::Placard, style.bg, 210);
+    }
+    const LegendLine lines[] = {{BUTTON_LINE_1, FONT_LARGE}, {BUTTON_LINE_2, FONT_LARGE}};
     PanelGfx::renderLampLines(cap, style, lines, 2, loaded, pressed);
     PanelGfx::push(cap, x, y);
     cap.unloadFont();
@@ -269,7 +279,7 @@ void Splash::draw()
     text(VALUE_X, INFO_MID, SPLASH_VERSION, Theme::Placard);
     text(COLUMN_X, (int16_t)(INFO_MID + INFO_PITCH), LABEL_DATE, Theme::HeaderFg);
     text(VALUE_X, (int16_t)(INFO_MID + INFO_PITCH), ANNUN_BUILD_DATE, Theme::Placard);
-    drawButton(COLUMN_X, BUTTON_Y, false);
+    drawButton(BUTTON_X, BUTTON_Y, false);
 
     PanelGfx::drawRule(MARGIN, RULE_Y, (int16_t)(PANEL_W - 2 * MARGIN), Theme::Rule);
 
@@ -320,6 +330,7 @@ namespace
 constexpr uint32_t FRAME_MS        = 20;   // the task's cadence: touch, the demo, the clock
 constexpr uint32_t HOLD_TO_STOP_MS = 3000; // a finger held this long anywhere stops the demo
 constexpr uint32_t SERIAL_QUIET_MS = 2000; // see reportHealth()
+constexpr uint32_t TAP_SHOW_MS     = 150;  // the DEMO button stays lit this long after a tap
 
 // DONE until start(), so nothing waits on a splash that never began.
 std::atomic<uint8_t> s_phase{Splash::DONE};
@@ -378,9 +389,15 @@ bool buttonTapped()
     s_waitLift = false;
     if (!s_pressing) return false;
     s_pressing = false;
-    Splash::pressButton(false);
+    if (Splash::buttonHit(s_touchX, s_touchY)) {
+        // Let go on the button: it stays lit a moment, so even a quick tap is seen to
+        // register, then the demo takes the screen.
+        vTaskDelay(pdMS_TO_TICKS(TAP_SHOW_MS));
+        return true;
+    }
+    Splash::pressButton(false); // slid off it: no demo
     PanelGfx::present();
-    return Splash::buttonHit(s_touchX, s_touchY);
+    return false;
 }
 
 /* One line per demo loop, for checking a board left running for hours: the heap the panels'
