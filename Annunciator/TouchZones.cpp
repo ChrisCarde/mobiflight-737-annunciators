@@ -28,6 +28,11 @@ static bool        s_demo      = false; // see setDemo()
 static bool        s_fingerDown = false;
 static uint32_t    s_downSince = 0;
 static bool        s_scripted  = false; // a scripted press is showing
+static uint32_t    s_demoSince = 0;     // when demo mode came on
+static bool        s_holdVoid  = false; // this finger cannot stop the demo; see demoPoll()
+
+// A finger that comes down this soon after the demo starts is not taken as a hold to stop it.
+static const uint32_t DEMO_HOLD_ARM_MS = 500;
 
 static void sendButton(const char *name, uint8_t event)
 {
@@ -163,6 +168,8 @@ void setDemo(bool on)
     s_demo       = on;
     s_fingerDown = false;
     s_scripted   = false;
+    s_holdVoid   = false;
+    s_demoSince  = millis();
     if (on) ensureTouch();
 }
 
@@ -176,6 +183,9 @@ uint32_t demoPoll()
     if (e == Touch::DOWN) {
         s_fingerDown = true;
         s_downSince  = now;
+        // Coming down right as the demo starts, it is the end of the tap that started it, or
+        // the touch controller's noise, not someone asking it to stop.
+        s_holdVoid = now - s_demoSince < DEMO_HOLD_ARM_MS;
         if (s_scripted) releaseScripted(); // the finger wins
         s_pressed = s_count ? hit(x, y) : -1;
         if (s_pressed >= 0) {
@@ -185,12 +195,13 @@ uint32_t demoPoll()
         }
     } else if (e == Touch::UP) {
         s_fingerDown = false;
+        s_holdVoid   = false;
         s_pressed    = -1;
     }
 
     if (!s_scripted && s_pressed < 0 && s_ringZone >= 0 && (int32_t)(now - s_ringUntil) >= 0)
         ring(s_ringZone, false);
-    return s_fingerDown ? now - s_downSince : 0;
+    return s_fingerDown && !s_holdVoid ? now - s_downSince : 0;
 }
 
 bool pressScripted(const char *zoneName)

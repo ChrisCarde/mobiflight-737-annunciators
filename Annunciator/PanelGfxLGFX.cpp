@@ -46,8 +46,10 @@ Arduino_GFX     *s_panel = nullptr;
 char             s_report[96] = "";
 // The boot splash draws and blits before setup() opens the serial port, where debug lines
 // would be dropped. MFCustomDevice fetches deviceReport() once the port is open, so that is
-// when the frame lines below start too.
+// when the frame lines below start too -- and only from that task, the main one: the
+// splash's task also blits, and CmdMessenger is not safe to write from two tasks at once.
 bool             s_portOpen   = false;
+TaskHandle_t     s_logTask    = nullptr;
 } // namespace
 
 namespace Gfx
@@ -88,6 +90,7 @@ void deviceBegin(Device &device)
 const char *deviceReport()
 {
     s_portOpen = true;
+    s_logTask  = xTaskGetCurrentTaskHandle();
     return s_report[0] ? s_report : nullptr;
 }
 
@@ -104,7 +107,7 @@ void present(Device &device)
     uint16_t *buffer = (uint16_t *)device.getBuffer();
     if (!buffer) {
         static bool moaned = false;
-        if (!moaned && s_portOpen) {
+        if (!moaned && s_portOpen && xTaskGetCurrentTaskHandle() == s_logTask) {
             moaned = true;
             cmdMessenger.sendCmd(kDebug, F("Annunciator: no frame buffer - nothing can be drawn"));
         }
@@ -123,7 +126,7 @@ void present(Device &device)
     s_panel->draw16bitBeRGBBitmap(0, 0, buffer, Board::PANEL_H, Board::PANEL_W);
 
     static uint16_t frames = 0;
-    if (s_portOpen && (++frames % 100) == 1) {
+    if (s_portOpen && xTaskGetCurrentTaskHandle() == s_logTask && (++frames % 100) == 1) {
         char msg[80];
         snprintf(msg, sizeof(msg), "Annunciator: frame %u sent as %dx%d in %ums",
                  (unsigned)frames, (int)Board::PANEL_H, (int)Board::PANEL_W,

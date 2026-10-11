@@ -23,9 +23,13 @@
 namespace Touch
 {
 
-// The read command, as the controller's own driver issues it, then eight bytes back.
-static const uint8_t READ_CMD[8]  = {0xB5, 0xAB, 0xA5, 0x5A, 0x00, 0x00, 0x00, 0x08};
-static const uint8_t REPLY_LEN    = 8;
+/* The read command, as the vendor's own driver for this board issues it (Espressif's
+   esp_lcd_axs15231b, and ESPHome's axs15231): 11 bytes, the last three padding, asking for
+   an 8-byte reply -- one point. Then a moment for the controller to have its answer ready
+   before it is clocked out. */
+static const uint8_t  READ_CMD[11]   = {0xB5, 0xAB, 0xA5, 0x5A, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00};
+static const uint8_t  REPLY_LEN      = 8;
+static const uint32_t REPLY_DELAY_US = 100;
 
 // Native panel orientation, before rotation: 320 across, 480 down.
 static const int16_t NATIVE_W = 320, NATIVE_H = 480;
@@ -34,6 +38,14 @@ static bool     s_ready      = false;
 static uint8_t  s_rotation   = Board::DEFAULT_ROTATION;
 static bool     s_down       = false;
 static int16_t  s_x = 0, s_y = 0;
+static uint8_t  s_hits = 0, s_misses = 0; // touch reports towards a press, lift reports towards a release
+static uint32_t s_lastTouch = 0;          // when the last good touch report came
+
+// See poll().
+static const uint8_t  PRESS_READS      = 2;
+static const uint8_t  RELEASE_READS    = 2;
+static const uint32_t PRESS_WINDOW_MS  = 100; // a press's reports must come this close together
+static const uint32_t INVALID_GRACE_MS = 100; // junk ends a held press after this long
 static uint32_t s_noticeUntil = 0; // the "no calibration needed" notice
 
 /* Native portrait to the landscape the panel is drawn in. Rotation 1 and 3 are the two
@@ -53,26 +65,48 @@ static void toScreen(int16_t nx, int16_t ny, int16_t &x, int16_t &y)
     y = constrain(y, (int16_t)0, (int16_t)(LY::PANEL_H - 1));
 }
 
-static bool readPoint(int16_t &x, int16_t &y)
+/* What one read says. Believe only a well-formed report: measured on this board, after a
+   touch has lifted the controller goes on answering with filler for a minute or more --
+   30 30 30 30 30 30 30 30, or FF FF FF FF FF F4 30 30 -- which, taken at face value, is
+   48 points at (48, 48): a finger held on the screen that nobody is touching. A real
+   report reads 00 01 00 8C 01 0D 01 02:
+     [0]  gesture, 0 in every touch report
+     [1]  points: 0 or 1 (an 8-byte read carries one)
+     [2]  event in bits 7:6 -- 0 press, 1 lift, 2 contact, 3 nothing -- reserved bits 5:4,
+          X bits 11:8
+     [3]  X bits 7:0
+     [4]  touch ID in bits 7:4 (15 is none), Y bits 11:8
+     [5]  Y bits 7:0
+   The same reading is in the vendor's driver and in the most careful community one for this
+   board (jantielens/esp32-macropad), whose tests carry the same filler. */
+enum class Report : uint8_t { TOUCH, LIFT, INVALID };
+
+static Report readReport(int16_t &x, int16_t &y)
 {
-    if (!s_ready) return false;
+    if (!s_ready) return Report::INVALID;
 
     Wire.beginTransmission(Board::TOUCH_ADDR);
     Wire.write(READ_CMD, sizeof(READ_CMD));
-    if (Wire.endTransmission() != 0) return false;
+    if (Wire.endTransmission() != 0) return Report::INVALID;
+    delayMicroseconds(REPLY_DELAY_US);
 
     uint8_t reply[REPLY_LEN] = {0};
-    if (Wire.requestFrom((int)Board::TOUCH_ADDR, (int)REPLY_LEN) != REPLY_LEN) return false;
+    if (Wire.requestFrom((int)Board::TOUCH_ADDR, (int)REPLY_LEN) != REPLY_LEN) return Report::INVALID;
     for (uint8_t i = 0; i < REPLY_LEN; ++i) reply[i] = (uint8_t)Wire.read();
 
-    // reply[1] is the number of points; the coordinates carry flag bits in their top nibble.
-    if (reply[1] == 0) return false;
+    if (reply[0] != 0) return Report::INVALID;            // and with it any one-byte filler
+    if (reply[1] == 0) return Report::LIFT;
+    if (reply[1] != 1) return Report::INVALID;
+    if (reply[2] & 0x30) return Report::INVALID;          // reserved bits
+    if ((reply[4] >> 4) == 0x0F) return Report::INVALID;  // no touch ID
+    const uint8_t event = (uint8_t)(reply[2] >> 6);
+    if (event == 1 || event == 3) return Report::LIFT;
     const int16_t nx = (int16_t)(((reply[2] & 0x0F) << 8) | reply[3]);
     const int16_t ny = (int16_t)(((reply[4] & 0x0F) << 8) | reply[5]);
-    if (nx >= NATIVE_W || ny >= NATIVE_H) return false;
+    if (nx >= NATIVE_W || ny >= NATIVE_H) return Report::INVALID;
 
     toScreen(nx, ny, x, y);
-    return true;
+    return Report::TOUCH;
 }
 
 void begin()
@@ -87,32 +121,47 @@ void setRotation(uint8_t rotation)
     s_rotation = rotation;
 }
 
+/* Edges from reports, so that no stray report can invent a touch or split one:
+     - a press takes PRESS_READS touch reports, no further apart than PRESS_WINDOW_MS;
+     - a release takes RELEASE_READS lift reports;
+     - filler while a press is held ends it once no good report has come for
+       INVALID_GRACE_MS. On this board a lift usually arrives as filler rather than as a lift
+       report, so this is the ordinary way a press ends; the grace is what keeps one bad read
+       in the middle of a held press from turning it into two presses.
+   At the 20 ms poll a press and a release each take about 40 ms; filler while no finger is
+   down changes nothing. */
 Event poll(int16_t &x, int16_t &y)
 {
-    int16_t px = 0, py = 0;
-    const bool touching = readPoint(px, py);
+    const uint32_t now = millis();
+    int16_t        px = 0, py = 0;
+    const Report   report = readReport(px, py);
 
-    // A capacitive controller debounces in hardware and reports a settled point, so unlike
-    // the resistive panel there is nothing to average or threshold here.
-    if (touching) {
-        s_x = px;
-        s_y = py;
-        x   = px;
-        y   = py;
-        if (!s_down) {
+    if (report == Report::TOUCH) {
+        if (now - s_lastTouch > PRESS_WINDOW_MS) s_hits = 0; // a stale report doesn't count
+        s_lastTouch = now;
+        s_misses    = 0;
+        s_x         = px;
+        s_y         = py;
+        x           = px;
+        y           = py;
+        if (!s_down && ++s_hits >= PRESS_READS) {
             s_down = true;
+            s_hits = 0;
             return DOWN;
         }
         return NONE;
     }
 
-    if (s_down) {
-        s_down = false;
-        x      = s_x;
-        y      = s_y;
-        return UP;
-    }
-    return NONE;
+    if (report == Report::LIFT) s_hits = 0;
+    if (!s_down) return NONE;
+    x = s_x; // the finger's last place, until it is believed gone
+    y = s_y;
+    const bool released = report == Report::LIFT ? ++s_misses >= RELEASE_READS
+                                                 : now - s_lastTouch >= INVALID_GRACE_MS;
+    if (!released) return NONE;
+    s_down   = false;
+    s_misses = 0;
+    return UP;
 }
 
 /* There is nothing to calibrate. The message matters: a profile shared with the resistive
