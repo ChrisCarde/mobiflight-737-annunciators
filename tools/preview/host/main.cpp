@@ -170,6 +170,7 @@ int main(int argc, char **argv)
         if (scene == "nopanel") {
             Splash::drawNoPanel();
         } else {
+            Splash::showPanelName("DOOR ANNUNCIATOR"); // the widest name there is
             Splash::draw();
             if (scene == "press") Splash::pressButton(true);
         }

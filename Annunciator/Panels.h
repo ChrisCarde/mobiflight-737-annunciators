@@ -13,11 +13,19 @@ namespace Panels
 {
     struct Ops {
         const char *type; // Info.Type in the panel's device definition
+        const char *name; // its Info.Label, in capitals: what the boot splash calls it
         void (*init)(uint8_t backlightPin);
         void (*stop)();
         void (*clear)();
         void (*set)(int16_t messageID, char *payload);
         void (*update)();
+    };
+
+    // The names, longest first, for fit checks: the boot splash shows them in big type.
+    inline constexpr const char *NAMES[] = {
+        "DOOR ANNUNCIATOR", "MASTER CAUTION R", "MASTER CAUTION L", "ELECTRICAL METER",
+        "AIR CONDITIONING", "FLIGHT CONTROLS", "IRS ANNUNCIATOR", "IRS DISPLAY UNIT",
+        "MASTER CAUTION", "CAUTION + AFDS",
     };
 
     uint8_t    count();

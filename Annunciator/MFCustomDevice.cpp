@@ -164,7 +164,7 @@ void MFCustomDevice::attach(uint16_t adrPin, uint16_t adrType, uint16_t adrConfi
     // The boot splash has the screen for its first ten seconds, and its demo for as long as
     // it runs; the panel comes up when they end -- see update(). Configured later, it comes
     // up now.
-    Splash::claim();
+    Splash::claim(Panels::at(_panel).name);
     if (!Splash::ownsScreen()) start();
 
     reportResetReason(pinMismatch);

@@ -4,6 +4,7 @@
 #include "Layout.h"
 #include "LogoSet.h"
 #include "PanelGfx.h"
+#include "Panels.h"
 #include "Theme.h"
 
 // The build date, written into the build directory by get_version.py. A header there rather
@@ -43,7 +44,8 @@ using LY::PANEL_W;
 constexpr int16_t LOGO_BOX      = 160; // the square tools/make_logo.py fits the logo into
 constexpr int16_t LOGO_GAP      = 21;  // logo to the text beside it
 constexpr int16_t TITLE_PITCH   = 25;  // the two title lines, centre to centre
-constexpr int16_t TITLE_TO_INFO = 37;  // second title line to the version line
+constexpr int16_t TITLE_TO_NAME = 28;  // second title line to the panel's name
+constexpr int16_t NAME_TO_INFO  = 30;  // the panel's name to the version line
 constexpr int16_t INFO_PITCH    = 23;  // version line to date line
 constexpr int16_t LABEL_GAP     = 11;  // FIRMWARE / BUILT to their values
 constexpr int16_t CREDIT_PITCH  = 15;
@@ -52,13 +54,14 @@ constexpr int16_t RULE_GAP      = 12;  // the rule to the text either side of it
 constexpr int16_t NOTE_PITCH    = 29;  // NO PANEL CONFIGURED to the line under it
 constexpr int16_t BUTTON_W      = 200; // the DEMO push-light
 constexpr int16_t BUTTON_H      = 69;
-constexpr int16_t INFO_TO_BUTTON = 21; // the BUILT line's centre to the button's top
+constexpr int16_t INFO_TO_BUTTON = 18; // the BUILT line's centre to the button's top
 constexpr int16_t NOTE_TO_BUTTON = 27; // the hint line's centre to the button's top
 #else
 constexpr int16_t LOGO_BOX      = 120;
 constexpr int16_t LOGO_GAP      = 16;
 constexpr int16_t TITLE_PITCH   = 19;
-constexpr int16_t TITLE_TO_INFO = 28;
+constexpr int16_t TITLE_TO_NAME = 22;
+constexpr int16_t NAME_TO_INFO  = 23;
 constexpr int16_t INFO_PITCH    = 17;
 constexpr int16_t LABEL_GAP     = 8;
 constexpr int16_t CREDIT_PITCH  = 11;
@@ -67,7 +70,7 @@ constexpr int16_t RULE_GAP      = 9;
 constexpr int16_t NOTE_PITCH    = 22;
 constexpr int16_t BUTTON_W      = 150;
 constexpr int16_t BUTTON_H      = 52;
-constexpr int16_t INFO_TO_BUTTON = 16;
+constexpr int16_t INFO_TO_BUTTON = 14;
 constexpr int16_t NOTE_TO_BUTTON = 20;
 #endif
 constexpr int16_t TITLE_TRACK = 1; // letter-spaced a pixel, like a panel header
@@ -78,6 +81,7 @@ constexpr char LABEL_VERSION[] = "FIRMWARE";
 constexpr char LABEL_DATE[]    = "BUILT";
 constexpr char NO_PANEL[]      = "NO PANEL CONFIGURED";
 constexpr char NO_PANEL_HINT[] = "ADD ONE IN MOBIFLIGHT CONNECTOR";
+constexpr char NOT_CONFIGURED[] = "NOT CONFIGURED"; // the panel name, when there is none
 constexpr char BUTTON_LINE_1[] = "PRESS FOR";
 constexpr char BUTTON_LINE_2[] = "DEMO MODE";
 
@@ -124,10 +128,11 @@ constexpr int16_t LOGO_Y    = (int16_t)(UPPER_TOP + (UPPER_H - Logo::H) / 2);
 
 constexpr int16_t COLUMN_X  = (int16_t)(MARGIN + LOGO_BOX + LOGO_GAP);
 constexpr int16_t COLUMN_W  = (int16_t)(PANEL_W - MARGIN - COLUMN_X);
-constexpr int16_t BLOCK_H   = (int16_t)(CAP_LARGE / 2 + TITLE_PITCH + TITLE_TO_INFO + INFO_PITCH +
-                                        INFO_TO_BUTTON + BUTTON_H);
+constexpr int16_t BLOCK_H   = (int16_t)(CAP_LARGE / 2 + TITLE_PITCH + TITLE_TO_NAME + NAME_TO_INFO +
+                                        INFO_PITCH + INFO_TO_BUTTON + BUTTON_H);
 constexpr int16_t TITLE_MID = (int16_t)(UPPER_TOP + (UPPER_H - BLOCK_H) / 2 + CAP_LARGE / 2);
-constexpr int16_t INFO_MID  = (int16_t)(TITLE_MID + TITLE_PITCH + TITLE_TO_INFO);
+constexpr int16_t NAME_MID  = (int16_t)(TITLE_MID + TITLE_PITCH + TITLE_TO_NAME);
+constexpr int16_t INFO_MID  = (int16_t)(NAME_MID + NAME_TO_INFO);
 constexpr int16_t LABEL_W   = widthOf(FONT_SMALL, LABEL_VERSION) > widthOf(FONT_SMALL, LABEL_DATE)
                                   ? widthOf(FONT_SMALL, LABEL_VERSION)
                                   : widthOf(FONT_SMALL, LABEL_DATE);
@@ -171,6 +176,14 @@ static_assert(widthOf(FONT_LARGE, TITLE_1, TITLE_TRACK) <= COLUMN_W &&
                   widthOf(FONT_LARGE, TITLE_2, TITLE_TRACK) <= COLUMN_W,
               "the name is wider than the column beside the logo");
 static_assert(valuesFit(), "a version or a build date would run off the screen");
+
+constexpr bool namesFit()
+{
+    for (const char *name : Panels::NAMES)
+        if (widthOf(FONT_LARGE, name, TITLE_TRACK) > COLUMN_W) return false;
+    return widthOf(FONT_LARGE, NOT_CONFIGURED, TITLE_TRACK) <= COLUMN_W;
+}
+static_assert(namesFit(), "a panel's name is wider than the column beside the logo");
 static_assert(creditsFit(), "a credit line is wider than the screen");
 // The button is something to press: at least the smallest target the panels allow, with
 // its legend inside the cap (2 px of bezel each side, as renderLampLines() draws it).
@@ -226,6 +239,22 @@ void drawLogo()
    white -- unmistakable even under a fingertip. */
 int16_t s_buttonX = -1, s_buttonY = -1; // where the last screen put it; -1 for nowhere
 
+/* The panel's name under the title. In the lamps' amber, because it says what this board is;
+   NOT CONFIGURED in the grey of the labels. Its own line, so it can be redrawn alone: the
+   splash goes up before the board has read its config, and the name arrives a moment later. */
+const char *s_panelName   = nullptr; // what the line shows; nullptr for nothing yet
+bool        s_splashShown = false;   // the splash, not another screen, is what was drawn last
+
+void drawPanelName()
+{
+    PanelGfx::clearRect(COLUMN_X, (int16_t)(NAME_MID - CAP_LARGE), COLUMN_W, (int16_t)(2 * CAP_LARGE));
+    if (!s_panelName) return;
+    useScreenFont(FONT_LARGE);
+    const bool none = s_panelName == NOT_CONFIGURED;
+    text(COLUMN_X, NAME_MID, s_panelName, none ? Theme::HeaderFg : 0xFFC24D, TITLE_TRACK);
+    useScreenFont(FONT_SMALL);
+}
+
 void drawButton(int16_t x, int16_t y, bool pressed)
 {
     s_buttonX = x;
@@ -259,6 +288,12 @@ bool Splash::buttonHit(int16_t x, int16_t y)
            y >= s_buttonY - LY::HIT_SLOP && y < s_buttonY + BUTTON_H + LY::HIT_SLOP;
 }
 
+void Splash::showPanelName(const char *name)
+{
+    s_panelName = name;
+    if (s_splashShown && PanelGfx::ready()) drawPanelName();
+}
+
 void Splash::pressButton(bool pressed)
 {
     if (s_buttonX >= 0 && PanelGfx::ready()) drawButton(s_buttonX, s_buttonY, pressed);
@@ -273,6 +308,7 @@ void Splash::draw()
     useScreenFont(FONT_LARGE);
     text(COLUMN_X, TITLE_MID, TITLE_1, Theme::Placard, TITLE_TRACK);
     text(COLUMN_X, (int16_t)(TITLE_MID + TITLE_PITCH), TITLE_2, Theme::Placard, TITLE_TRACK);
+    drawPanelName();
 
     useScreenFont(FONT_SMALL);
     text(COLUMN_X, INFO_MID, LABEL_VERSION, Theme::HeaderFg);
@@ -291,11 +327,13 @@ void Splash::draw()
     }
 
     useScreenFont(FONT_SMALL); // what the panels expect to find loaded
+    s_splashShown = true;
 }
 
 void Splash::drawNoPanel()
 {
     if (!PanelGfx::ready()) return;
+    s_splashShown = false;
     PanelGfx::clearPanel();
     useScreenFont(FONT_LARGE);
     centred(NOTE_MID, NO_PANEL, Theme::Placard, TITLE_TRACK);
@@ -310,7 +348,7 @@ void Splash::drawNoPanel()
 void          Splash::start() {}
 Splash::Phase Splash::phase() { return DONE; }
 bool          Splash::ownsScreen() { return false; }
-void          Splash::claim() {}
+void          Splash::claim(const char *) {}
 void          Splash::release() {}
 void          Splash::waitIdle() {}
 void          Splash::end() {}
@@ -337,6 +375,8 @@ std::atomic<uint8_t> s_phase{Splash::DONE};
 std::atomic<bool>    s_claimed{false};  // a panel has been configured
 std::atomic<bool>    s_drawing{false};  // the task is in the middle of a frame
 std::atomic<bool>    s_stopDemo{false}; // end() asks the demo to stop
+std::atomic<const char *> s_claimedName{nullptr}; // the configured panel's name, or none
+constexpr uint32_t   NAME_WAIT_MS = 1000; // no panel by then: there is none, for now
 
 // Moves the phase on, unless something else already has. Exactly one of the two wins.
 bool advance(uint8_t from, uint8_t to)
@@ -434,8 +474,9 @@ void stopDemo()
 
 void splashClock(void *)
 {
-    uint32_t phaseAt  = millis();
-    uint32_t reported = 0;
+    const uint32_t bootAt   = millis();
+    uint32_t       phaseAt  = bootAt;
+    uint32_t       reported = 0;
 
     for (;;) {
         vTaskDelay(pdMS_TO_TICKS(FRAME_MS));
@@ -469,8 +510,19 @@ void splashClock(void *)
             continue;
         }
 
-        // The splash, or NO PANEL CONFIGURED: watch the button.
+        // The splash, or NO PANEL CONFIGURED: keep the panel's name current, and watch the
+        // button.
         if (beginFrame()) {
+            if (phase == Splash::SHOWING_SPLASH) {
+                // The configured panel's name as soon as setup() has read the config -- or a
+                // config upload changes it -- and NOT CONFIGURED once there plainly is none.
+                const char *name = s_claimedName.load();
+                if (!name && now - bootAt >= NAME_WAIT_MS) name = NOT_CONFIGURED;
+                if (name != s_panelName) {
+                    Splash::showPanelName(name);
+                    PanelGfx::present();
+                }
+            }
             const bool tapped = buttonTapped();
             if (tapped) {
                 s_stopDemo.store(false);
@@ -537,13 +589,18 @@ bool Splash::ownsScreen()
     return phase == SHOWING_SPLASH || phase == DEMO;
 }
 
-void Splash::claim()
+void Splash::claim(const char *panelName)
 {
+    s_claimedName.store(panelName);
     s_claimed.store(true);
     waitIdle();
 }
 
-void Splash::release() { s_claimed.store(false); }
+void Splash::release()
+{
+    s_claimed.store(false);
+    s_claimedName.store(nullptr);
+}
 
 void Splash::waitIdle()
 {

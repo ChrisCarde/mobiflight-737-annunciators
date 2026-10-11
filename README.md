@@ -128,8 +128,8 @@ is the one steps 6 and 7 refer to. The firmware itself is installed from the bro
    then keeps its panel setup and its touch calibration.
 6. When it reports *Installation complete*, unplug the board and plug it back in.
 
-When the board restarts it shows a splash for 10 seconds, with the firmware version and build
-date. For the next 10 seconds it shows the panel it is set up as, or *No panel configured* on a
+When the board restarts it shows a splash for 10 seconds, with the panel it is configured as,
+the firmware version and the build date. For the next 10 seconds it shows the panel it is set up as, or *No panel configured* on a
 new board. Then the screen stays dark until MobiFlight sends it something. That is normal.
 
 Tap **DEMO** on the splash to see every panel in action, with no sim: the board plays a short

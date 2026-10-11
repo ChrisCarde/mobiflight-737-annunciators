@@ -5,8 +5,8 @@
 /* **********************************************************************************
     What the board shows when it powers up, before MobiFlight has sent it anything:
 
-      0-10 s   the splash: the logo, the project name, the firmware version, the build
-               date, the credits, and a DEMO button
+      0-10 s   the splash: the logo, the project name, the panel the board is configured
+               as, the firmware version, the build date, the credits, and a DEMO button
      10-20 s   identify: the panel this board is configured as, lit and showing its lamps
                as they are -- or NO PANEL CONFIGURED, with the DEMO button, on a board
                without one
@@ -51,6 +51,11 @@ namespace Splash
     void draw();
     void drawNoPanel();
 
+    // The panel name under the splash's title: a panel's, NOT CONFIGURED, or nothing yet
+    // (nullptr). Draws it at once if the splash is on the screen. Portable: the host
+    // preview sets one before drawing.
+    void showPanelName(const char *name);
+
     // The DEMO button, on whichever of the two was drawn last: whether a point is on it,
     // and drawing it pressed in or standing proud.
     bool buttonHit(int16_t x, int16_t y);
@@ -61,9 +66,10 @@ namespace Splash
     // Whether the splash or its demo has the screen. A configured panel waits while it does.
     bool ownsScreen();
 
-    // A panel has been configured and takes the screen from the identify phase on. Returns
-    // once the splash's task is not drawing.
-    void claim();
+    // A panel has been configured, by this name, and takes the screen from the identify
+    // phase on. The splash shows the name under its title. Returns once the splash's task is
+    // not drawing.
+    void claim(const char *panelName);
 
     // That panel was removed before it ever started -- a config upload during the splash
     // replaced it with none -- so the splash ends the way it does on a board with no panel.

@@ -15,16 +15,16 @@ namespace Panels
 
 // The panels built from a lamp table share the LampPanel engine for everything but init.
 static const Ops PANELS[] = {
-    {CUSTOMDEVICE_TYPE_DOOR, DoorPanel::init, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
-    {CUSTOMDEVICE_TYPE_IRS, IrsPanel::init, IrsPanel::stop, IrsPanel::clear, IrsPanel::set, IrsPanel::update},
-    {CUSTOMDEVICE_TYPE_ELEC, ElecPanel::init, ElecPanel::stop, ElecPanel::clear, ElecPanel::set, ElecPanel::update},
-    {CUSTOMDEVICE_TYPE_MCS_L, McsPanel::initLeft, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
-    {CUSTOMDEVICE_TYPE_MCS_R, McsPanel::initRight, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
-    {CUSTOMDEVICE_TYPE_MCS_BOTH, McsPanel::initBoth, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
-    {CUSTOMDEVICE_TYPE_MCS_BOTH_AFDS, McsPanel::initBothAfds, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
-    {CUSTOMDEVICE_TYPE_AIR, AirPanel::init, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
-    {CUSTOMDEVICE_TYPE_FCTL, FctlPanel::init, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
-    {CUSTOMDEVICE_TYPE_ISDU, IsduPanel::init, IsduPanel::stop, IsduPanel::clear, IsduPanel::set, IsduPanel::update},
+    {CUSTOMDEVICE_TYPE_DOOR, "DOOR ANNUNCIATOR", DoorPanel::init, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
+    {CUSTOMDEVICE_TYPE_IRS, "IRS ANNUNCIATOR", IrsPanel::init, IrsPanel::stop, IrsPanel::clear, IrsPanel::set, IrsPanel::update},
+    {CUSTOMDEVICE_TYPE_ELEC, "ELECTRICAL METER", ElecPanel::init, ElecPanel::stop, ElecPanel::clear, ElecPanel::set, ElecPanel::update},
+    {CUSTOMDEVICE_TYPE_MCS_L, "MASTER CAUTION L", McsPanel::initLeft, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
+    {CUSTOMDEVICE_TYPE_MCS_R, "MASTER CAUTION R", McsPanel::initRight, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
+    {CUSTOMDEVICE_TYPE_MCS_BOTH, "MASTER CAUTION", McsPanel::initBoth, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
+    {CUSTOMDEVICE_TYPE_MCS_BOTH_AFDS, "CAUTION + AFDS", McsPanel::initBothAfds, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
+    {CUSTOMDEVICE_TYPE_AIR, "AIR CONDITIONING", AirPanel::init, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
+    {CUSTOMDEVICE_TYPE_FCTL, "FLIGHT CONTROLS", FctlPanel::init, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
+    {CUSTOMDEVICE_TYPE_ISDU, "IRS DISPLAY UNIT", IsduPanel::init, IsduPanel::stop, IsduPanel::clear, IsduPanel::set, IsduPanel::update},
 };
 
 uint8_t count() { return (uint8_t)(sizeof(PANELS) / sizeof(PANELS[0])); }

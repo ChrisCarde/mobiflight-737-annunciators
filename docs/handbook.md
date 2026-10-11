@@ -890,7 +890,7 @@ Every time the board starts, before MobiFlight has sent it anything, it shows:
 
 | | |
 |---|---|
-| 0–10 s | the splash: the logo, the project name, the firmware version, the build date, the credits and a **DEMO** button |
+| 0–10 s | the splash: the logo, the project name, **the panel the board is configured as** (or *Not configured*), the firmware version, the build date, the credits and a **DEMO** button |
 | 10–20 s | the panel the board is set up as, lit, its lamps as they are (all unlit at power-up), or *No panel configured*, with the DEMO button, on a board without one |
 | after | dark until MobiFlight sends a value, as described under *When the panel is lit* below |
 
