@@ -11,6 +11,8 @@
 #include <Preferences.h>
 #include <stdio.h>
 
+extern TaskHandle_t loopTaskHandle; // Arduino-ESP32's loop task (cores/esp32/main.cpp)
+
 namespace Touch
 {
 
@@ -59,8 +61,13 @@ static uint8_t  s_onRun   = 0, s_offRun = 0;
 static uint16_t s_lastRx  = 0, s_lastRy = 0;
 static int32_t  s_fx      = 0, s_fy = 0; // filtered raw, x16
 
+/* Debug lines go out only from the main loop (loopTaskHandle, above). The boot splash's task
+   polls touch too -- for its DEMO button, and during the demo -- and CmdMessenger is not safe
+   to write from two tasks at once: a line from there could land in the middle of a reply to
+   the Connector. */
 static void debugf(const char *fmt, int a, int b = 0, int c = 0, int d = 0, int e = 0)
 {
+    if (xTaskGetCurrentTaskHandle() != loopTaskHandle) return;
     char buf[64];
     snprintf(buf, sizeof(buf), fmt, a, b, c, d, e);
     cmdMessenger.sendCmd(kDebug, buf);
