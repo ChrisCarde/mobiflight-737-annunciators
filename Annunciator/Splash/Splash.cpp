@@ -57,10 +57,9 @@ constexpr int16_t INFO_TO_BUTTON = 18; // the BUILT line's centre to the button'
 constexpr int16_t NOTE_TO_BUTTON = 27; // the hint line's centre to the button's top
 constexpr int16_t CREDITS_W     = 112; // the CREDITS push-light, beside the credit lines
 constexpr int16_t CREDITS_H     = 48;
-constexpr int16_t PAGE_TITLE_MID = 30; // the credits page: its title,
-constexpr int16_t PAGE_FIRST_MID = 72; // its first line,
-constexpr int16_t PAGE_PITCH     = 23; // the lines' pitch,
-constexpr int16_t PAGE_HINT_MID  = 300; // and TAP TO CLOSE
+constexpr int16_t PAGE_TITLE_MID = 26; // the credits page: its title,
+constexpr int16_t PAGE_FIRST_MID = 62; // its first line,
+constexpr int16_t PAGE_PITCH     = 21; // and the lines' pitch
 #else
 constexpr int16_t LOGO_BOX      = 120;
 constexpr int16_t LOGO_GAP      = 16;
@@ -78,10 +77,9 @@ constexpr int16_t INFO_TO_BUTTON = 14;
 constexpr int16_t NOTE_TO_BUTTON = 20;
 constexpr int16_t CREDITS_W     = 84;
 constexpr int16_t CREDITS_H     = 36;
-constexpr int16_t PAGE_TITLE_MID = 22;
-constexpr int16_t PAGE_FIRST_MID = 52;
-constexpr int16_t PAGE_PITCH     = 17;
-constexpr int16_t PAGE_HINT_MID  = 225;
+constexpr int16_t PAGE_TITLE_MID = 20;
+constexpr int16_t PAGE_FIRST_MID = 44;
+constexpr int16_t PAGE_PITCH     = 16;
 #endif
 constexpr int16_t TITLE_TRACK = 1; // letter-spaced a pixel, like a panel header
 
@@ -96,7 +94,7 @@ constexpr char BUTTON_LINE_1[] = "PRESS FOR";
 constexpr char BUTTON_LINE_2[] = "DEMO MODE";
 constexpr char CREDITS_LEGEND[] = "CREDITS";
 constexpr char PAGE_TITLE[]     = "CREDITS";
-constexpr char PAGE_HINT[]      = "TAP TO CLOSE";
+constexpr char CLOSE_LEGEND[]   = "CLOSE";
 
 /* The credits. On the splash, the short list in readable type, with a CREDITS button beside
    it for the whole list on a page of its own. The silhouette's licence asks for its author
@@ -141,6 +139,10 @@ constexpr int16_t RULE_Y           = (int16_t)(CREDIT_FIRST_MID - CAP_SMALL / 2 
 // The CREDITS button, at the right, beside the first lines and clear of the last.
 constexpr int16_t CREDITS_X = (int16_t)(PANEL_W - MARGIN - CREDITS_W);
 constexpr int16_t CREDITS_Y = (int16_t)(CREDIT_FIRST_MID - (CAP_SMALL + 1) / 2 - 2);
+
+// The credits page's CLOSE button, the same size, centred at the foot of the page.
+constexpr int16_t CLOSE_X = (int16_t)((PANEL_W - CREDITS_W) / 2);
+constexpr int16_t CLOSE_Y = (int16_t)(PANEL_H - PAD_BOTTOM - CREDITS_H);
 
 // Above the rule: the logo, and the name and version beside it, each centred in the height.
 constexpr int16_t UPPER_TOP = MARGIN;
@@ -195,7 +197,7 @@ constexpr bool pageFits()
 {
     for (const char *line : PAGE)
         if (widthOf(FONT_SMALL, line) > PANEL_W - 2 * MARGIN) return false;
-    return PAGE_FIRST_MID + (PAGE_COUNT - 1) * PAGE_PITCH + CAP_SMALL < PAGE_HINT_MID - CAP_SMALL;
+    return PAGE_FIRST_MID + (PAGE_COUNT - 1) * PAGE_PITCH + (CAP_SMALL + 1) / 2 + 8 <= CLOSE_Y;
 }
 
 static_assert(Logo::W <= LOGO_BOX && Logo::H <= LOGO_BOX,
@@ -215,14 +217,15 @@ constexpr bool namesFit()
 }
 static_assert(namesFit(), "a panel's name is wider than the column beside the logo");
 static_assert(creditsFit(), "a credit line runs into the CREDITS button or off the screen");
-static_assert(pageFits(), "the credits page does not fit the screen");
+static_assert(pageFits(), "the credits page runs into its CLOSE button or off the screen");
 static_assert(CREDITS_W >= LY::MIN_TOUCH_PX && CREDITS_H >= LY::MIN_TOUCH_PX,
               "the CREDITS button is smaller than a fingertip");
 static_assert(CREDITS_Y + CREDITS_H <= CREDIT_FIRST_MID + BESIDE_BUTTON * CREDIT_PITCH - (CAP_SMALL + 1) / 2 - 2,
               "the CREDITS button runs into the credit line under it");
 static_assert(CREDITS_Y > RULE_Y + 2, "the CREDITS button runs into the rule above it");
-static_assert(widthOf(FONT_SMALL, CREDITS_LEGEND) + 16 <= CREDITS_W - 4,
-              "the CREDITS button's legend does not fit its cap");
+static_assert(widthOf(FONT_SMALL, CREDITS_LEGEND) + 16 <= CREDITS_W - 4 &&
+                  widthOf(FONT_SMALL, CLOSE_LEGEND) + 16 <= CREDITS_W - 4,
+              "a legend does not fit the cap of the CREDITS or CLOSE button");
 // The button is something to press: at least the smallest target the panels allow, with
 // its legend inside the cap (2 px of bezel each side, as renderLampLines() draws it).
 static_assert(BUTTON_W >= LY::MIN_TOUCH_PX && BUTTON_H >= LY::MIN_TOUCH_PX,
@@ -277,6 +280,7 @@ void drawLogo()
    -- unmistakable even under a fingertip. */
 int16_t s_buttonX = -1, s_buttonY = -1; // DEMO, where the last screen put it; -1 for nowhere
 bool    s_creditsShown = false;         // the CREDITS button is on the screen
+bool    s_closeShown   = false;         // the credits page, and its CLOSE button, are
 
 /* The panel's name under the title. In the lamps' amber, because it says what this board is;
    NOT CONFIGURED in the grey of the labels. Its own line, so it can be redrawn alone: the
@@ -331,6 +335,12 @@ void drawCreditsButton(bool pressed)
     drawPushLight(CREDITS_X, CREDITS_Y, CREDITS_W, CREDITS_H, CREDITS_LEGEND, nullptr, FONT_SMALL, pressed);
 }
 
+void drawCloseButton(bool pressed)
+{
+    s_closeShown = true;
+    drawPushLight(CLOSE_X, CLOSE_Y, CREDITS_W, CREDITS_H, CLOSE_LEGEND, nullptr, FONT_SMALL, pressed);
+}
+
 bool inRect(int16_t x, int16_t y, int16_t rx, int16_t ry, int16_t rw, int16_t rh)
 {
     return x >= rx - LY::HIT_SLOP && x < rx + rw + LY::HIT_SLOP && y >= ry - LY::HIT_SLOP &&
@@ -343,6 +353,7 @@ Splash::Button Splash::buttonAt(int16_t x, int16_t y)
 {
     if (s_buttonX >= 0 && inRect(x, y, s_buttonX, s_buttonY, BUTTON_W, BUTTON_H)) return DEMO_BUTTON;
     if (s_creditsShown && inRect(x, y, CREDITS_X, CREDITS_Y, CREDITS_W, CREDITS_H)) return CREDITS_BUTTON;
+    if (s_closeShown && inRect(x, y, CLOSE_X, CLOSE_Y, CREDITS_W, CREDITS_H)) return CLOSE_BUTTON;
     return NO_BUTTON;
 }
 
@@ -357,11 +368,13 @@ void Splash::pressButton(Button button, bool pressed)
     if (!PanelGfx::ready()) return;
     if (button == DEMO_BUTTON && s_buttonX >= 0) drawButton(s_buttonX, s_buttonY, pressed);
     if (button == CREDITS_BUTTON && s_creditsShown) drawCreditsButton(pressed);
+    if (button == CLOSE_BUTTON && s_closeShown) drawCloseButton(pressed);
 }
 
 void Splash::draw()
 {
     if (!PanelGfx::ready()) return;
+    s_closeShown = false;
     PanelGfx::clearPanel();
     drawLogo();
 
@@ -392,6 +405,7 @@ void Splash::drawNoPanel()
     if (!PanelGfx::ready()) return;
     s_splashShown  = false;
     s_creditsShown = false;
+    s_closeShown   = false;
     PanelGfx::clearPanel();
     useScreenFont(FONT_LARGE);
     centred(NOTE_MID, NO_PANEL, Theme::Placard, TITLE_TRACK);
@@ -400,8 +414,8 @@ void Splash::drawNoPanel()
     drawButton(NOTE_BUTTON_X, NOTE_BUTTON_Y, false);
 }
 
-/* Every credit, on a page of its own in readable type -- what the CREDITS button opens. Any
-   tap closes it (see the splash's task). */
+/* Every credit, on a page of its own in readable type -- what the CREDITS button opens -- and
+   a CLOSE button to go back to the splash (see the splash's task). */
 void Splash::drawCredits()
 {
     if (!PanelGfx::ready()) return;
@@ -414,7 +428,7 @@ void Splash::drawCredits()
     useScreenFont(FONT_SMALL);
     for (int16_t i = 0; i < PAGE_COUNT; ++i)
         if (*PAGE[i]) centred((int16_t)(PAGE_FIRST_MID + i * PAGE_PITCH), PAGE[i], Theme::Placard);
-    centred(PAGE_HINT_MID, PAGE_HINT, Theme::HeaderFg);
+    drawCloseButton(false);
 }
 
 #if ANNUN_BACKEND_HOST
@@ -520,12 +534,13 @@ Splash::Button buttonTapped()
     return Splash::NO_BUTTON;
 }
 
-/* The credits page, while it is open. Any tap closes it, or it closes itself; either way the
-   splash comes back for a fresh 10 seconds, so there is time to press DEMO after reading. */
+/* The credits page, while it is open. Its CLOSE button closes it, or it closes itself -- but
+   not under a finger on CLOSE. Either way the splash comes back for a fresh 10 seconds, so
+   there is time to press DEMO after reading. */
 bool creditsClosed(uint32_t now, uint32_t openedAt)
 {
-    int16_t x, y;
-    return Touch::poll(x, y) == Touch::UP || now - openedAt >= CREDITS_MS;
+    if (buttonTapped() == Splash::CLOSE_BUTTON) return true;
+    return s_pressing == Splash::NO_BUTTON && now - openedAt >= CREDITS_MS;
 }
 
 /* One line per demo loop, for checking a board left running for hours: the heap the panels'

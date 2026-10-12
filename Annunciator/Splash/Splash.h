@@ -61,9 +61,9 @@ namespace Splash
     void drawCredits();
 
     // The buttons on whichever screen was drawn last: DEMO (the splash and NO PANEL
-    // CONFIGURED) and CREDITS (the splash). Which one a point is on, and drawing one pressed
-    // in or standing proud.
-    enum Button : uint8_t { NO_BUTTON, DEMO_BUTTON, CREDITS_BUTTON };
+    // CONFIGURED), CREDITS (the splash) and CLOSE (the credits page). Which one a point is
+    // on, and drawing one pressed in or standing proud.
+    enum Button : uint8_t { NO_BUTTON, DEMO_BUTTON, CREDITS_BUTTON, CLOSE_BUTTON };
     Button buttonAt(int16_t x, int16_t y);
     void   pressButton(Button button, bool pressed);
 

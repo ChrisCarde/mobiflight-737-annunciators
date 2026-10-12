@@ -902,7 +902,8 @@ is at full brightness, because that config is not read until the board has start
 
 **CREDITS** opens every credit on a page of its own, in type big enough to read on the 3.2″:
 the author and the repository, the MobiFlight core, the display library, the font and the
-logo's author and licence. Tap anywhere to close it, or it closes itself after 20 seconds.
+logo's author and licence. Its **CLOSE** button goes back to the splash, or the page closes
+itself after 20 seconds.
 The splash's 10 seconds wait while it is open and start again when it closes, so there is
 time to press DEMO after reading.
 
