@@ -1,7 +1,7 @@
 /* Host preview: renders a panel to a PPM using the firmware's own panel code.
 
    Usage:  preview <panel> <scene> <out.ppm>
-           preview splash <on|press|nopanel> <out.ppm>
+           preview splash <on|press|nopanel|credits> <out.ppm>
            preview demo <panel> <out-dir> [every-ms]
 
    panels  door irs elec mcs_l mcs_r mcs_both mcs_both_afds air fctl isdu
@@ -11,9 +11,9 @@
            dim      the demo scene with night dimming applied
            press    the demo scene with a finger held on one of the buttons
 
-   splash  the boot splash (on), the same with its DEMO button held in (press), and what a
-           board with no panel shows after it (nopanel). A configured board shows its
-           panel's off scene there instead.
+   splash  the boot splash (on), the same with its DEMO button held in (press), the credits
+           page its CREDITS button opens (credits), and what a board with no panel shows
+           after it (nopanel). A configured board shows its panel's off scene there instead.
 
    demo    a panel's demo scene, played from the start in 20 ms steps exactly as the board
            plays it. Writes f<ms>.ppm every `every-ms` (250 by default) for an animation,
