@@ -162,17 +162,19 @@ int main(int argc, char **argv)
     }
 
     if (want == "splash") {
-        if (scene != "on" && scene != "press" && scene != "nopanel") {
-            fprintf(stderr, "the splash scenes are on, press and nopanel\n");
+        if (scene != "on" && scene != "press" && scene != "nopanel" && scene != "credits") {
+            fprintf(stderr, "the splash scenes are on, press, nopanel and credits\n");
             return 2;
         }
         PanelGfx::begin(0);
         if (scene == "nopanel") {
             Splash::drawNoPanel();
+        } else if (scene == "credits") {
+            Splash::drawCredits();
         } else {
             Splash::showPanelName("DOOR ANNUNCIATOR"); // the widest name there is
             Splash::draw();
-            if (scene == "press") Splash::pressButton(true);
+            if (scene == "press") Splash::pressButton(Splash::DEMO_BUTTON, true);
         }
         if (!PanelGfx::tft().writePpm(argv[3])) {
             fprintf(stderr, "cannot write %s\n", argv[3]);

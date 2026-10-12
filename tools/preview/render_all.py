@@ -26,7 +26,7 @@ SCENES = ["off", "demo", "all", "dim", "press"]
 # The boot splash is not a panel and has scenes of its own: the splash, the splash with its
 # DEMO button held in, and what a board with no panel shows after it. Rendered with every full run; --panel and --scene leave it
 # out unless they name it.
-SPLASH_SCENES = ["on", "press", "nopanel"]
+SPLASH_SCENES = ["on", "press", "nopanel", "credits"]
 
 
 def diff_pixels(a, b):

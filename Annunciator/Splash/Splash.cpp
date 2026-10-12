@@ -48,14 +48,19 @@ constexpr int16_t TITLE_TO_NAME = 28;  // second title line to the panel's name
 constexpr int16_t NAME_TO_INFO  = 30;  // the panel's name to the version line
 constexpr int16_t INFO_PITCH    = 23;  // version line to date line
 constexpr int16_t LABEL_GAP     = 11;  // FIRMWARE / BUILT to their values
-constexpr int16_t CREDIT_PITCH  = 15;
-constexpr int16_t CREDIT_SEP    = 16;  // between two credits that share a line
+constexpr int16_t CREDIT_PITCH  = 18;  // the credit lines under the rule, centre to centre
 constexpr int16_t RULE_GAP      = 12;  // the rule to the text either side of it
 constexpr int16_t NOTE_PITCH    = 29;  // NO PANEL CONFIGURED to the line under it
 constexpr int16_t BUTTON_W      = 200; // the DEMO push-light
 constexpr int16_t BUTTON_H      = 69;
 constexpr int16_t INFO_TO_BUTTON = 18; // the BUILT line's centre to the button's top
 constexpr int16_t NOTE_TO_BUTTON = 27; // the hint line's centre to the button's top
+constexpr int16_t CREDITS_W     = 112; // the CREDITS push-light, beside the credit lines
+constexpr int16_t CREDITS_H     = 48;
+constexpr int16_t PAGE_TITLE_MID = 30; // the credits page: its title,
+constexpr int16_t PAGE_FIRST_MID = 72; // its first line,
+constexpr int16_t PAGE_PITCH     = 23; // the lines' pitch,
+constexpr int16_t PAGE_HINT_MID  = 300; // and TAP TO CLOSE
 #else
 constexpr int16_t LOGO_BOX      = 120;
 constexpr int16_t LOGO_GAP      = 16;
@@ -64,14 +69,19 @@ constexpr int16_t TITLE_TO_NAME = 22;
 constexpr int16_t NAME_TO_INFO  = 23;
 constexpr int16_t INFO_PITCH    = 17;
 constexpr int16_t LABEL_GAP     = 8;
-constexpr int16_t CREDIT_PITCH  = 11;
-constexpr int16_t CREDIT_SEP    = 12;
+constexpr int16_t CREDIT_PITCH  = 13;
 constexpr int16_t RULE_GAP      = 9;
 constexpr int16_t NOTE_PITCH    = 22;
 constexpr int16_t BUTTON_W      = 150;
 constexpr int16_t BUTTON_H      = 52;
 constexpr int16_t INFO_TO_BUTTON = 14;
 constexpr int16_t NOTE_TO_BUTTON = 20;
+constexpr int16_t CREDITS_W     = 84;
+constexpr int16_t CREDITS_H     = 36;
+constexpr int16_t PAGE_TITLE_MID = 22;
+constexpr int16_t PAGE_FIRST_MID = 52;
+constexpr int16_t PAGE_PITCH     = 17;
+constexpr int16_t PAGE_HINT_MID  = 225;
 #endif
 constexpr int16_t TITLE_TRACK = 1; // letter-spaced a pixel, like a panel header
 
@@ -84,41 +94,53 @@ constexpr char NO_PANEL_HINT[] = "ADD ONE IN MOBIFLIGHT CONNECTOR";
 constexpr char NOT_CONFIGURED[] = "NOT CONFIGURED"; // the panel name, when there is none
 constexpr char BUTTON_LINE_1[] = "PRESS FOR";
 constexpr char BUTTON_LINE_2[] = "DEMO MODE";
+constexpr char CREDITS_LEGEND[] = "CREDITS";
+constexpr char PAGE_TITLE[]     = "CREDITS";
+constexpr char PAGE_HINT[]      = "TAP TO CLOSE";
 
-/* The credits. The display library differs by board, and Gfx.h is the one place a library
-   is named, so that line comes from there. The silhouette's licence asks for its author and
-   licence to be credited wherever it is shown -- this is where it is shown. */
-struct Credit {
-    const char *first;
-    const char *second; // drawn after the first on the same line, or nullptr
+/* The credits. On the splash, the short list in readable type, with a CREDITS button beside
+   it for the whole list on a page of its own. The silhouette's licence asks for its author
+   and licence to be credited wherever it is shown, so that line is on both. The display
+   library differs by board, and Gfx.h is the one place a library is named, so that line
+   comes from there. */
+constexpr const char *CREDITS[] = {
+    "BY CHRIS CARDE",
+    "GITHUB.COM/CHRISCARDE/",
+    "MOBIFLIGHT-737-ANNUNCIATORS",
+    "SILHOUETTE: PETER JAMES LOWDEN (CC BY-SA 4.0)",
 };
-constexpr Credit CREDITS[] = {
-    {"BY CHRIS CARDE", nullptr},
-    {"GITHUB.COM/CHRISCARDE/MOBIFLIGHT-737-ANNUNCIATORS", nullptr},
-    {"CORE FIRMWARE: MOBIFLIGHT AND ELRAL (ESP32)", nullptr},
-    {Gfx::LIBRARY_CREDIT, "FONT: DM SANS (OFL)"},
-    {"737 SILHOUETTE: PETER JAMES LOWDEN (CC BY-SA 4.0)", nullptr},
+constexpr int16_t CREDIT_COUNT  = (int16_t)(sizeof(CREDITS) / sizeof(CREDITS[0]));
+constexpr int16_t BESIDE_BUTTON = 3; // the first lines, which the CREDITS button sits beside
+
+constexpr const char *PAGE[] = {
+    "BY CHRIS CARDE",
+    "GITHUB.COM/CHRISCARDE/",
+    "MOBIFLIGHT-737-ANNUNCIATORS",
+    "",
+    "CORE FIRMWARE: MOBIFLIGHT AND ELRAL (ESP32)",
+    Gfx::LIBRARY_CREDIT,
+    "FONT: DM SANS (OFL)",
+    "737 SILHOUETTE: PETER JAMES LOWDEN",
+    "CC BY-SA 4.0",
 };
-constexpr int16_t CREDIT_COUNT = (int16_t)(sizeof(CREDITS) / sizeof(CREDITS[0]));
+constexpr int16_t PAGE_COUNT = (int16_t)(sizeof(PAGE) / sizeof(PAGE[0]));
 
 constexpr int16_t widthOf(PanelFont f, const char *s, int16_t track = 0)
 {
     return s ? spacedWidthOf(fontOf(f), s, track) : 0;
 }
-constexpr int16_t creditWidth(const Credit &c)
-{
-    return (int16_t)(widthOf(FONT_TINY, c.first) +
-                     (c.second ? CREDIT_SEP + widthOf(FONT_TINY, c.second) : 0));
-}
-
 constexpr int16_t CAP_LARGE = fontOf(FONT_LARGE).capHeight;
-constexpr int16_t CAP_TINY  = fontOf(FONT_TINY).capHeight;
+constexpr int16_t CAP_SMALL = fontOf(FONT_SMALL).capHeight;
 
 // The credits: the last line's caps rest on the bottom padding, the rest stack up from it.
 // drawSpacedText() takes the row the caps are centred on.
-constexpr int16_t CREDIT_LAST_MID  = (int16_t)(PANEL_H - PAD_BOTTOM - (CAP_TINY + 1) / 2);
+constexpr int16_t CREDIT_LAST_MID  = (int16_t)(PANEL_H - PAD_BOTTOM - (CAP_SMALL + 1) / 2);
 constexpr int16_t CREDIT_FIRST_MID = (int16_t)(CREDIT_LAST_MID - (CREDIT_COUNT - 1) * CREDIT_PITCH);
-constexpr int16_t RULE_Y           = (int16_t)(CREDIT_FIRST_MID - CAP_TINY / 2 - RULE_GAP);
+constexpr int16_t RULE_Y           = (int16_t)(CREDIT_FIRST_MID - CAP_SMALL / 2 - RULE_GAP);
+
+// The CREDITS button, at the right, beside the first lines and clear of the last.
+constexpr int16_t CREDITS_X = (int16_t)(PANEL_W - MARGIN - CREDITS_W);
+constexpr int16_t CREDITS_Y = (int16_t)(CREDIT_FIRST_MID - (CAP_SMALL + 1) / 2 - 2);
 
 // Above the rule: the logo, and the name and version beside it, each centred in the height.
 constexpr int16_t UPPER_TOP = MARGIN;
@@ -163,9 +185,17 @@ constexpr bool valuesFit()
 }
 constexpr bool creditsFit()
 {
-    for (const Credit &c : CREDITS)
-        if (creditWidth(c) > PANEL_W - 2 * MARGIN) return false;
+    for (int16_t i = 0; i < CREDIT_COUNT; ++i) {
+        const int16_t room = i < BESIDE_BUTTON ? CREDITS_X - 8 - MARGIN : PANEL_W - 2 * MARGIN;
+        if (widthOf(FONT_SMALL, CREDITS[i]) > room) return false;
+    }
     return true;
+}
+constexpr bool pageFits()
+{
+    for (const char *line : PAGE)
+        if (widthOf(FONT_SMALL, line) > PANEL_W - 2 * MARGIN) return false;
+    return PAGE_FIRST_MID + (PAGE_COUNT - 1) * PAGE_PITCH + CAP_SMALL < PAGE_HINT_MID - CAP_SMALL;
 }
 
 static_assert(Logo::W <= LOGO_BOX && Logo::H <= LOGO_BOX,
@@ -184,7 +214,15 @@ constexpr bool namesFit()
     return widthOf(FONT_LARGE, NOT_CONFIGURED, TITLE_TRACK) <= COLUMN_W;
 }
 static_assert(namesFit(), "a panel's name is wider than the column beside the logo");
-static_assert(creditsFit(), "a credit line is wider than the screen");
+static_assert(creditsFit(), "a credit line runs into the CREDITS button or off the screen");
+static_assert(pageFits(), "the credits page does not fit the screen");
+static_assert(CREDITS_W >= LY::MIN_TOUCH_PX && CREDITS_H >= LY::MIN_TOUCH_PX,
+              "the CREDITS button is smaller than a fingertip");
+static_assert(CREDITS_Y + CREDITS_H <= CREDIT_FIRST_MID + BESIDE_BUTTON * CREDIT_PITCH - (CAP_SMALL + 1) / 2 - 2,
+              "the CREDITS button runs into the credit line under it");
+static_assert(CREDITS_Y > RULE_Y + 2, "the CREDITS button runs into the rule above it");
+static_assert(widthOf(FONT_SMALL, CREDITS_LEGEND) + 16 <= CREDITS_W - 4,
+              "the CREDITS button's legend does not fit its cap");
 // The button is something to press: at least the smallest target the panels allow, with
 // its legend inside the cap (2 px of bezel each side, as renderLampLines() draws it).
 static_assert(BUTTON_W >= LY::MIN_TOUCH_PX && BUTTON_H >= LY::MIN_TOUCH_PX,
@@ -233,11 +271,12 @@ void drawLogo()
     }
 }
 
-/* The DEMO button: a push-light, drawn by the same code as MASTER CAUTION -- a cap standing
-   proud of its bezel. Unlit at rest, because it is a button, not a warning, with its legend
-   in the white of the panels' printing so it reads at a glance. Held, it goes in and lights
-   white -- unmistakable even under a fingertip. */
-int16_t s_buttonX = -1, s_buttonY = -1; // where the last screen put it; -1 for nowhere
+/* The buttons: push-lights, drawn by the same code as MASTER CAUTION -- a cap standing proud
+   of its bezel. Unlit at rest, because they are buttons, not warnings, with legends in the
+   white of the panels' printing so they read at a glance. Held, one goes in and lights white
+   -- unmistakable even under a fingertip. */
+int16_t s_buttonX = -1, s_buttonY = -1; // DEMO, where the last screen put it; -1 for nowhere
+bool    s_creditsShown = false;         // the CREDITS button is on the screen
 
 /* The panel's name under the title. In the lamps' amber, because it says what this board is;
    NOT CONFIGURED in the grey of the labels. Its own line, so it can be redrawn alone: the
@@ -255,14 +294,13 @@ void drawPanelName()
     useScreenFont(FONT_SMALL);
 }
 
-void drawButton(int16_t x, int16_t y, bool pressed)
+void drawPushLight(int16_t x, int16_t y, int16_t w, int16_t h, const char *line1,
+                   const char *line2, PanelFont font, bool pressed)
 {
-    s_buttonX = x;
-    s_buttonY = y;
     Gfx::Canvas cap(&PanelGfx::tft());
     cap.setColorDepth(16);
-    if (cap.createSprite(BUTTON_W, BUTTON_H) == nullptr) return;
-    PanelFont loaded = FONT_LARGE;
+    if (cap.createSprite(w, h) == nullptr) return;
+    PanelFont loaded = font;
     PanelGfx::useFont(cap, loaded);
     LampStyle style = Theme::style(KIND_FILLED, LAMP_AMBER, false, false);
     if (pressed) {
@@ -273,19 +311,39 @@ void drawButton(int16_t x, int16_t y, bool pressed)
     } else {
         style.fg = Theme::blend(Theme::Placard, style.bg, 210);
     }
-    const LegendLine lines[] = {{BUTTON_LINE_1, FONT_LARGE}, {BUTTON_LINE_2, FONT_LARGE}};
-    PanelGfx::renderLampLines(cap, style, lines, 2, loaded, pressed);
+    const LegendLine lines[] = {{line1, font}, {line2, font}};
+    PanelGfx::renderLampLines(cap, style, lines, line2 ? 2 : 1, loaded, pressed);
     PanelGfx::push(cap, x, y);
     cap.unloadFont();
     cap.deleteSprite();
 }
 
+void drawButton(int16_t x, int16_t y, bool pressed)
+{
+    s_buttonX = x;
+    s_buttonY = y;
+    drawPushLight(x, y, BUTTON_W, BUTTON_H, BUTTON_LINE_1, BUTTON_LINE_2, FONT_LARGE, pressed);
+}
+
+void drawCreditsButton(bool pressed)
+{
+    s_creditsShown = true;
+    drawPushLight(CREDITS_X, CREDITS_Y, CREDITS_W, CREDITS_H, CREDITS_LEGEND, nullptr, FONT_SMALL, pressed);
+}
+
+bool inRect(int16_t x, int16_t y, int16_t rx, int16_t ry, int16_t rw, int16_t rh)
+{
+    return x >= rx - LY::HIT_SLOP && x < rx + rw + LY::HIT_SLOP && y >= ry - LY::HIT_SLOP &&
+           y < ry + rh + LY::HIT_SLOP;
+}
+
 } // namespace
 
-bool Splash::buttonHit(int16_t x, int16_t y)
+Splash::Button Splash::buttonAt(int16_t x, int16_t y)
 {
-    return s_buttonX >= 0 && x >= s_buttonX - LY::HIT_SLOP && x < s_buttonX + BUTTON_W + LY::HIT_SLOP &&
-           y >= s_buttonY - LY::HIT_SLOP && y < s_buttonY + BUTTON_H + LY::HIT_SLOP;
+    if (s_buttonX >= 0 && inRect(x, y, s_buttonX, s_buttonY, BUTTON_W, BUTTON_H)) return DEMO_BUTTON;
+    if (s_creditsShown && inRect(x, y, CREDITS_X, CREDITS_Y, CREDITS_W, CREDITS_H)) return CREDITS_BUTTON;
+    return NO_BUTTON;
 }
 
 void Splash::showPanelName(const char *name)
@@ -294,9 +352,11 @@ void Splash::showPanelName(const char *name)
     if (s_splashShown && PanelGfx::ready()) drawPanelName();
 }
 
-void Splash::pressButton(bool pressed)
+void Splash::pressButton(Button button, bool pressed)
 {
-    if (s_buttonX >= 0 && PanelGfx::ready()) drawButton(s_buttonX, s_buttonY, pressed);
+    if (!PanelGfx::ready()) return;
+    if (button == DEMO_BUTTON && s_buttonX >= 0) drawButton(s_buttonX, s_buttonY, pressed);
+    if (button == CREDITS_BUTTON && s_creditsShown) drawCreditsButton(pressed);
 }
 
 void Splash::draw()
@@ -319,12 +379,9 @@ void Splash::draw()
 
     PanelGfx::drawRule(MARGIN, RULE_Y, (int16_t)(PANEL_W - 2 * MARGIN), Theme::Rule);
 
-    useScreenFont(FONT_TINY);
-    for (int16_t i = 0; i < CREDIT_COUNT; ++i) {
-        const int16_t y = (int16_t)(CREDIT_FIRST_MID + i * CREDIT_PITCH);
-        const int16_t x = text(MARGIN, y, CREDITS[i].first, Theme::IruLabel);
-        if (CREDITS[i].second) text((int16_t)(x + CREDIT_SEP), y, CREDITS[i].second, Theme::IruLabel);
-    }
+    for (int16_t i = 0; i < CREDIT_COUNT; ++i)
+        text(MARGIN, (int16_t)(CREDIT_FIRST_MID + i * CREDIT_PITCH), CREDITS[i], Theme::IruLabel);
+    drawCreditsButton(false);
 
     useScreenFont(FONT_SMALL); // what the panels expect to find loaded
     s_splashShown = true;
@@ -333,13 +390,31 @@ void Splash::draw()
 void Splash::drawNoPanel()
 {
     if (!PanelGfx::ready()) return;
-    s_splashShown = false;
+    s_splashShown  = false;
+    s_creditsShown = false;
     PanelGfx::clearPanel();
     useScreenFont(FONT_LARGE);
     centred(NOTE_MID, NO_PANEL, Theme::Placard, TITLE_TRACK);
     useScreenFont(FONT_SMALL);
     centred((int16_t)(NOTE_MID + NOTE_PITCH), NO_PANEL_HINT, Theme::HeaderFg);
     drawButton(NOTE_BUTTON_X, NOTE_BUTTON_Y, false);
+}
+
+/* Every credit, on a page of its own in readable type -- what the CREDITS button opens. Any
+   tap closes it (see the splash's task). */
+void Splash::drawCredits()
+{
+    if (!PanelGfx::ready()) return;
+    s_splashShown  = false;
+    s_creditsShown = false;
+    s_buttonX      = -1;
+    PanelGfx::clearPanel();
+    useScreenFont(FONT_LARGE);
+    centred(PAGE_TITLE_MID, PAGE_TITLE, Theme::Placard, TITLE_TRACK);
+    useScreenFont(FONT_SMALL);
+    for (int16_t i = 0; i < PAGE_COUNT; ++i)
+        if (*PAGE[i]) centred((int16_t)(PAGE_FIRST_MID + i * PAGE_PITCH), PAGE[i], Theme::Placard);
+    centred(PAGE_HINT_MID, PAGE_HINT, Theme::HeaderFg);
 }
 
 #if ANNUN_BACKEND_HOST
@@ -368,7 +443,8 @@ namespace
 constexpr uint32_t FRAME_MS        = 20;   // the task's cadence: touch, the demo, the clock
 constexpr uint32_t HOLD_TO_STOP_MS = 3000; // a finger held this long anywhere stops the demo
 constexpr uint32_t SERIAL_QUIET_MS = 2000; // see reportHealth()
-constexpr uint32_t TAP_SHOW_MS     = 150;  // the DEMO button stays lit this long after a tap
+constexpr uint32_t TAP_SHOW_MS     = 150;  // a button stays lit this long after a tap
+constexpr uint32_t CREDITS_MS      = 20000; // the credits page closes itself after this long
 
 // DONE until start(), so nothing waits on a splash that never began.
 std::atomic<uint8_t> s_phase{Splash::DONE};
@@ -406,38 +482,50 @@ bool beginFrame()
 }
 void endFrame() { s_drawing.store(false); }
 
-/* The DEMO button. A press on it shows it pushed in; letting go on it starts the demo,
-   letting go elsewhere does nothing. After the demo has been stopped by a hold, the finger
-   is still down: nothing counts until it lifts. */
-bool s_pressing = false, s_waitLift = false;
-int16_t s_touchX = 0, s_touchY = 0;
+/* The buttons. A press on one shows it pushed in; letting go on it is a tap, letting go
+   elsewhere does nothing. After the demo has been stopped by a hold, the finger is still
+   down: nothing counts until it lifts. */
+Splash::Button s_pressing = Splash::NO_BUTTON;
+bool           s_waitLift = false;
+int16_t        s_touchX = 0, s_touchY = 0;
 
-bool buttonTapped()
+Splash::Button buttonTapped()
 {
     int16_t            x, y;
     const Touch::Event e = Touch::poll(x, y);
-    if (e == Touch::DOWN && !s_waitLift && Splash::buttonHit(x, y)) {
-        s_pressing = true;
-        Splash::pressButton(true);
-        PanelGfx::present();
+    if (e == Touch::DOWN && !s_waitLift && s_pressing == Splash::NO_BUTTON) {
+        s_pressing = Splash::buttonAt(x, y);
+        if (s_pressing != Splash::NO_BUTTON) {
+            Splash::pressButton(s_pressing, true);
+            PanelGfx::present();
+        }
     }
-    if (s_pressing && e != Touch::UP) {
+    if (s_pressing != Splash::NO_BUTTON && e != Touch::UP) {
         s_touchX = x; // follows the finger while it is down
         s_touchY = y;
     }
-    if (e != Touch::UP) return false;
-    s_waitLift = false;
-    if (!s_pressing) return false;
-    s_pressing = false;
-    if (Splash::buttonHit(s_touchX, s_touchY)) {
+    if (e != Touch::UP) return Splash::NO_BUTTON;
+    s_waitLift                 = false;
+    const Splash::Button press = s_pressing;
+    if (press == Splash::NO_BUTTON) return Splash::NO_BUTTON;
+    s_pressing = Splash::NO_BUTTON;
+    if (Splash::buttonAt(s_touchX, s_touchY) == press) {
         // Let go on the button: it stays lit a moment, so even a quick tap is seen to
-        // register, then the demo takes the screen.
+        // register, then what it opens takes the screen.
         vTaskDelay(pdMS_TO_TICKS(TAP_SHOW_MS));
-        return true;
+        return press;
     }
-    Splash::pressButton(false); // slid off it: no demo
+    Splash::pressButton(press, false); // slid off it: nothing
     PanelGfx::present();
-    return false;
+    return Splash::NO_BUTTON;
+}
+
+/* The credits page, while it is open. Any tap closes it, or it closes itself; either way the
+   splash comes back for a fresh 10 seconds, so there is time to press DEMO after reading. */
+bool creditsClosed(uint32_t now, uint32_t openedAt)
+{
+    int16_t x, y;
+    return Touch::poll(x, y) == Touch::UP || now - openedAt >= CREDITS_MS;
 }
 
 /* One line per demo loop, for checking a board left running for hours: the heap the panels'
@@ -461,7 +549,7 @@ void reportHealth(uint32_t &reported)
 
 void startDemo(uint32_t now)
 {
-    s_pressing = false;
+    s_pressing = Splash::NO_BUTTON;
     TouchZones::setDemo(true);
     Demo::start(now);
 }
@@ -474,9 +562,10 @@ void stopDemo()
 
 void splashClock(void *)
 {
-    const uint32_t bootAt   = millis();
-    uint32_t       phaseAt  = bootAt;
-    uint32_t       reported = 0;
+    const uint32_t bootAt    = millis();
+    uint32_t       phaseAt   = bootAt;
+    uint32_t       reported  = 0;
+    uint32_t       creditsAt = 0; // when the credits page opened; 0 while it is closed
 
     for (;;) {
         vTaskDelay(pdMS_TO_TICKS(FRAME_MS));
@@ -510,8 +599,21 @@ void splashClock(void *)
             continue;
         }
 
+        // The credits page, over the splash: the splash's clock waits for it.
+        if (creditsAt) {
+            if (!beginFrame()) continue;
+            if (creditsClosed(now, creditsAt)) {
+                creditsAt = 0;
+                Splash::draw();
+                PanelGfx::present();
+                phaseAt = now;
+            }
+            endFrame();
+            continue;
+        }
+
         // The splash, or NO PANEL CONFIGURED: keep the panel's name current, and watch the
-        // button.
+        // buttons.
         if (beginFrame()) {
             if (phase == Splash::SHOWING_SPLASH) {
                 // The configured panel's name as soon as setup() has read the config -- or a
@@ -523,19 +625,23 @@ void splashClock(void *)
                     PanelGfx::present();
                 }
             }
-            const bool tapped = buttonTapped();
-            if (tapped) {
+            const Splash::Button tapped = buttonTapped();
+            if (tapped == Splash::DEMO_BUTTON) {
                 s_stopDemo.store(false);
                 if (advance(phase, Splash::DEMO)) {
                     reported = 0;
                     startDemo(now);
                 }
+            } else if (tapped == Splash::CREDITS_BUTTON) {
+                Splash::drawCredits();
+                PanelGfx::present();
+                creditsAt = now ? now : 1;
             }
             endFrame();
-            if (tapped) continue;
+            if (tapped != Splash::NO_BUTTON) continue;
         }
 
-        if (s_pressing || now - phaseAt < Splash::PHASE_MS) continue;
+        if (s_pressing != Splash::NO_BUTTON || now - phaseAt < Splash::PHASE_MS) continue;
 
         if (phase == Splash::SHOWING_SPLASH) {
             // A configured panel identifies itself: the main task brings it up now, lit.

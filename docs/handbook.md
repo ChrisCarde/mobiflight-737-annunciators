@@ -890,7 +890,7 @@ Every time the board starts, before MobiFlight has sent it anything, it shows:
 
 | | |
 |---|---|
-| 0–10 s | the splash: the logo, the project name, **the panel the board is configured as** (or *Not configured*), the firmware version, the build date, the credits and a **DEMO** button |
+| 0–10 s | the splash: the logo, the project name, **the panel the board is configured as** (or *Not configured*), the firmware version, the build date, the short credits, a **DEMO** button and a **CREDITS** button |
 | 10–20 s | the panel the board is set up as, lit, its lamps as they are (all unlit at power-up), or *No panel configured*, with the DEMO button, on a board without one |
 | after | dark until MobiFlight sends a value, as described under *When the panel is lit* below |
 
@@ -898,7 +898,13 @@ The second phase shows at a glance which panel a board was given in the Connecto
 starting the sim. It uses the brightness from the custom device's config. The splash itself
 is at full brightness, because that config is not read until the board has started.
 
-**MobiFlight sending the panel a value ends all of this at once**, demo included. A board
+**CREDITS** opens every credit on a page of its own, in type big enough to read on the 3.2″:
+the author and the repository, the MobiFlight core, the display library, the font and the
+logo's author and licence. Tap anywhere to close it, or it closes itself after 20 seconds.
+The splash's 10 seconds wait while it is open and start again when it closes, so there is
+time to press DEMO after reading.
+
+**MobiFlight sending the panel a value ends all of this at once**, demo and credits page included. A board
 that restarts mid-flight therefore puts its lamps back the moment the Connector sends them.
 Nothing else ends it:
 - connecting doesn't, because the Connector reads the board on connect without sending
@@ -958,8 +964,8 @@ opaque, and run:
 
 It is fitted into a 120 px square at 320 and a 160 px square at 480 (the same size in the
 hand). `Splash.cpp` lays the screen out around those squares and does not compile if the
-logo, or any line of text, does not fit. A different image needs its own credit, in the
-`CREDITS` table in `Splash.cpp` and in `THIRD-PARTY-NOTICES.md`. The current one is CC BY-SA
+logo, or any line of text, does not fit. A different image needs its own credit, in both
+the `CREDITS` and `PAGE` tables in `Splash.cpp` and in `THIRD-PARTY-NOTICES.md`. The current one is CC BY-SA
 4.0, and its author and licence must stay credited while it is used: see `art/README.md`.
 
 **How it works.** The splash has to show on a board with no panel configured, where the
@@ -1148,7 +1154,7 @@ the `.vlw` format both display libraries read — TFT_eSPI on the 3.2″ board, 
 |---|---|---|---|
 | `FONT_SMALL` | 11 px | 15 px | door legends and every header. The door lamps are width-bound, not height-bound: at 11 px `RIGHT FWD` is 61 px of ink in a 71 px lamp, and would need 66 at 12 px. |
 | `FONT_LARGE` | 14 px | 19 px | the IRS lamps and the glareshield push-lights, which have more room |
-| `FONT_TINY` | 8 px | 11 px | small print on a lens — MASTER CAUTION's `PUSH TO RESET`, FIRE WARN's `BELL CUTOUT` — and the boot splash's credits |
+| `FONT_TINY` | 8 px | 11 px | small print on a lens — MASTER CAUTION's `PUSH TO RESET`, FIRE WARN's `BELL CUTOUT` |
 
 Each size carries only capitals, digits and `- . / : ( ) + _`: every legend is in capitals.
 

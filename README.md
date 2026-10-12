@@ -133,7 +133,8 @@ the firmware version and the build date. For the next 10 seconds it shows the pa
 new board. Then the screen stays dark until MobiFlight sends it something. That is normal.
 
 Tap **DEMO** on the splash to see every panel in action, with no sim: the board plays a short
-scene on each in turn. Hold a finger on the screen for 3 seconds to stop it.
+scene on each in turn. Hold a finger on the screen for 3 seconds to stop it. **CREDITS** shows
+who and what the firmware is built on.
 
 <details>
 <summary>Flashing by hand instead</summary>

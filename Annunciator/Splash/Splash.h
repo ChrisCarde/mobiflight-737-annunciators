@@ -6,7 +6,8 @@
     What the board shows when it powers up, before MobiFlight has sent it anything:
 
       0-10 s   the splash: the logo, the project name, the panel the board is configured
-               as, the firmware version, the build date, the credits, and a DEMO button
+               as, the firmware version, the build date, the credits, a DEMO button, and a
+               CREDITS button that opens every credit on a page of its own
      10-20 s   identify: the panel this board is configured as, lit and showing its lamps
                as they are -- or NO PANEL CONFIGURED, with the DEMO button, on a board
                without one
@@ -56,10 +57,15 @@ namespace Splash
     // preview sets one before drawing.
     void showPanelName(const char *name);
 
-    // The DEMO button, on whichever of the two was drawn last: whether a point is on it,
-    // and drawing it pressed in or standing proud.
-    bool buttonHit(int16_t x, int16_t y);
-    void pressButton(bool pressed);
+    // The credits page, which the splash's CREDITS button opens.
+    void drawCredits();
+
+    // The buttons on whichever screen was drawn last: DEMO (the splash and NO PANEL
+    // CONFIGURED) and CREDITS (the splash). Which one a point is on, and drawing one pressed
+    // in or standing proud.
+    enum Button : uint8_t { NO_BUTTON, DEMO_BUTTON, CREDITS_BUTTON };
+    Button buttonAt(int16_t x, int16_t y);
+    void   pressButton(Button button, bool pressed);
 
     Phase phase();
 
