@@ -24,8 +24,8 @@ PANELS = ["door", "irs", "elec", "mcs_l", "mcs_r", "mcs_both", "mcs_both_afds",
           "air", "fctl", "isdu"]
 SCENES = ["off", "demo", "all", "dim", "press"]
 # The boot splash is not a panel and has scenes of its own: the splash, the splash with its
-# DEMO button held in, and what a board with no panel shows after it. Rendered with every full run; --panel and --scene leave it
-# out unless they name it.
+# DEMO button held in, what a board with no panel shows after it, and the credits page.
+# Rendered with every full run; --panel and --scene leave it out unless they name it.
 SPLASH_SCENES = ["on", "press", "nopanel", "credits"]
 
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Assemble panel previews into sheets, and refresh the images the README uses.
+"""Assemble panel previews into sheets, and refresh the images the README and handbook use.
 
     python3 tools/preview/contact_sheet.py                 # one sheet of all ten panels
     python3 tools/preview/contact_sheet.py --scene all
-    python3 tools/preview/contact_sheet.py --docs          # refresh docs/previews/
+    python3 tools/preview/contact_sheet.py --docs          # refresh docs/previews/, splash included
     python3 tools/preview/contact_sheet.py --compare door  # 320 beside 480, true relative size
 
 Reads what render_all.py produced in tools/preview/out. --compare is the view that answers
@@ -28,6 +28,10 @@ PANELS = ["door", "irs", "elec", "mcs_l", "mcs_r", "mcs_both", "mcs_both_afds",
 # 240x320 and a 3.5in 320x480 module.
 PX_PER_MM = {320: 4.90, 480: 6.54}
 
+# What a board shows at boot, left to right: the splash, the credits page its CREDITS button
+# opens, and what a board with no panel shows after the splash.
+BOOT_SCREENS = ["on", "credits", "nopanel"]
+
 BG = (24, 24, 28)
 GAP = 8
 
@@ -41,8 +45,11 @@ def load(panel, scene, res):
 
 
 def sheet(scene, res, columns=3):
+    return tile([load(p, scene, res) for p in PANELS], columns)
+
+
+def tile(tiles, columns):
     from PIL import Image
-    tiles = [load(p, scene, res) for p in PANELS]
     w, h = tiles[0].size
     rows = (len(tiles) + columns - 1) // columns
     out = Image.new("RGB", (columns * w + (columns + 1) * GAP, rows * h + (rows + 1) * GAP), BG)
@@ -72,7 +79,8 @@ def main():
     ap.add_argument("--res", type=int, default=320, choices=[320, 480])
     ap.add_argument("--compare", metavar="PANEL", choices=PANELS)
     ap.add_argument("--docs", action="store_true",
-                    help="refresh docs/previews: the ten panels plus the README sheet")
+                    help="refresh docs/previews: the ten panels, the README sheet, the boot "
+                         "screens and the two screens compared")
     ap.add_argument("--out", type=Path)
     args = ap.parse_args()
 
@@ -86,7 +94,10 @@ def main():
         for panel in PANELS:
             load(panel, args.scene, args.res).save(DOCS / f"{panel}.png")
         sheet(args.scene, args.res).save(DOCS / "all-panels.png")
-        print(f"{len(PANELS) + 1} images in {DOCS.relative_to(ROOT)}")
+        boot = [load("splash", sc, args.res) for sc in BOOT_SCREENS]
+        tile(boot, len(boot)).save(DOCS / "boot-screens.png")
+        compare("door", args.scene).save(DOCS / "screens-compared.png")
+        print(f"{len(PANELS) + 3} images in {DOCS.relative_to(ROOT)}")
         return
 
     if args.compare:

@@ -894,6 +894,8 @@ Every time the board starts, before MobiFlight has sent it anything, it shows:
 | 10–20 s | the panel the board is set up as, lit, its lamps as they are (all unlit at power-up), or *No panel configured*, with the DEMO button, on a board without one |
 | after | dark until MobiFlight sends a value, as described under *When the panel is lit* below |
 
+![The splash, its credits page, and a board with no panel configured](previews/boot-screens.png)
+
 The second phase shows at a glance which panel a board was given in the Connector, without
 starting the sim. It uses the brightness from the custom device's config. The splash itself
 is at full brightness, because that config is not read until the board has started.

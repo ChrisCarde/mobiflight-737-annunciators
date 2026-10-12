@@ -136,6 +136,8 @@ Tap **DEMO** on the splash to see every panel in action, with no sim: the board 
 scene on each in turn. Hold a finger on the screen for 3 seconds to stop it. **CREDITS** shows
 who and what the firmware is built on.
 
+![The splash, its credits page, and a board with no panel configured](docs/previews/boot-screens.png)
+
 <details>
 <summary>Flashing by hand instead</summary>
 
@@ -339,6 +341,7 @@ flashing a board is slow. So the renderer builds for the desktop too:
 python3 tools/preview/build.py          # compiles the real panel sources, both screen sizes
 python3 tools/preview/render_all.py     # every panel, every state, as PNGs
 python3 tools/preview/contact_sheet.py  # the sheet at the top of this page
+python3 tools/preview/contact_sheet.py --docs  # refresh every image in docs/previews
 python3 tools/preview/render_demo.py    # the DEMO's scenes, as a GIF and keyframes per panel
 ```
 
