@@ -297,13 +297,18 @@ def main():
 
 
 def check_dist(sources):
-    """The install zip must carry the definitions as they are now: an out-of-date zip gives
-    the Connector a board without the newer panels, and they cannot be added."""
+    """The release is one zip, and it must carry the definitions as they are now: an
+    out-of-date zip gives the Connector a board without the newer panels, and they cannot be
+    added. It must also carry everything else a person is told to find in it."""
     zips = sorted(DIST.glob("*.zip")) if DIST.exists() else []
     if not zips:
-        warn("no install zip in _dist yet -- run a build (pio run) to make one")
+        warn("no release zip in _dist yet -- run a build (pio run) to make one")
         return
     refresh = "run `pio run -t annunciator_package` to refresh it"
+    # The release publishes _dist/*, so anything else in there would be published too.
+    for stray in sorted(p.name for p in DIST.iterdir() if p.suffix != ".zip"):
+        err("_dist has %s beside the release zip, which would be published with it -- %s"
+            % (stray, refresh))
     for zpath in zips:
         # The build names the zip <name>_<version>.zip and stamps that version over the board
         # JSON's placeholder 0.0.1 (copy_fw_files.py); expect exactly that.
@@ -313,7 +318,11 @@ def check_dist(sources):
                 "-- set VERSION to one before building" % (zpath.name, ver))
             continue
         with zipfile.ZipFile(zpath) as z:
-            names = {Path(n).name: n for n in z.namelist() if n.endswith(".json")}
+            all_names = set(z.namelist())
+            # The Connector's package is the Community folder; the source tree below it in
+            # the zip has definitions of its own, which are not to be mistaken for it.
+            names = {Path(n).name: n for n in all_names
+                     if n.startswith("Community/") and n.endswith(".json")}
             for src in sources:
                 if src.name not in names:
                     err("%s lacks %s -- %s" % (zpath.name, src.name, refresh))
@@ -330,7 +339,7 @@ def check_dist(sources):
             # One zip serves every board, so it must carry every board's firmware; and each
             # board needs a full image beside it for a first flash. A build of only one env
             # packages without complaint, so this is where a half-built release is caught.
-            packed_names = {Path(n).name for n in z.namelist()}
+            packed_names = {Path(n).name for n in all_names if n.startswith("Community/")}
             for src in sources:
                 if src.parent != BOARDS:
                     continue
@@ -340,9 +349,18 @@ def check_dist(sources):
                 if app not in packed_names:
                     err("%s lacks firmware %s -- build every env (pio run) with the same VERSION"
                         % (zpath.name, app))
-                if not (DIST / (stem + "_full.bin")).exists():
-                    err("_dist lacks %s_full.bin, the image a new board is flashed with "
-                        "-- build every env (pio run) with the same VERSION" % stem)
+                if "Firmware/%s_full.bin" % stem not in all_names:
+                    err("%s lacks Firmware/%s_full.bin, the image a new board is flashed with "
+                        "-- build every env (pio run) with the same VERSION" % (zpath.name, stem))
+            # The rest of what the setup guide sends a person to: the launcher, the notices,
+            # and the source tree with the tool that makes their profiles.
+            wanted = ["LICENSE", "THIRD-PARTY-NOTICES.md", "README.txt",
+                      "Source/README.md", "Source/tools/make_profiles.py"]
+            wanted += [p.name for p in (ROOT / "windows").glob("*.bat")]
+            wanted += ["Source/profiles/" + p.name for p in (ROOT / "profiles").glob("*.mfproj")]
+            for name in wanted:
+                if name not in all_names:
+                    err("%s lacks %s -- %s" % (zpath.name, name, refresh))
         check_site(ver, [s for s in sources if s.parent == BOARDS])
 
 

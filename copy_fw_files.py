@@ -18,6 +18,9 @@ custom_source_folder = env.GetProjectOption('custom_source_folder', "")
 # Get the foldername inside the zip file from the build environment.
 zip_filename = env.GetProjectOption('custom_zip_filename', "")
 
+# Full flash images wait here until they are packed; _dist holds only the release itself.
+IMAGES = Path("./_build/images")
+
 platform = env.BoardConfig().get("platform", {})
 
 def copy_fw_files(source, target, env):
@@ -55,18 +58,10 @@ def copy_fw_files(source, target, env):
         shutil.copy(fw_file, build_community / "firmware")
     print("Firmware in the package: " + (", ".join(f.name for f in built) or "none"))
 
-    zip_file_path = './_dist/' + zip_filename + '_' + firmware_version + '.zip'
-    # A package from an earlier VERSION would sit beside this one looking current.
-    for old in Path("./_dist").glob(zip_filename + "_*.zip") if os.path.exists("./_dist") else []:
-        if old.name != Path(zip_file_path).name:
-            old.unlink()
-    print("Creating zip file " + zip_file_path)
-    createZIP(str(build_community), zip_file_path, community_project)
-
     if platform == "espressif32":
         write_full_image(env)
         write_web_installer(env)
-    publish_extras()
+    write_release(build_community, community_project)
 
 
 def write_full_image(env):
@@ -84,8 +79,9 @@ def write_full_image(env):
     if not app.exists():
         return
     chip = env.BoardConfig().get("build.mcu", "esp32")
-    out = Path("./_dist") / (env.subst("${PROGNAME}") + "_full.bin")
-    for old in Path("./_dist").glob(env.subst("$PIOENV") + "_*_full.bin"):
+    IMAGES.mkdir(parents=True, exist_ok=True)
+    out = IMAGES / (env.subst("${PROGNAME}") + "_full.bin")
+    for old in IMAGES.glob(env.subst("$PIOENV") + "_*_full.bin"):
         if old.name != out.name:
             old.unlink()
 
@@ -168,38 +164,72 @@ def write_web_installer(env):
         for b in builds))
 
 
-def publish_extras():
-    """Files a person downloads alongside the package: the Windows launcher for the 3.2in
-    board, and the licences. Copied into _dist so that everything a release needs is in one
-    place.
+def source_files():
+    """Every file of the source tree a person would need to build or change this project: what
+    git tracks, plus what is new and not ignored, so a release built from a working tree is
+    the tree as it is. Returns None when this is not a git checkout (a release is always built
+    from one)."""
+    try:
+        listing = subprocess.run(
+            ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+            capture_output=True, check=True).stdout
+    except (OSError, subprocess.CalledProcessError):
+        return None
+    names = sorted(set(listing.decode("utf-8").split("\0")) - {""})
+    return [Path(n) for n in names if Path(n).is_file()]
 
-    The licences are not optional: the MIT and BSD components ask for their notices to
-    travel with a binary, and the LGPL for its text. THIRD-PARTY-NOTICES.md has all of it.
-    A licence text that is no longer in licenses/ is removed from _dist rather than left to
-    look current -- a release must not claim a licence its binaries no longer carry."""
+
+def write_release(community, project):
+    """The one file a release carries: _dist/<name>_<version>.zip.
+
+    Everything a person needs is in it, so there is a single thing to download:
+
+        Community/<project>/   the board and device definitions and the firmware, for the
+                               Connector's own Community folder
+        Firmware/              a full flash image per board, for flashing by hand
+        Start-...bat           the Windows launcher for the 3.2in board
+        Source/                the repository, which holds the profiles and the tool that
+                               makes them for a person's own board
+        LICENSE, THIRD-PARTY-NOTICES.md, Licenses/
+
+    The notices are not optional: the MIT and BSD components ask for their notices to travel
+    with a binary, and the LGPL for its text. A licence text that is no longer in licenses/
+    simply is not packed, so a release never claims one its binaries no longer carry.
+
+    _dist is emptied of everything else first. The release publishes _dist/*, so a file left
+    there by an earlier layout or an earlier VERSION would be published beside this one."""
     dist = Path("./_dist")
-    for extra in Path("windows").glob("*.bat"):
-        shutil.copy(extra, dist / extra.name)
-    for doc in ("LICENSE", "THIRD-PARTY-NOTICES.md"):
-        if Path(doc).exists():
-            shutil.copy(doc, dist / doc)
-    current = {text.name for text in Path("licenses").glob("*.txt")}
-    for stale in dist.glob("*.txt"):
-        if stale.name not in current:
-            stale.unlink()
-    for text in Path("licenses").glob("*.txt"):
-        shutil.copy(text, dist / text.name)
+    dist.mkdir(exist_ok=True)
+    zip_path = dist / (zip_filename + "_" + firmware_version + ".zip")
+    for old in dist.iterdir():
+        if old.is_file() and old != zip_path:
+            old.unlink()
 
-def createZIP(original_folder_path, zip_file_path, new_folder_name):
-    if os.path.exists("./_dist") == False:
-        os.mkdir("./_dist")
-    with zipfile.ZipFile(zip_file_path, 'w') as zipf:
-        for root, dirs, files in os.walk(original_folder_path):
-            for file in files:
-                # Create a new path in the ZIP file
-                new_path = os.path.join(new_folder_name, os.path.relpath(os.path.join(root, file), original_folder_path))
-                # Add the file to the ZIP file
-                zipf.write(os.path.join(root, file), new_path)
+    version_tag = firmware_version.replace(".", "_")
+    files = []   # (path on disk, path in the zip)
+    for path in sorted(Path(community).rglob("*")):
+        if path.is_file():
+            files.append((path, "Community/%s/%s" % (project, path.relative_to(community).as_posix())))
+    for image in sorted(IMAGES.glob("*_%s_full.bin" % version_tag)):
+        files.append((image, "Firmware/" + image.name))
+    for extra in sorted(Path("windows").glob("*.bat")):
+        files.append((extra, extra.name))
+    for doc in ("release/README.txt", "LICENSE", "THIRD-PARTY-NOTICES.md"):
+        if Path(doc).exists():
+            files.append((Path(doc), Path(doc).name))
+    for text in sorted(Path("licenses").glob("*.txt")):
+        files.append((text, "Licenses/" + text.name))
+    source = source_files()
+    if source is None:
+        print("WARNING: not a git checkout, so the source is not in the release package")
+    else:
+        files += [(path, "Source/" + path.as_posix()) for path in source]
+
+    print("Creating zip file " + str(zip_path))
+    with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
+        for path, arcname in files:
+            zipf.write(path, arcname)
+    print("Release package: %d files, %.1f MB" % (len(files), zip_path.stat().st_size / 1e6))
 
 def replace_in_file(file_path, replacements):
     """Replace all keys in `replacements` with their values in the given file."""
