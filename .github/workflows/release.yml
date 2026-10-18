@@ -1,6 +1,7 @@
-# Builds both boards and publishes what a person installs from: the Connector package, a full
-# flash image per board, the 3.2in launcher and the licences on the release -- exactly what
-# `pio run` leaves in _dist/ -- and the browser installer in _site/ on GitHub Pages.
+# Builds both boards and publishes what a person installs from: one zip on the release --
+# the Connector's Community folder, a full flash image per board, the 3.2in launcher, the
+# licences and the source code, exactly what `pio run` leaves in _dist/ -- and the browser
+# installer in _site/ on GitHub Pages.
 #
 #   Release:  push a tag   git tag v0.1.0 && git push origin v0.1.0
 #   Dry run:  Actions -> Release -> Run workflow. Builds the same set as a downloadable
@@ -27,7 +28,11 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      # Full history and tags: the release notes are written from the commits since the
+      # previous tag, and a shallow clone has neither.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -66,6 +71,33 @@ jobs:
       - name: Check the definitions and the package
         run: python tools/check_definitions.py
 
+      # Claude drafts the notes from the commits since the previous tag (tools/release_notes.py).
+      # This step cannot fail the build: with no key, no network or no usable answer there is no
+      # _build/notes.md, and the release falls back to GitHub's generated notes below.
+      - name: Draft the release notes
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python tools/release_notes.py _build/notes.md
+
+      - name: Compose the release body
+        id: body
+        run: |
+          mkdir -p _build
+          cat > _build/body.md <<'EOF'
+          Firmware and MobiFlight definitions for both boards, in the one zip below: the
+          Community folder for MobiFlight, the Windows launcher and the source code. Follow the
+          [setup guide](https://github.com/${{ github.repository }}#setup): it installs the
+          firmware from the [browser installer](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)
+          and takes the rest from the zip.
+          EOF
+          if [ -s _build/notes.md ]; then
+            printf '\n## What changed\n\n' >> _build/body.md
+            cat _build/notes.md >> _build/body.md
+            echo "generated=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "generated=false" >> "$GITHUB_OUTPUT"
+          fi
+
       # Gated on the event, not the ref: a manual run started from a tag is still a dry run.
       - name: Upload the build (dry run)
         if: github.event_name == 'workflow_dispatch'
@@ -75,20 +107,21 @@ jobs:
           path: |
             _dist/
             _site/
+            _build/body.md
           if-no-files-found: error
 
-      - name: Publish the release
+      # A draft: read the notes, edit them if need be, then press Publish on the release page.
+      # (The installer on Pages goes live with the tag either way; only the release page waits.)
+      - name: Publish the release (as a draft)
         if: github.event_name == 'push'
         uses: softprops/action-gh-release@v2
         with:
+          draft: true
           files: _dist/*
           fail_on_unmatched_files: true
-          generate_release_notes: true
-          body: >
-            Firmware and MobiFlight definitions for both boards. Follow the
-            [setup guide](https://github.com/${{ github.repository }}#setup): it installs the
-            firmware from the [browser installer](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)
-            and says which of the files below you need for your board.
+          body_path: _build/body.md
+          # Without drafted notes, GitHub's own list is appended to the body, as before.
+          generate_release_notes: ${{ steps.body.outputs.generated != 'true' }}
 
       - name: Stage the web installer
         if: github.event_name == 'push'
