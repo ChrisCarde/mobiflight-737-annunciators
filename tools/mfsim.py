@@ -74,7 +74,7 @@ PANEL_FILES = {
 
 def _panel(key):
     info = json.loads((ROOT / "Annunciator" / "Community" / "devices" /
-                       (PANEL_FILES[key] + ".device.json")).read_text())["Info"]
+                       (PANEL_FILES[key] + ".device.json")).read_text(encoding="utf-8"))["Info"]
     return info["Type"], info["Label"]
 
 
@@ -90,7 +90,7 @@ def _boards():
     """
     out = {}
     for path in sorted((ROOT / "Annunciator" / "Community" / "boards").glob("*.board.json")):
-        board = json.loads(path.read_text())
+        board = json.loads(path.read_text(encoding="utf-8"))
         info = board["Info"]
         backlight = next((p["Pin"] for p in board.get("Pins", [])
                           if "backlight" in p.get("Name", "").lower()), None)
@@ -116,8 +116,11 @@ def escape(value):
 
 
 class Board:
-    def __init__(self, port, verbose=False):
+    def __init__(self, port, verbose=False, dtr=True, quiet=False):
+        """dtr: the DTR line to open with; RTS is always off. quiet: do not echo messages
+        other than the one being waited for (a board that reboots announces itself)."""
         self.verbose = verbose
+        self.quiet = quiet
         self.buf = ""
         self.ser = serial.Serial()
         self.ser.port = port
@@ -128,7 +131,10 @@ class Board:
         # so each command acts on the live panel instead of a freshly rebooted, dark one.
         # (The Connector on Windows also ends with DTR on, but .NET gets there by way of
         # other states, so this is not proof that its open is harmless -- see docs/handbook.md.)
-        self.ser.dtr = True
+        # DTR is the boot-select line: held on through a reset glitch it leaves the board in
+        # its bootloader, where it cannot answer. Off, the worst a glitch does is reboot it
+        # into the firmware -- tools/make_profiles.py --scan opens that way on Windows.
+        self.ser.dtr = dtr
         self.ser.rts = False
         self.ser.open()
         self.awake_at = 0.0
@@ -201,7 +207,7 @@ class Board:
         deadline = time.time() + timeout
         while time.time() < deadline:
             for msg in self._messages():
-                if self.verbose or msg[0] not in (cmd, K_DEBUG):
+                if self.verbose or (msg[0] not in (cmd, K_DEBUG) and not self.quiet):
                     print("  << %s" % ",".join(str(x) for x in msg))
                 if msg[0] == cmd:
                     return msg[1:]
@@ -234,11 +240,18 @@ def known_usb_ids():
     Connector would try too."""
     ids = set()
     for path in (ROOT / "Annunciator" / "Community" / "boards").glob("*.board.json"):
-        for pattern in json.loads(path.read_text()).get("HardwareIds", []):
+        for pattern in json.loads(path.read_text(encoding="utf-8")).get("HardwareIds", []):
             m = re.search(r"VID_([0-9A-Fa-f]{4})\W+PID_([0-9A-Fa-f]{4})", pattern)
             if m:
                 ids.add((int(m.group(1), 16), int(m.group(2), 16)))
     return ids
+
+
+def matching_ports(ports):
+    """Those of the given serial ports (pyserial's list_ports.comports()) that carry one of
+    the Annunciator boards' USB vendor and product ids."""
+    wanted = known_usb_ids()
+    return [p for p in ports if p.vid is not None and (p.vid, p.pid) in wanted]
 
 
 def find_port():
@@ -252,7 +265,7 @@ def find_port():
 
     wanted = known_usb_ids()
     ports = list(list_ports.comports())
-    boards = [p for p in ports if p.vid is not None and (p.vid, p.pid) in wanted]
+    boards = matching_ports(ports)
 
     if len(boards) == 1:
         return boards[0].device

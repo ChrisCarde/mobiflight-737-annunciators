@@ -6,9 +6,16 @@ panel's custom device, and -- on touch panels -- inputs that send the pressed bu
 aircraft. Merge it into the project you fly with (the B107's): in Connector 11.2+, the + after
 the last tab > From existing project. File > Open would REPLACE that project instead.
 
+    python3 tools/make_profiles.py --scan                           # the boards plugged in
     python3 tools/make_profiles.py                                  # every panel, this board
     python3 tools/make_profiles.py --serial SN-XXXXXXXXXXXX
     python3 tools/make_profiles.py --board door=SN-AAAA:Doors --board mcs_both=SN-BBBB:Glareshield
+
+--scan asks each Annunciator board plugged into this PC for its serial number, its name and
+the panel it is set up as, and writes the profiles for exactly those boards -- nothing to look
+up or type. Close MobiFlight Connector first (it holds the boards' ports) and set each board up
+as a panel in the Connector (README, step 5) before scanning. It needs pyserial:
+py -m pip install pyserial.
 
 A board holds one panel. With --board, each named panel is bound to its own board (and, after
 the colon, that board's name as the Connector shows it), and Annunciator-Combined-*.mfproj
@@ -43,6 +50,7 @@ writes (_version 0.9; 11.2 migrates it on load).
 import argparse
 import hashlib
 import json
+import os
 import re
 import sys
 import uuid
@@ -354,7 +362,7 @@ GUID_NS = uuid.UUID("6f2c1d52-3b0e-4f5a-9c1e-4a9d7a0e2b11")
 def device_name(panel):
     """A panel's default device name: its device definition's label, which is what the
     Connector names the device when it is added."""
-    return json.loads((DEVICES / PANELS[panel][1]).read_text())["Info"]["Label"]
+    return json.loads((DEVICES / PANELS[panel][1]).read_text(encoding="utf-8"))["Info"]["Label"]
 
 
 def name_problem(name):
@@ -587,7 +595,7 @@ def check_touch_names():
                 problems.append("%s: has bindings but no firmware zone table" % panel)
             continue
         path, table = spec[6]
-        zones = zone_names((ROOT / "Annunciator" / path).read_text(), table)
+        zones = zone_names((ROOT / "Annunciator" / path).read_text(encoding="utf-8"), table)
         if zones is None:
             problems.append("%s: zone table %s not found in %s" % (panel, table, path))
             continue
@@ -606,6 +614,100 @@ def check_touch_names():
 
 # ---- Command line ------------------------------------------------------------------------
 SERIAL_RE = re.compile(r"^SN-[0-9A-F]{12}$")
+
+
+def write_profile(path, data):
+    """UTF-8 and LF whatever the platform: Path.write_text would write Windows' own line ends,
+    so the same board would give different bytes there than the checked-in profiles have."""
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(json.dumps(data, indent=2) + "\n")
+
+
+def scan_boards():
+    """Ask every Annunciator board on a USB port who it is and what it is set up as.
+
+    Speaks the Connector's own protocol through tools/mfsim.py: kGetInfo for the board's
+    type, name and serial, kGetConfig for the custom device stored on it. Boards are found by
+    USB vendor and product id, as the Connector does, so other serial devices are not
+    spoken to. Nothing is written to a board.
+
+    Returns ({panel: {"serial", "name"}}, {panel: device name}). Exits, saying what to do, if
+    nothing usable is found; a board it cannot use is reported and left out."""
+    try:
+        import serial
+        from serial.tools import list_ports
+    except ImportError:
+        sys.exit("--scan needs pyserial. Install it with:  py -m pip install pyserial\n"
+                 "(or pip3 / python3 -m pip install pyserial), then run this again.")
+    import mfsim
+
+    ports = mfsim.matching_ports(list_ports.comports())
+    if not ports:
+        sys.exit("no Annunciator board found on a USB port. Is it plugged in (3.2in: with a "
+                 "USB-A to USB-C cable)? Or give the boards by hand with --serial / --board.")
+
+    by_type = {v[0]: panel for panel, v in PANELS.items()}
+    boards, names, owner = {}, {}, {}
+    for p in sorted(ports, key=lambda p: p.device):
+        # Windows hands a port over with DTR and RTS in whatever state its driver likes, and on
+        # the 3.2in board those lines are its reset and boot-select. Opened with DTR on, a
+        # glitch there strands the board in its bootloader -- the Connector's own problem, and
+        # what the launcher exists to prevent. Opened with both off, a glitch can only reboot
+        # it into the firmware, which answers again within a second or two, and the retries in
+        # wait_ready() cover that. Elsewhere the gentler open (DTR on) does not reboot it.
+        try:
+            board = mfsim.Board(p.device, dtr=(os.name != "nt"), quiet=True)
+        except (serial.SerialException, OSError) as e:
+            print("skip  %s: could not open it (%s). Is MobiFlight Connector still running? "
+                  "Close it and try again." % (p.device, str(e).strip()))
+            continue
+        # Windows raises (a PermissionError inside a SerialException) when the board drops off
+        # the USB bus mid-conversation, as it does if it resets; macOS and Linux just go quiet.
+        try:
+            try:
+                info = board.wait_ready()
+                board.send(mfsim.K_GET_CONFIG)
+                config = board.expect(mfsim.K_INFO)
+            finally:
+                board.close()
+        except (serial.SerialException, OSError) as e:
+            print("skip  %s: the board stopped answering (%s). Unplug it, plug it in again and "
+                  "scan again." % (p.device, str(e).strip()))
+            continue
+        if not info or len(info) < 3:
+            print("skip  %s: no answer. Is this board running the Annunciator firmware (README, "
+                  "step 2)? If it is, unplug it, plug it in again and re-run." % p.device)
+            continue
+        btype, bname, bserial = info[0], info[1], info[2].strip().upper()
+        if not SERIAL_RE.match(bserial):
+            print("skip  %s: it reports %r as its serial number, which is not one the Connector "
+                  "would show" % (p.device, info[2]))
+            continue
+        devices = []
+        for entry in (config[0].split(":") if config and config[0] else []):
+            parts = entry.split(".")
+            if len(parts) >= 5 and parts[0] == "17":   # a custom device: type, pin, brightness, name
+                devices.append((parts[1], parts[4]))
+        shown = "%s/ %s" % (bname, bserial)
+        if not devices:
+            print("skip  %s: %s has no panel set up. Do README step 5 for it in the Connector "
+                  "(or `mfsim.py setup`), then scan again." % (p.device, shown))
+            continue
+        dtype, dname = devices[0]
+        panel = by_type.get(dtype)
+        if panel is None:
+            print("skip  %s: %s carries %r, which is not a panel this project knows"
+                  % (p.device, shown, dtype))
+            continue
+        if panel in boards:
+            sys.exit("%s and %s are both set up as %s. A profile addresses one board per panel; "
+                     "give the second one a different panel, or generate it by hand with --board."
+                     % (owner[panel], p.device, dtype))
+        print("found %-6s %-27s %s on %s -> %s" % (p.device, shown, dname, btype, panel))
+        boards[panel], names[panel], owner[panel] = {"serial": bserial, "name": bname}, dname, p.device
+    if not boards:
+        sys.exit("no board could be used (see above)")
+    return boards, names
 
 
 def split_board(value, what):
@@ -635,9 +737,14 @@ def parse_pairs(values, what):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("--serial", default=DEFAULT_SERIAL,
+    ap.add_argument("--scan", action="store_true",
+                    help="find the Annunciator boards plugged into this PC, read each one's "
+                         "serial, name and panel, and write the profiles for those boards "
+                         "(close MobiFlight Connector first). Replaces --serial, --board and --name")
+    ap.add_argument("--serial", default=None,
                     help="board serial for every panel without its own --board; may be pasted as "
-                         "the Connector shows it, 'Name/ SN-...', to give the board's name too")
+                         "the Connector shows it, 'Name/ SN-...', to give the board's name too "
+                         "(default: the author's, %s)" % DEFAULT_SERIAL)
     ap.add_argument("--board", action="append", metavar="PANEL=SERIAL[:NAME]",
                     help="bind one panel to its own board, optionally with the board's name "
                          "(default %r; or paste 'Name/ SN-...' as the Connector shows it); repeat "
@@ -659,9 +766,9 @@ def main():
         if why:
             problems.append("%s: device definition label %r is %s" % (panel, device_name(panel), why))
     if args.offsets_text:
-        problems += check_offsets(Path(args.offsets_text).read_text())
+        problems += check_offsets(Path(args.offsets_text).read_text(encoding="utf-8", errors="replace"))
     if args.sdk_header:
-        problems += check_events(Path(args.sdk_header).read_text(errors="replace"))
+        problems += check_events(Path(args.sdk_header).read_text(encoding="utf-8", errors="replace"))
     if problems:
         sys.exit("\n".join("FAIL  " + p for p in problems))
     print("OK    touch buttons match the firmware's zone tables, both ways")
@@ -670,9 +777,12 @@ def main():
     if args.sdk_header:
         print("OK    every event number matches the PMDG SDK header")
 
-    default_serial, default_name = split_board(args.serial, "--serial")
+    if args.scan and (args.serial or args.board or args.name):
+        ap.error("--scan finds each board's serial, name and panel itself; "
+                 "do not combine it with --serial, --board or --name")
+    default_serial, default_name = split_board(args.serial or DEFAULT_SERIAL, "--serial")
     default_name = default_name or BOARD_NAME
-    boards = {}
+    boards, scanned_names = scan_boards() if args.scan else ({}, {})
     for panel, value in parse_pairs(args.board, "board").items():
         serial_part, _, explicit = value.partition(":")
         serial, pasted = split_board(serial_part, "--board " + panel)
@@ -690,11 +800,12 @@ def main():
             sys.exit("%s and %s are both on %s -- a board holds one panel"
                      % (taken[b["serial"]], panel, b["serial"]))
         taken[b["serial"]] = panel
-    if boards and default_serial in taken and len(boards) < len(PANELS):
+    if boards and not args.scan and default_serial in taken and len(boards) < len(PANELS):
         print("note  panels without --board are written for %s, which --board gives to %s; "
               "merge only the files for the panels you have" % (default_serial, taken[default_serial]))
 
     names = {k: device_name(k) for k in PANELS}
+    names.update(scanned_names)
     for panel, name in parse_pairs(args.name, "name").items():
         why = name_problem(name)
         if why:
@@ -704,10 +815,12 @@ def main():
     OUT_DIR.mkdir(exist_ok=True)
     combined = []
     for panel in PANELS:
+        if args.scan and panel not in boards:
+            continue   # no board of that kind is plugged in: nothing to write for it
         board = boards.get(panel, {"serial": default_serial, "name": default_name})
         cfg = config_file(panel, board, names[panel], args.inputs)
         path = OUT_DIR / ("Annunciator-%s-PMDG737-800.mfproj" % PANELS[panel][2])
-        path.write_text(json.dumps(project(cfg["Label"], [cfg]), indent=2) + "\n")
+        write_profile(path, project(cfg["Label"], [cfg]))
         n_in = len(PANELS[panel][4]) + len(PANELS[panel][5])
         print("wrote %-52s %2d outputs%s -> %s on %s (%s), tab %s"
               % (path.name, len(cfg["ConfigItems"]) - n_in,
@@ -718,7 +831,7 @@ def main():
 
     path = OUT_DIR / COMBINED
     if combined:
-        path.write_text(json.dumps(project("Annunciators - PMDG 737-800", combined), indent=2) + "\n")
+        write_profile(path, project("Annunciators - PMDG 737-800", combined))
         print("wrote %s: %s" % (path.name, ", ".join(p for p in PANELS if p in boards)))
     elif path.exists():
         path.unlink()  # from an earlier --board run; its bindings would be stale now

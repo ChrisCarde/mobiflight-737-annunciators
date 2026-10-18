@@ -97,20 +97,27 @@ a step differs between the two boards it says so; otherwise it is the same for b
 
 **You will need:** the board and a USB cable · MSFS 2024 with the PMDG 737-800 ·
 [MobiFlight Connector](https://www.mobiflight.com/) 11.2 or newer · [FSUIPC7](https://fsuipc.com/)
-7.5.6 or newer · Chrome or Edge · [Python 3](https://www.python.org/downloads/) (step 6 only).
+7.5.6 or newer · Chrome or Edge · [Python 3](#installing-python-on-windows) (step 6 only).
 
-### 1. Download the files
+### 1. Download the release
 
-Open the **[latest release](../../releases/latest)** and download:
+Open the **[latest release](../../releases/latest)** and, under *Assets*, download
+**`Annunciator_<version>.zip`**. That one file is everything: both boards, and nothing else to
+fetch. (GitHub also lists *Source code (zip)* and *(tar.gz)* there. Ignore them: the same source
+is already in the zip, with the rest.)
 
-| File | Board |
+Right-click the zip and choose **Extract All…**. Choose somewhere you will find it again, such
+as `Documents`, and keep the folder: steps 4 and 6 use it. It contains:
+
+| In the zip | What it is for |
 |---|---|
-| `Annunciator_<version>.zip` — the MobiFlight package | both |
-| `Start-MobiFlight-E32R32P.bat` — Connector launcher | 3.2″ |
-| **Source code (zip)** — the profiles and the tool that makes them | both |
+| `Community` | The board and panel definitions for MobiFlight Connector (step 4) |
+| `Start-MobiFlight-E32R32P.bat` | Starts the Connector for the 3.2″ board (step 4; the 3.5″ does not need it) |
+| `Source` | The source code, with the profiles and the tool that makes them for your board (step 6) |
+| `Firmware` | A full flash image for each board, for [flashing by hand](#2-install-the-firmware). Most people never need these |
+| `Licenses`, `LICENSE`, `THIRD-PARTY-NOTICES.md` | The licences |
 
-Unzip *Source code* somewhere you will find it again, such as `Documents`. The folder it makes
-is the one steps 6 and 7 refer to. The firmware itself is installed from the browser in step 2.
+The firmware itself is installed from the browser in step 2.
 
 ### 2. Install the firmware
 
@@ -141,12 +148,13 @@ who and what the firmware is built on.
 <details>
 <summary>Flashing by hand instead</summary>
 
-If the installer cannot reach the board, flash the full image from the release with
+If the installer cannot reach the board, flash the full image from the download with
 Espressif's own page. This always erases the board's panel setup and touch calibration.
 
-1. Download your board's firmware from the release: `annunciator_e32r32p_<version>_full.bin`
-   for the 3.2″, `annunciator_c3248w535_<version>_full.bin` for the 3.5″. The version is
-   written with underscores: `annunciator_e32r32p_0_1_0_full.bin` for 0.1.0.
+1. Find your board's image in the `Firmware` folder of the unzipped release:
+   `annunciator_e32r32p_<version>_full.bin` for the 3.2″, `annunciator_c3248w535_<version>_full.bin`
+   for the 3.5″. The version is written with underscores: `annunciator_e32r32p_0_1_0_full.bin`
+   for 0.1.0.
 2. In Chrome or Edge, open the **[ESP web flasher](https://espressif.github.io/esptool-js/)**.
 3. Set **Baudrate**:
    - **3.2″:** `230400` — its USB chip fails at faster speeds.
@@ -179,20 +187,25 @@ Espressif's own page. This always erases the board's panel setup and touch calib
 ### 4. Install the package
 
 1. Close the MobiFlight Connector.
-2. Open File Explorer, click the address bar, paste
-   `%LOCALAPPDATA%\MobiFlight\MobiFlight Connector\Community` and press Enter.
-3. Unzip `Annunciator_<version>.zip` into that folder. You should end up with a folder called
-   `Annunciator` there, containing `boards`, `devices` and `firmware`.
-4. Start the Connector.
+2. In File Explorer, open the `Community` folder of the unzipped release. It holds one folder,
+   `Annunciator`. Select it and copy it (Ctrl+C).
+3. Click the address bar, paste
+   `%LOCALAPPDATA%\MobiFlight\MobiFlight Connector\Community` and press Enter. That is the
+   Connector's own `Community` folder; if it holds other folders, leave them be.
+4. Paste (Ctrl+V). You should end up with a folder called `Annunciator` there, containing
+   `boards`, `devices` and `firmware`. If Windows asks about replacing files, you are updating
+   an earlier install: choose **Replace**.
+5. Start the Connector.
    - **3.2″ — from now on, always start the Connector with the launcher.** This board shares
      its USB id with many Arduino clones, and the Connector opens it the way it opens an
      Arduino, which resets the board into a mode where it cannot answer. It then shows up as a
      *compatible module* offering to upload firmware — never accept that. To prevent it:
      1. Find the board's COM port: Device Manager → **Ports (COM & LPT)** → *USB-SERIAL CH340
         (COMn)*.
-     2. Right-click `Start-MobiFlight-E32R32P.bat` → **Edit**, change `COM7` on the
+     2. In the unzipped release, right-click `Start-MobiFlight-E32R32P.bat` → **Edit**, change `COM7` on the
         `set PORTS=COM7` line to your port, and save.
-     3. Double-click it to start the Connector. Keep the board in the same USB socket, or its
+     3. Double-click it to start the Connector. (Right-click → *Send to → Desktop (create
+        shortcut)* puts a shortcut where you will use it.) Keep the board in the same USB socket, or its
         COM number changes.
 
      If Windows refuses to run the batch file, the
@@ -215,32 +228,64 @@ reflashing.
    Annunciator*, *Master Caution*, *IRS Display Unit* and so on.
 4. **Leave the pin as it is offered** — it is the backlight — and confirm.
 5. Click **Upload config**, wait for it to finish, and close the dialog.
-6. **Write down the board's serial number**: `SN-` followed by 12 characters, shown with the
-   board in the same list. You need it in the next step.
+6. If you will type the board's serial number in the next step instead of scanning for it,
+   write it down now: `SN-` followed by 12 characters, shown with the board in the same list.
 
 ### 6. Make the profiles for your board
 
 The profiles connect each lamp and button to the aircraft. Each one is tied to a single board's
 serial number, and the ones in the download are made for the author's board. **Loaded as they
-are, they do nothing — with no error to tell you.** This step makes a set for yours.
+are, they do nothing — with no error to tell you.** This step makes a set for yours: the tool
+asks each board plugged into the PC for its serial number and panel, and writes the profiles
+for those boards.
 
-1. Install [Python 3](https://www.python.org/downloads/). The default options are fine.
-2. In File Explorer, open the folder you unzipped *Source code* into — the one that contains
+1. Install Python 3, if you have not already. [Installing Python on Windows](#installing-python-on-windows)
+   below has the steps; to find out whether you have it, open a command window (step 4 below)
+   and type `py --version`.
+2. **Close the MobiFlight Connector** — it holds the boards' ports — and leave every board
+   plugged in, each set up as a panel (step 5).
+3. In File Explorer, open the `Source` folder of the unzipped release — the one that contains
    `README.md` and a `tools` folder.
-3. Click the address bar, type `cmd`, and press Enter. A command window opens in that folder.
-4. Type the line for your board, with your serial number in place of the X's, and press Enter:
+4. Click the address bar, type `cmd`, and press Enter. A command window opens in that folder.
+5. The tool needs one add-on, **pyserial**, to talk to the boards. Install it once:
 
    ```bat
-   py tools\make_profiles.py --serial "Annunciator/ SN-XXXXXXXXXXXX"
+   py -m pip install pyserial
    ```
-   for a **3.2″** board, or
-   ```bat
-   py tools\make_profiles.py --serial "Annunciator 35/ SN-XXXXXXXXXXXX"
-   ```
-   for a **3.5″** board.
 
-5. It prints one line per panel. The files in the `profiles` folder are now made for your
-   board.
+6. Then scan:
+
+   ```bat
+   py tools\make_profiles.py --scan
+   ```
+
+7. It prints a line for each board it found — the port, the board's name and serial number, and
+   the panel it is set up as — then one line for each profile it wrote. Only the panels it found get a file, and those files
+   in the `profiles` folder (inside `Source`) are now made for your boards. It also writes
+   `Annunciator-Combined-PMDG737-800.mfproj`, with every board's panel in one file, so step 7
+   is a single merge.
+
+A board it skips is reported with the reason: *could not open it* means the Connector (or
+another program) still has the port; *no panel set up* means step 5 has not been done for that
+board; *no answer* means it is not running the Annunciator firmware. Windows may restart a board
+as the tool opens its port — you will see its splash again — and the tool waits for it to come
+back. If a board still does not answer, unplug it, plug it in again and scan again.
+
+<details>
+<summary>Typing the serial number instead of scanning</summary>
+
+Use this if the scan cannot see a board, or to make profiles for a board that is not plugged in.
+Type the line for your board, with your serial number in place of the X's, and press Enter:
+
+```bat
+py tools\make_profiles.py --serial "Annunciator/ SN-XXXXXXXXXXXX"
+```
+for a **3.2″** board, or
+```bat
+py tools\make_profiles.py --serial "Annunciator 35/ SN-XXXXXXXXXXXX"
+```
+for a **3.5″** board. It writes a profile for every panel, all for that one board; use the one
+for the panel the board is set up as.
 
 **More than one board?** Give each board its panel and serial in one command:
 
@@ -259,6 +304,41 @@ name in **MobiFlight Modules** first and use those names here. The names to use 
 | AC & DC metering | `elec` | Master caution, first officer | `mcs_r` |
 | Air conditioning | `air` | Master caution, both | `mcs_both` |
 | Flight controls | `fctl` | Master caution with AFDS | `mcs_both_afds` |
+
+</details>
+
+#### Installing Python on Windows
+
+The profile tool is a Python script, and Windows does not come with Python. It is a one-off,
+about five minutes, and nothing else here needs it.
+
+1. Open **[python.org/downloads](https://www.python.org/downloads/)** in your browser. Its
+   yellow button, **Download Python 3.x.x**, is the Windows installer. Run the file it saves.
+2. On the installer's first page, **tick *Add python.exe to PATH*** (the box at the bottom) and
+   leave everything else as it is, then click **Install Now**. If Windows asks whether to allow
+   changes, say yes.
+3. When it says *Setup was successful*, click **Close**.
+4. Check it: press the Windows key, type `cmd`, press Enter, and in the window that opens type
+
+   ```bat
+   py --version
+   ```
+
+   It should answer with `Python 3.` and a version, such as `Python 3.13.1`. Any version from
+   3.9 on is fine.
+
+If it does not:
+- **`'py' is not recognized…`** — open **Settings → Apps → Installed apps**, find *Python 3.x*,
+  choose **Modify → Modify**, and make sure *py launcher* is ticked. Or run the installer again
+  and choose *Repair*. Then open a **new** command window: one that was already open does not
+  see the install.
+- **Typing `python` opens the Microsoft Store** — that is a stub Windows ships, not Python.
+  Ignore it and use `py`, as everything here does.
+- **Windows will not let you approve the installer** (no admin rights on this PC) — on the first
+  page untick *Use admin privileges when installing py.exe*, then click **Install Now**. It then
+  installs for your account only.
+- **You would rather use the Microsoft Store** — search for *Python 3.13* there (the one
+  published by the *Python Software Foundation*) and install it. Then use `py` as above.
 
 ### 7. Add the profile to your project
 
@@ -309,13 +389,13 @@ Test Mode, power saving, and the full message reference.
 git clone https://github.com/ChrisCarde/mobiflight-737-annunciators.git && cd mobiflight-737-annunciators
 pio run -e annunciator_e32r32p   -t upload     # the 3.2in board
 pio run -e annunciator_c3248w535 -t upload     # the 3.5in board
-pio run -t annunciator_package                 # everything that goes on a release, in _dist/
+pio run -t annunciator_package                 # the release zip, in _dist/
 ```
 
 The first build clones the MobiFlight core firmware into `./src`. `annunciator_package`
-writes the Connector zip, a full flash image for each board, the launcher and the licences
-into `_dist/` — exactly the set of files a release carries — and the browser installer into
-`_site/`. To
+writes the release zip into `_dist/` — the file a release carries, and the only one: the
+Connector's `Community` folder, a full flash image for each board, the launcher, the licences
+and this source tree — and the browser installer into `_site/`. To
 try the installer before a release, serve it locally (`python3 -m http.server -d _site`) and
 open `http://localhost:8000` in Chrome or Edge. Set `VERSION` (e.g. `VERSION=1.0.0`) to stamp
 a release number into all of them; without it they are `0.0.1`, which the Connector treats
@@ -323,7 +403,7 @@ as development firmware and never offers to update.
 
 Releases are built by GitHub Actions from a clean checkout
 ([release.yml](.github/workflows/release.yml)): pushing a tag such as `v0.1.0` builds both
-boards as that version, runs the definition checks, attaches `_dist/` to the release and
+boards as that version, runs the definition checks, attaches the zip in `_dist/` to the release and
 publishes `_site/` as the installer on GitHub Pages. The platform and every library are
 pinned to exact versions in `Annunciator_platformio.ini`, so that build is the same as the
 one tested on the boards.
@@ -369,6 +449,7 @@ Annunciator/            the firmware
   Community/              the board and device definitions the Connector reads
 profiles/               ready-made MobiFlight projects for the PMDG 737-800
 windows/                the Connector launcher for the 3.2in board
+release/                the README.txt at the top of the release zip
 web/                    the browser installer page (its manifest is written by the build)
 tools/                  profile generator, definition checks, a bench tool, the host preview
 art/                    the splash logo's source image and its licence
@@ -402,9 +483,9 @@ Known gaps are listed at the end of the handbook.
 
 This repository's own code and definitions are [MIT](LICENSE).
 
-The firmware images on each release also contain other people's work — the MobiFlight core
+The firmware images in each release also contain other people's work — the MobiFlight core
 firmware, the display libraries, the Arduino core for the ESP32 and the ESP-IDF, FreeRTOS and
 C library it is built on, the font and the splash logo — under MIT, BSD, Apache 2.0, LGPL,
 OFL and CC BY-SA 4.0 licences. Every component, its licence and its notices are in
-[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md), and each release carries that file and the
+[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md), and each release zip carries that file and the
 licence texts alongside the binaries.

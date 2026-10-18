@@ -368,12 +368,24 @@ install** — afterwards it is gone. Read the whole flash with esptool: 4 MB on 
 
 Every `pio run` and every upload also writes `_dist/Annunciator_<version>.zip`, rebuilt
 from the current Connector definitions each time (`pio run -t annunciator_package` does
-only that). One package serves both boards: it carries both board definitions, the ten
-device definitions they share, and a firmware binary for each board — so build every env
-with the same `VERSION`; `tools/check_definitions.py` fails a package that lacks one. That
-binary is the **application image**, not a merged flash image — it is there for reference,
-not for `esptool write_flash 0x0`. Use `pio run -t upload`, or the `_full.bin` image beside
-the zip.
+only that). That zip is the whole release and `_dist/` holds nothing else; the build deletes
+any other file there, because the release publishes `_dist/*`. It contains:
+
+- `Community/Annunciator/` — the Connector's package: both board definitions, the ten device
+  definitions they share, and a firmware binary for each board. Build every env with the same
+  `VERSION`; `tools/check_definitions.py` fails a package that lacks one. That binary is the
+  **application image**, not a merged flash image — it is there for the Connector, not for
+  `esptool write_flash 0x0`.
+- `Firmware/` — a `_full.bin` flash image per board, which *is* for `write_flash 0x0`. They
+  are staged in `_build/images/` until packed.
+- `Start-MobiFlight-E32R32P.bat` (from `windows/`), `README.txt` (from `release/`), `LICENSE`,
+  `THIRD-PARTY-NOTICES.md` and `Licenses/`.
+- `Source/` — every file git tracks, plus any new file it does not ignore, so a release built
+  from a working tree is that tree. It is what the setup guide sends people to for
+  `tools/make_profiles.py` and the profiles. Outside a git checkout the build says so and
+  leaves it out, and `check_definitions.py` fails the package.
+
+For a first flash use `pio run -t upload`, the browser installer, or a `_full.bin` image.
 
 The same build writes the browser installer into `_site/`: `web/index.html`, a
 `manifest.json`, and each board's four flash parts — bootloader, partition table,
@@ -398,7 +410,7 @@ To try it before a release: `python3 -m http.server -d _site`, then open
 
 A release is that same `_dist/` and `_site/`, built by GitHub Actions from a clean checkout
 when a `v<version>` tag is pushed (`.github/workflows/release.yml`): `_dist/` is attached to
-the release and `_site/` goes to GitHub Pages. Pages needs two settings, once: *Settings →
+the release (it is a single zip) and `_site/` goes to GitHub Pages. Pages needs two settings, once: *Settings →
 Pages → Source: GitHub Actions*, and under *Settings → Environments → github-pages*, a
 deployment tag rule `v*` — that environment otherwise accepts deployments from the default
 branch only, and a tag build would be refused. Run the workflow by hand from the Actions tab
@@ -424,8 +436,9 @@ There is no board configuration to write by hand. The board and device definitio
 
 **1. Install the definitions.** Every build and upload writes `_dist/Annunciator_<version>.zip`,
 fresh from `Annunciator/Community/` (`tools/check_definitions.py` fails if the zip no longer
-matches the definitions). Unzip it over the Connector's community folder — again after any update to the
-definitions — so that you end up with:
+matches the definitions). Copy the `Annunciator` folder from the zip's `Community` folder into
+the Connector's own community folder — again after any update to the definitions — so that you
+end up with:
 
 ```
 %LOCALAPPDATA%\MobiFlight\MobiFlight Connector\Community\Annunciator\
@@ -491,7 +504,7 @@ right-click the desktop → New → Shortcut, target
 - [`windows/Start-MobiFlight-E32R32P.bat`](../windows/Start-MobiFlight-E32R32P.bat) is that
   batch file, ready to use: set `PORTS` at the top (several boards, space-separated) and start
   the Connector from it. It says which port it could not open rather than failing quietly,
-  and it is on every release.
+  and it is in every release zip.
 - The alternative, if you would rather not: edit the Connector's stock definition once — in
   `%LOCALAPPDATA%\MobiFlight\MobiFlight Connector\Boards\arduino_mega.board.json` change
   `"DtrEnable": true` to `false` and restart the Connector. That works for every CH340 port,
@@ -661,13 +674,31 @@ must match. The files in `profiles/` are generated for this board (`SN-B0CBD803A
 devices, regenerate:
 
 ```sh
+python3 tools/make_profiles.py --scan                                     # the boards plugged in
 python3 tools/make_profiles.py --serial SN-XXXXXXXXXXXX                   # every panel, one board
 python3 tools/make_profiles.py --board door=SN-AAAAAAAAAAAA:Doors \
                                --board mcs_both=SN-BBBBBBBBBBBB:Glareshield   # one board each
 python3 tools/make_profiles.py --name door="My Doors"                     # a renamed device
 ```
 
-With `--board` it also writes `Annunciator-Combined-PMDG737-800.mfproj`: all those panels,
+`--scan` reads the answers off the boards themselves. It finds each board by USB vendor and
+product id (the board definitions' `HardwareIds`, as the Connector does), opens it the way
+`tools/mfsim.py` does, and asks with `kGetInfo` for the type, name and serial and with
+`kGetConfig` for the custom device stored on it. The device's type says which panel it is and
+its stored name is used as the device name, so a renamed device needs no `--name`. Only
+the panels found are written. It needs pyserial (`py -m pip install pyserial`), nothing is
+written to the boards, and the Connector must be closed because it holds their ports. On
+Windows it opens each port with DTR and RTS both off (`mfsim.Board(dtr=False)`), the line state
+the launcher sets: DTR is the 3.2″ board's boot-select, so with it held on, a reset glitch while
+Windows hands the port over would strand the board in its bootloader, whereas with it off the
+worst case is a reboot into the firmware, which answers again within a second or two (measured
+on both boards, opened that way on macOS, where it does reboot the 3.2″ board). Elsewhere it
+opens with DTR on, which does not. A board
+with no panel set up, with another program on its port, or two boards set up as the same
+panel, is reported, and the last of those is an error — a profile addresses one board per
+panel. It cannot be combined with `--serial`, `--board` or `--name`.
+
+With `--board` (and with `--scan`) it also writes `Annunciator-Combined-PMDG737-800.mfproj`: all those panels,
 one tab each, so one merge brings in every board. (A plain run deletes an old Combined file,
 so a stale one can't linger.) A device name mismatch marks the tab's rows with a device
 error and logs `ConfigErrorException_SetCustomDevice`; a wrong board serial fails silently.
