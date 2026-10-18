@@ -265,6 +265,12 @@ for those boards.
    `Annunciator-Combined-PMDG737-800.mfproj`, with every board's panel in one file, so step 7
    is a single merge.
 
+**Always start it with `py`**, as above, and not by typing the script's name on its own
+(`tools\make_profiles.py …` or `.\tools\make_profiles.py …`). Windows then opens the script in a
+separate window that vanishes after a fraction of a second, and nothing appears in your own
+command window. The profiles may well have been written; the output was in the window that
+closed. Run it again with `py` in front to see it.
+
 A board it skips is reported with the reason: *could not open it* means the Connector (or
 another program) still has the port; *no panel set up* means step 5 has not been done for that
 board; *no answer* means it is not running the Annunciator firmware. Windows may restart a board
