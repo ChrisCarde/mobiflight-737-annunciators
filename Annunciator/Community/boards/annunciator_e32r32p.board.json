@@ -34,6 +34,7 @@
       "ANNUN_MCS_BOTH_AFDS",
       "ANNUN_AIR",
       "ANNUN_FCTL",
+      "ANNUN_FCTL_SW",
       "ANNUN_ISDU"
     ],
     "Community": {

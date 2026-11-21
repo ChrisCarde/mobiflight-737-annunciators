@@ -21,7 +21,7 @@ OUT = ROOT / "tools" / "preview" / "out"
 GOLDEN = ROOT / "tools" / "preview" / "golden"
 
 PANELS = ["door", "irs", "elec", "mcs_l", "mcs_r", "mcs_both", "mcs_both_afds",
-          "air", "fctl", "isdu"]
+          "air", "fctl", "fctl_sw", "isdu"]
 SCENES = ["off", "demo", "all", "dim", "press"]
 # The boot splash is not a panel and has scenes of its own: the splash, the splash with its
 # DEMO button held in, what a board with no panel shows after it, and the credits page.

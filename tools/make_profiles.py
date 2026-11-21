@@ -156,6 +156,14 @@ FCTL = [
     (8, "AUTO SLAT FAIL", "FCTL_annunAUTO_SLAT_FAIL", 0x6467, 1, INT),
 ]  # YAW DAMPER (FCTL_annunYAW_DAMPER, 0x6460) is left out: the B107 has that lamp.
 
+# The same panel with the FLT CONTROL A and B switches (FctlPanel.h): their positions, as PMDG
+# reports them in FCTL_FltControl_Sw[2] -- 0 STBY RUD, 1 OFF, 2 ON -- which is exactly what
+# the toggle on the panel takes. The Test value is ON, so Test Mode moves the lever.
+FCTL_SW = FCTL + [
+    (9, "FLT CONTROL A switch", "FCTL_FltControl_Sw[0]", 0x6457, 1, INT, None, 2),
+    (10, "FLT CONTROL B switch", "FCTL_FltControl_Sw[1]", 0x6458, 1, INT, None, 2),
+]
+
 # IRS display unit. The ENT / CLR cue lights have no SDK field; the aircraft has them as
 # L-vars next to the keyboard events' numbers (ENT +241, CLR +244).
 ISDU = [
@@ -325,6 +333,35 @@ ISDU_KNOBS = [
     ("ISDU SYS DSPL R", "(L:switch_231_73X, number) 0 == if{ 23101 (>K:ROTOR_BRAKE) }", None, _SYS),
 ]
 
+# FLT CONTROL A and B are guarded switches, so one touch is three clicks in one calculator
+# string: the guard (EVT_OH_FCTL_x_GUARD, +79 / +81), the switch (EVT_OH_FCTL_x_SWITCH, +78 /
+# +80) and the guard again -- the order the PMDG SDK's own guarded switches are driven in, and
+# it leaves the guard as it found it. The click's action code is 01 left / 02 right (FSUIPC's
+# list of ROTOR_BRAKE codes). The direction assumed is the usual one for the PMDG 737's
+# selectors: a left click steps the value up, toward ON (2), a right click down toward STBY RUD
+# (0). A live sweep of the 737's selectors (the msfs-blind-assist project's PMDG notes) found
+# only knobs stepping the other way, and this switch is not among them -- but nobody has
+# reported trying it, and neither has this project: if a half moves the lever the wrong way in
+# the sim, swap CLICK and RIGHT_CLICK below. The same goes for the guard: it is clicked
+# blind, because the SDK has no field for its state.
+RIGHT_CLICK = 2
+
+
+def _guarded_click(guard, switch, action):
+    g = "%d%02d (>K:ROTOR_BRAKE)" % (guard, CLICK)
+    return "%s %d%02d (>K:ROTOR_BRAKE) %s" % (g, switch, action, g)
+
+
+def _fctl_switch(side, guard, switch):
+    events = [("EVT_OH_FCTL_%s_GUARD" % side, guard), ("EVT_OH_FCTL_%s_SWITCH" % side, switch)]
+    return [
+        ("FLT CONTROL %s UP" % side, _guarded_click(guard, switch, CLICK), None, events, "guard + switch click"),
+        ("FLT CONTROL %s DOWN" % side, _guarded_click(guard, switch, RIGHT_CLICK), None, events, "guard + switch click"),
+    ]
+
+
+FCTL_SW_TOUCH = _fctl_switch("A", 79, 78) + _fctl_switch("B", 81, 80)
+
 # key: (custom device type, device JSON, file title, outputs, event buttons, code buttons,
 #       firmware file and zone table holding the buttons' names)
 PANELS = {
@@ -334,6 +371,8 @@ PANELS = {
     "elec": ("ANNUN_ELEC", "annunciator_elec.device.json", "Electrical", ELEC, [], [], None),
     "air": ("ANNUN_AIR", "annunciator_air.device.json", "AirCond-Bleed-Press", AIR, [], [], None),
     "fctl": ("ANNUN_FCTL", "annunciator_fctl.device.json", "FlightControls", FCTL, [], [], None),
+    "fctl_sw": ("ANNUN_FCTL_SW", "annunciator_fctl_sw.device.json", "FlightControls-Switches", FCTL_SW,
+                [], FCTL_SW_TOUCH, ("FctlPanel/FctlPanel.cpp", "SW_ZONES")),
     "isdu": ("ANNUN_ISDU", "annunciator_isdu.device.json", "IRS-DisplayUnit", ISDU, ISDU_KEYS, ISDU_KNOBS,
              ("IsduPanel/IsduPanel.cpp", "ZONE_NAME")),
     "mcs_l": ("ANNUN_MCS_L", "annunciator_mcs_l.device.json", "MasterCaution-Captain", MCS_L, MCS_L_TOUCH, [],
@@ -460,11 +499,11 @@ def touch_inputs(panel, dname, board, route):
         release = event_action(event_name, n, route, release=True)[0] if hold else None
         items.append(touch_input(panel, dname, board, button, press, release,
                                  label + (" + release" if hold else "")))
-    for button, press_code, release_code, _ in codes:
+    for button, press_code, release_code, _events, *what in codes:
         press = {"Type": "MSFS2020CustomInputAction", "Command": press_code}
         release = {"Type": "MSFS2020CustomInputAction", "Command": release_code} if release_code else None
         items.append(touch_input(panel, dname, board, button, press, release,
-                                 "knob code" + (" + release" if release_code else "")))
+                                 (what[0] if what else "knob code") + (" + release" if release_code else "")))
     return items
 
 
@@ -556,7 +595,7 @@ def check_events(header_text):
             elif defs[event_name] != n:
                 problems.append("%s: %s is +%d in the SDK header, profile says +%d"
                                 % (panel, event_name, defs[event_name], n))
-        for button, press, release, events in spec[5]:
+        for button, press, release, events, *_ in spec[5]:
             for code in filter(None, (press, release)):
                 spots = re.findall(r"(\d+)\s*\(>K:ROTOR_BRAKE\b", code)
                 if len(spots) != code.count("ROTOR_BRAKE"):

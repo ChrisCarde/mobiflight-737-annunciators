@@ -48,6 +48,18 @@ namespace LampPanel
         bool        centred;
     };
 
+    /* A three-position toggle: a lever in a slot, drawn by PanelGfx::renderToggle. Its state
+       is a position, not a lamp state -- "0" the bottom detent, "1" the middle, "2" the top,
+       exactly as PMDG's switch fields count -- and it is sent to message ID lampCount + n for
+       the n'th toggle. The lever moves only when MobiFlight says so, like a lamp: pressing a
+       toggle's touch zones sends a button, and the sim's answer moves the lever. */
+    struct Toggle {
+        int16_t     x, y, w, h;
+        const char *name[3]; // by position, 0 the bottom: "STBY RUD", "OFF", "ON"
+    };
+    static const uint8_t MAX_TOGGLES = 4;
+    static const uint8_t TOGGLE_REST = 2; // where a toggle sits until MobiFlight says otherwise
+
     using Zone = TouchZones::Zone;
 
     struct Def {
@@ -62,6 +74,11 @@ namespace LampPanel
         uint8_t         zoneCount;
         const uint32_t *demo; // lit-lamp bitmasks cycled by the self test
         uint8_t         demoCount;
+        // Optional: the toggles. `demoToggles` is demoCount rows of toggleCount positions, the
+        // toggles' side of each self-test state; without it they rest at TOGGLE_REST.
+        const Toggle   *toggles     = nullptr;
+        uint8_t         toggleCount = 0;
+        const uint8_t  *demoToggles = nullptr;
     };
 
     void init(const Def &def, uint8_t backlightPin);

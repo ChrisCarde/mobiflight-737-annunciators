@@ -1,0 +1,716 @@
+{
+  "Name": "[468949] FlightControls-Switches",
+  "ConfigFiles": [
+    {
+      "Label": "[468949] FlightControls-Switches",
+      "FileName": null,
+      "ReferenceOnly": false,
+      "EmbedContent": true,
+      "ConfigItems": [
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25694,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL_SW",
+            "CustomName": "Flt Ctrl Switch",
+            "MessageType": 0,
+            "Value": "",
+            "Name": "Flt Ctrl Switch",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flt Ctrl Switch",
+          "GUID": "159ecaf0-4cfd-583b-b4ee-bb61c4d4d9c4",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - FLT CONTROL A LOW PRESSURE  [FCTL_annunFC_LOW_PRESSURE[0] 0x645E]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25695,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL_SW",
+            "CustomName": "Flt Ctrl Switch",
+            "MessageType": 1,
+            "Value": "",
+            "Name": "Flt Ctrl Switch",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flt Ctrl Switch",
+          "GUID": "dea030d4-e0e5-51d0-ba52-8210e213d1e1",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - FLT CONTROL B LOW PRESSURE  [FCTL_annunFC_LOW_PRESSURE[1] 0x645F]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25697,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL_SW",
+            "CustomName": "Flt Ctrl Switch",
+            "MessageType": 2,
+            "Value": "",
+            "Name": "Flt Ctrl Switch",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flt Ctrl Switch",
+          "GUID": "a024c70d-d5bc-58ef-8a4d-a1eb87bfcff6",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - STANDBY HYD LOW QUANTITY  [FCTL_annunLOW_QUANTITY 0x6461]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25698,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL_SW",
+            "CustomName": "Flt Ctrl Switch",
+            "MessageType": 3,
+            "Value": "",
+            "Name": "Flt Ctrl Switch",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flt Ctrl Switch",
+          "GUID": "01f498be-3917-585f-b541-f41f0ce9074a",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - STANDBY HYD LOW PRESSURE  [FCTL_annunLOW_PRESSURE 0x6462]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25699,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL_SW",
+            "CustomName": "Flt Ctrl Switch",
+            "MessageType": 4,
+            "Value": "",
+            "Name": "Flt Ctrl Switch",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flt Ctrl Switch",
+          "GUID": "94f27437-9ce6-5153-bd30-5f7e262e1f1a",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - STBY RUD ON  [FCTL_annunLOW_STBY_RUD_ON 0x6463]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25700,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL_SW",
+            "CustomName": "Flt Ctrl Switch",
+            "MessageType": 5,
+            "Value": "",
+            "Name": "Flt Ctrl Switch",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flt Ctrl Switch",
+          "GUID": "297d36d0-7d27-5bc2-9932-894a71d42523",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - FEEL DIFF PRESS  [FCTL_annunFEEL_DIFF_PRESS 0x6464]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25701,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL_SW",
+            "CustomName": "Flt Ctrl Switch",
+            "MessageType": 6,
+            "Value": "",
+            "Name": "Flt Ctrl Switch",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flt Ctrl Switch",
+          "GUID": "2419b6e6-56ca-5a21-9f13-7de4741524a7",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - SPEED TRIM FAIL  [FCTL_annunSPEED_TRIM_FAIL 0x6465]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25702,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL_SW",
+            "CustomName": "Flt Ctrl Switch",
+            "MessageType": 7,
+            "Value": "",
+            "Name": "Flt Ctrl Switch",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flt Ctrl Switch",
+          "GUID": "92ec0eee-9e44-5635-9660-43e74e8bbdf7",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - MACH TRIM FAIL  [FCTL_annunMACH_TRIM_FAIL 0x6466]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25703,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL_SW",
+            "CustomName": "Flt Ctrl Switch",
+            "MessageType": 8,
+            "Value": "",
+            "Name": "Flt Ctrl Switch",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flt Ctrl Switch",
+          "GUID": "17f186d7-9704-50c6-bc7a-81a15efc8e37",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - AUTO SLAT FAIL  [FCTL_annunAUTO_SLAT_FAIL 0x6467]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25687,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 2.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL_SW",
+            "CustomName": "Flt Ctrl Switch",
+            "MessageType": 9,
+            "Value": "",
+            "Name": "Flt Ctrl Switch",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flt Ctrl Switch",
+          "GUID": "92601121-3d4e-5864-bfe7-af4146d61524",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - FLT CONTROL A switch  [FCTL_FltControl_Sw[0] 0x6457]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25688,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 2.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL_SW",
+            "CustomName": "Flt Ctrl Switch",
+            "MessageType": 10,
+            "Value": "",
+            "Name": "Flt Ctrl Switch",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flt Ctrl Switch",
+          "GUID": "5a1c4e1a-cac3-59b7-80a0-67ab17d02735",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - FLT CONTROL B switch  [FCTL_FltControl_Sw[1] 0x6458]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 2.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL_SW",
+            "CustomName": "Flt Ctrl Switch",
+            "MessageType": 102,
+            "Value": "",
+            "Name": "Flt Ctrl Switch",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flt Ctrl Switch",
+          "GUID": "ffdf50ca-d256-5f62-8c14-599431353ed0",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - Night dimming (lights switch DIM)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=2,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 26113,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": -1.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL_SW",
+            "CustomName": "Flt Ctrl Switch",
+            "MessageType": 103,
+            "Value": "",
+            "Name": "Flt Ctrl Switch",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flt Ctrl Switch",
+          "GUID": "9b50d3a5-ae8a-57b5-9b4c-6882fc9e31e3",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - Lamp test (lights switch TEST)  [MAIN_LightsSelector 0x6601]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($<=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "Source": {
+            "FSUIPC": {
+              "Offset": 25816,
+              "Size": 1,
+              "OffsetType": 0,
+              "Mask": 255,
+              "BcdMode": false
+            },
+            "Type": "FsuipcSource"
+          },
+          "TestValue": {
+            "type": 0,
+            "Float64": 0.0,
+            "String": null
+          },
+          "Device": {
+            "CustomType": "ANNUN_FCTL_SW",
+            "CustomName": "Flt Ctrl Switch",
+            "MessageType": 107,
+            "Value": "",
+            "Name": "Flt Ctrl Switch",
+            "Type": "CustomDevice"
+          },
+          "DeviceType": "CustomDevice",
+          "DeviceName": "Flt Ctrl Switch",
+          "GUID": "2c7d7c0b-9081-5ab9-b2bc-0f556c08840b",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Type": "OutputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": [
+              {
+                "Type": "Transformation",
+                "Expression": "if($=0,1,0)",
+                "Active": true
+              }
+            ]
+          }
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "7901 (>K:ROTOR_BRAKE) 7801 (>K:ROTOR_BRAKE) 7901 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "FLT CONTROL A UP",
+            "Type": "Button"
+          },
+          "DeviceName": "FLT CONTROL A UP",
+          "DeviceType": "Button",
+          "GUID": "fdae7532-d64d-599e-925f-7d397103f84d",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - touch FLT CONTROL A UP  [guard + switch click]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "7901 (>K:ROTOR_BRAKE) 7802 (>K:ROTOR_BRAKE) 7901 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "FLT CONTROL A DOWN",
+            "Type": "Button"
+          },
+          "DeviceName": "FLT CONTROL A DOWN",
+          "DeviceType": "Button",
+          "GUID": "37d85d42-1b33-5b9a-866b-2539de4a35f5",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - touch FLT CONTROL A DOWN  [guard + switch click]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "8101 (>K:ROTOR_BRAKE) 8001 (>K:ROTOR_BRAKE) 8101 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "FLT CONTROL B UP",
+            "Type": "Button"
+          },
+          "DeviceName": "FLT CONTROL B UP",
+          "DeviceType": "Button",
+          "GUID": "7d3c8e1c-8de7-5b09-bc01-69e96e49c65f",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - touch FLT CONTROL B UP  [guard + switch click]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        },
+        {
+          "button": {
+            "onPress": {
+              "Type": "MSFS2020CustomInputAction",
+              "Command": "8101 (>K:ROTOR_BRAKE) 8002 (>K:ROTOR_BRAKE) 8101 (>K:ROTOR_BRAKE)"
+            },
+            "onRelease": null,
+            "onLongRelease": null,
+            "onHold": null,
+            "LongReleaseDelay": 350,
+            "HoldDelay": 350,
+            "RepeatDelay": 0
+          },
+          "Device": {
+            "Name": "FLT CONTROL B DOWN",
+            "Type": "Button"
+          },
+          "DeviceName": "FLT CONTROL B DOWN",
+          "DeviceType": "Button",
+          "GUID": "7dc35123-acad-5a17-b9db-992ecb6c923a",
+          "Active": true,
+          "Name": "Flt Ctrl Switch - touch FLT CONTROL B DOWN  [guard + switch click]",
+          "Type": "InputConfigItem",
+          "Controller": {
+            "Name": "Annunciator",
+            "Serial": "SN-B0CBD803AF24"
+          },
+          "Preconditions": [],
+          "Modifiers": {
+            "Items": []
+          },
+          "ConfigRefs": []
+        }
+      ]
+    }
+  ],
+  "Sim": "msfs",
+  "Aircraft": [],
+  "Features": {
+    "FSUIPC": true,
+    "ProSim": false
+  },
+  "_version": "0.9"
+}

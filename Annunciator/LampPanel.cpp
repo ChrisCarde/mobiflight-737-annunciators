@@ -40,6 +40,8 @@ static Slot          s_slots[MAX_SLOTS];
 static uint8_t       s_slotCount = 0;
 
 static uint8_t  s_state[MAX_LAMPS];
+static uint8_t  s_toggle[MAX_TOGGLES];   // positions
+static uint8_t  s_toggleDirty = 0;
 static uint32_t s_dirty    = 0;
 static bool     s_dim      = false;
 static bool     s_lampTest = false;
@@ -57,27 +59,31 @@ static Slot *slotFor(int16_t w, int16_t h)
     return nullptr;
 }
 
+static void addSlot(int16_t w, int16_t h, PanelFont font)
+{
+    for (uint8_t j = 0; j < s_slotCount; ++j)
+        if (s_slots[j].w == w && s_slots[j].h == h) return;
+    if (s_slotCount >= MAX_SLOTS) return;
+
+    Slot &s = s_slots[s_slotCount++];
+    s.w     = w;
+    s.h     = h;
+    s.font  = font;
+    s.spr   = new Gfx::Canvas(&PanelGfx::tft());
+    s.spr->setColorDepth(16);
+    if (s.spr->createSprite(w, h) == nullptr) {
+        delete s.spr;
+        s.spr = nullptr; // out of memory: lamps of this size are skipped, not fatal
+        return;
+    }
+    PanelGfx::useFont(*s.spr, s.font);
+}
+
 static void createSlots()
 {
-    for (uint8_t i = 0; i < s_def->lampCount; ++i) {
-        const Lamp &L = s_def->lamps[i];
-        bool        have = false;
-        for (uint8_t j = 0; j < s_slotCount; ++j) have |= (s_slots[j].w == L.w && s_slots[j].h == L.h);
-        if (have || s_slotCount >= MAX_SLOTS) continue;
-
-        Slot &s = s_slots[s_slotCount++];
-        s.w     = L.w;
-        s.h     = L.h;
-        s.font  = L.font;
-        s.spr   = new Gfx::Canvas(&PanelGfx::tft());
-        s.spr->setColorDepth(16);
-        if (s.spr->createSprite(L.w, L.h) == nullptr) {
-            delete s.spr;
-            s.spr = nullptr; // out of memory: lamps of this size are skipped, not fatal
-            continue;
-        }
-        PanelGfx::useFont(*s.spr, s.font);
-    }
+    for (uint8_t i = 0; i < s_def->lampCount; ++i) addSlot(s_def->lamps[i].w, s_def->lamps[i].h, s_def->lamps[i].font);
+    // A toggle is drawn in a sprite of its own size, with the small font for its names.
+    for (uint8_t i = 0; i < s_def->toggleCount; ++i) addSlot(s_def->toggles[i].w, s_def->toggles[i].h, FONT_TINY);
 }
 
 static void deleteSlots()
@@ -96,6 +102,7 @@ static void markAllDirty()
 {
     const uint8_t n = s_def ? s_def->lampCount : 0;
     s_dirty         = n >= 32 ? 0xFFFFFFFFu : ((1u << n) - 1u);
+    s_toggleDirty   = s_def ? (uint8_t)((1u << s_def->toggleCount) - 1u) : 0;
 }
 
 static void drawLamp(uint8_t i)
@@ -134,6 +141,33 @@ static void drawLamp(uint8_t i)
 
     PanelGfx::renderLampLines(*slot->spr, style, lines, n, slot->font, lampIsPressed(i));
     PanelGfx::push(*slot->spr, L.x, L.y);
+}
+
+/* Which half of toggle `i` a held zone is on: +1 the upper, -1 the lower, 0 if the held zone
+   is not on this toggle (or none is held). A zone belongs to the toggle its centre is in. */
+static bool zoneOnToggle(const Zone &z, const Toggle &T)
+{
+    const int16_t cx = (int16_t)(z.x + z.w / 2), cy = (int16_t)(z.y + z.h / 2);
+    return cx >= T.x && cx < T.x + T.w && cy >= T.y && cy < T.y + T.h;
+}
+
+static int8_t toggleHalf(uint8_t i)
+{
+    if (s_pressedZone < 0 || !s_def || s_pressedZone >= (int8_t)s_def->zoneCount) return 0;
+    const Zone &z = s_def->zones[s_pressedZone];
+    const Toggle &T = s_def->toggles[i];
+    if (!zoneOnToggle(z, T)) return 0;
+    return (int8_t)((z.y + z.h / 2) < T.y + T.h / 2 ? 1 : -1);
+}
+
+static void drawToggle(uint8_t i)
+{
+    const Toggle &T    = s_def->toggles[i];
+    Slot         *slot = slotFor(T.w, T.h);
+    if (!slot) return;
+    const char *const names[3] = {T.name[0], T.name[1], T.name[2]};
+    PanelGfx::renderToggle(*slot->spr, names, s_toggle[i], toggleHalf(i), s_dim, slot->font);
+    PanelGfx::push(*slot->spr, T.x, T.y);
 }
 
 /* The metal face a group of lights is set into -- a six-pack, or the bezel round a cluster
@@ -200,6 +234,14 @@ static bool touchFeedback(int8_t zone, bool pressed)
 {
     if (!s_def || zone < 0 || zone >= (int8_t)s_def->zoneCount) return false;
 
+    // A zone over a toggle shows which half is held, on the toggle itself.
+    for (uint8_t t = 0; t < s_def->toggleCount; ++t) {
+        if (!zoneOnToggle(s_def->zones[zone], s_def->toggles[t])) continue;
+        s_pressedZone = pressed ? zone : -1;
+        drawToggle(t);
+        return true;
+    }
+
     uint8_t affected = 0;
     for (uint8_t i = 0; i < s_def->lampCount; ++i)
         if (zonePresses(s_def->zones[zone], s_def->lamps[i])) ++affected;
@@ -249,6 +291,8 @@ static void applyDemo(uint8_t index)
 {
     const uint32_t mask = s_def->demo[index];
     for (uint8_t i = 0; i < s_def->lampCount; ++i) s_state[i] = ((mask >> i) & 1u) ? LS_ON : LS_OFF;
+    for (uint8_t t = 0; t < s_def->toggleCount && t < MAX_TOGGLES; ++t)
+        s_toggle[t] = s_def->demoToggles ? s_def->demoToggles[index * s_def->toggleCount + t] : TOGGLE_REST;
     markAllDirty();
 }
 
@@ -256,6 +300,7 @@ static void applyDemo(uint8_t index)
 void clear()
 {
     memset(s_state, LS_OFF, sizeof(s_state));
+    memset(s_toggle, TOGGLE_REST, sizeof(s_toggle));
     s_dim      = false;
     s_lampTest = false;
     s_selfTest = false;
@@ -293,7 +338,21 @@ void set(int16_t messageID, char *payload)
     if (s_selfTest && messageID != MSG_SELF_TEST) {
         s_selfTest = false;
         memset(s_state, LS_OFF, sizeof(s_state));
+        memset(s_toggle, TOGGLE_REST, sizeof(s_toggle));
         markAllDirty();
+    }
+
+    // The toggles come after the lamps: lamp n is message n, toggle t is message lampCount + t.
+    if (messageID >= (int16_t)s_def->lampCount &&
+        messageID < (int16_t)(s_def->lampCount + s_def->toggleCount) && s_def->toggleCount <= MAX_TOGGLES) {
+        const uint8_t t = (uint8_t)(messageID - s_def->lampCount);
+        const int     p = payload ? atoi(payload) : TOGGLE_REST;
+        const uint8_t v = (uint8_t)(p < 0 ? 0 : p > 2 ? 2 : p);
+        if (s_toggle[t] != v) {
+            s_toggle[t] = v;
+            s_toggleDirty |= (uint8_t)(1u << t);
+        }
+        return;
     }
 
     if (messageID >= 0 && messageID < (int16_t)s_def->lampCount) {
@@ -367,6 +426,11 @@ void update()
         for (uint8_t i = 0; i < s_def->lampCount; ++i)
             if (s_dirty & (1u << i)) drawLamp(i);
         s_dirty = 0;
+    }
+    if (s_toggleDirty) {
+        for (uint8_t t = 0; t < s_def->toggleCount; ++t)
+            if (s_toggleDirty & (1u << t)) drawToggle(t);
+        s_toggleDirty = 0;
     }
 }
 

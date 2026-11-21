@@ -92,6 +92,22 @@ namespace PanelGfx
                          const LegendLine *lines, uint8_t count, PanelFont &loaded,
                          bool pressed = false);
 
+    /* A three-position toggle filling `spr`: a lever in a slot, the names of its positions
+       beside it (`names[p]` for position p, 0 the bottom detent and 2 the top; a name with a
+       space goes on two lines), and a chevron at each end saying the two halves are
+       pressable. `pos` is where the lever sits. `half` is the half a finger is on -- +1 the
+       upper, -1 the lower, 0 neither -- and is tinted and its chevron brightened. `dim` is
+       night dimming. `loaded` is the font the sprite has loaded, as for renderLampLines. */
+    void renderToggle(Gfx::Canvas &spr, const char *const names[3], uint8_t pos, int8_t half,
+                      bool dim, PanelFont &loaded);
+
+    // Where the names start in a toggle `w` wide, so a panel can check that they fit.
+    constexpr int16_t toggleLeverW(int16_t w) { return (int16_t)(w / 3); }
+    constexpr int16_t toggleLabelX(int16_t w)
+    {
+        return (int16_t)(w / 12 + 2 + toggleLeverW(w) / 2 + toggleLeverW(w) / 2 + 3 + 5);
+    }
+
     /* A plate: the face a group of lights is set into, drawn straight to the screen.
        `raised` when it is something you press -- a six-pack -- which then stands proud and
        goes in when `pressed`. A plate that only holds lights is drawn flat. */

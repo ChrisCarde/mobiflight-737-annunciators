@@ -153,6 +153,28 @@ constexpr Step FCTL[] = {
     DARK(19500, STBY_RUD_ON),
 };
 
+/* ---- Flight controls with the switches: the same check, done by hand ---------------
+   Both switches ON, the pumps bring the LOW PRESSURE lights out, and then the check on the
+   touch panel: the lower half of the A toggle steps its switch to OFF and again to STBY RUD,
+   which puts the standby pump onto the rudder (STBY RUD ON); the upper half steps it back to
+   ON. The same for B. A press moves nothing by itself: each lever follows just after, as the
+   sim's answer. */
+enum : int16_t { SW_A = 9, SW_B = 10 };
+constexpr Step FCTL_SW[] = {
+    SEND(0, SW_A, "2"), SEND(0, SW_B, "2"),
+    LIT(0, FC_A_LOW), LIT(0, FC_B_LOW),
+    DARK(2500, FC_B_LOW),
+    DARK(4500, FC_A_LOW),
+    TAP(7000, "FLT CONTROL A DOWN"), SEND(7300, SW_A, "1"),
+    TAP(8800, "FLT CONTROL A DOWN"), SEND(9100, SW_A, "0"), LIT(9100, STBY_RUD_ON),
+    TAP(12500, "FLT CONTROL A UP"),  SEND(12800, SW_A, "1"),
+    TAP(14000, "FLT CONTROL A UP"),  SEND(14300, SW_A, "2"), DARK(14300, STBY_RUD_ON),
+    TAP(17000, "FLT CONTROL B DOWN"), SEND(17300, SW_B, "1"),
+    TAP(18500, "FLT CONTROL B DOWN"), SEND(18800, SW_B, "0"), LIT(18800, STBY_RUD_ON),
+    TAP(22000, "FLT CONTROL B UP"),  SEND(22300, SW_B, "1"),
+    TAP(23500, "FLT CONTROL B UP"),  SEND(23800, SW_B, "2"), DARK(23800, STBY_RUD_ON),
+};
+
 /* ---- Air conditioning, bleed and pressurisation: start, takeoff, climb ------------
    On the ground the ram air doors are full open. Starting an engine with the APU bleed
    open and an engine bleed on gives DUAL BLEED until the APU bleed is closed. After
@@ -271,6 +293,7 @@ const Demo::Scene SCENES[] = {
     {CUSTOMDEVICE_TYPE_ISDU, ISDU, countOf(ISDU), 33000},
     {CUSTOMDEVICE_TYPE_ELEC, ELEC, countOf(ELEC), 29000},
     {CUSTOMDEVICE_TYPE_FCTL, FCTL, countOf(FCTL), 23000},
+    {CUSTOMDEVICE_TYPE_FCTL_SW, FCTL_SW, countOf(FCTL_SW), 27000},
     {CUSTOMDEVICE_TYPE_AIR, AIR, countOf(AIR), 24000},
     {CUSTOMDEVICE_TYPE_MCS_L, MCS_L, countOf(MCS_L), 23000},
     {CUSTOMDEVICE_TYPE_MCS_R, MCS_R, countOf(MCS_R), 23000},
@@ -298,7 +321,7 @@ template <size_t N> constexpr bool wellFormed(const Step (&s)[N], uint16_t lengt
     return true;
 }
 static_assert(wellFormed(DOORS, 26000) && wellFormed(IRS, 28000) && wellFormed(ISDU, 33000) &&
-                  wellFormed(ELEC, 29000) && wellFormed(FCTL, 23000) && wellFormed(AIR, 24000) &&
+                  wellFormed(ELEC, 29000) && wellFormed(FCTL, 23000) && wellFormed(FCTL_SW, 27000) && wellFormed(AIR, 24000) &&
                   wellFormed(MCS_L, 23000) && wellFormed(MCS_R, 23000) &&
                   wellFormed(MCS_BOTH, 24000) && wellFormed(MCS_AFDS, 30000),
               "a demo scene's steps are out of order, past its length, or a payload is too long");

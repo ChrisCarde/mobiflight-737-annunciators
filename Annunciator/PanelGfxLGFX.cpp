@@ -29,7 +29,7 @@
  * So the panel keeps its native 320x480 portrait shape and the SPRITE is rotated instead.
  * LovyanGFX keeps a sprite's buffer exactly as created and applies rotation to the drawing
  * coordinates, so a 320x480 buffer at sprite rotation 1 presents a 480x320 landscape
- * surface to the renderer while staying in the layout the panel wants. The ten panel
+ * surface to the renderer while staying in the layout the panel wants. The eleven panel
  * layouts know nothing about any of this.
  *
  * The init sequence is named rather than defaulted. Arduino_GFX's default for this driver

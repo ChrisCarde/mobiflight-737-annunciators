@@ -1,6 +1,6 @@
 # Annunciator
 
-Ten Boeing 737-800 annunciator panels on a cheap all-in-one ESP32 display board, driven
+Eleven Boeing 737-800 annunciator panels on a cheap all-in-one ESP32 display board, driven
 from [MobiFlight Connector](https://www.mobiflight.com/) as a custom device. Built to fill
 the gaps a Rowsfire B107 overhead and a WinCtrl MCP/EFIS leave in a PMDG 737-800 cockpit —
 the doors panel, the IRS unit, electrical metering, air conditioning, flight controls and
@@ -48,7 +48,7 @@ entirely.
 
 ## The panels
 
-All ten ship in **one firmware image per board type** — every board of a type gets the
+All eleven ship in **one firmware image per board type** — every board of a type gets the
 same `.bin`. Which panel a board shows is chosen in the Connector, by which custom device
 you add to it, so a board becomes a different panel without reflashing.
 
@@ -59,6 +59,7 @@ you add to it, so a board becomes a different panel without reflashing.
 | <img src="docs/previews/elec.png" width="260"> | **AC & DC metering** — the two-line dot-matrix window and its lamps | `ANNUN_ELEC` | — |
 | <img src="docs/previews/air.png" width="260"> | **Air conditioning**, bleed and pressurisation | `ANNUN_AIR` | — |
 | <img src="docs/previews/fctl.png" width="260"> | **Flight controls** | `ANNUN_FCTL` | — |
+| <img src="docs/previews/fctl_sw.png" width="260"> | **Flight controls with the switches** — the same lights, plus the FLT CONTROL A and B switches as touch toggles | `ANNUN_FCTL_SW` | tap the upper or lower half of a toggle to step its switch up or down |
 | <img src="docs/previews/isdu.png" width="260"> | **IRS display unit** — both segmented displays, the two knobs and the keypad | `ANNUN_ISDU` | keypad and knobs both work |
 | <img src="docs/previews/mcs_l.png" width="260"> | **Master caution, captain's side** | `ANNUN_MCS_L` | FIRE WARN, MASTER CAUTION, six-pack recall |
 | <img src="docs/previews/mcs_r.png" width="260"> | **Master caution, first officer's side** | `ANNUN_MCS_R` | the same |
@@ -310,6 +311,7 @@ name in **MobiFlight Modules** first and use those names here. The names to use 
 | AC & DC metering | `elec` | Master caution, first officer | `mcs_r` |
 | Air conditioning | `air` | Master caution, both | `mcs_both` |
 | Flight controls | `fctl` | Master caution with AFDS | `mcs_both_afds` |
+| Flight controls with switches | `fctl_sw` | | |
 
 </details>
 
@@ -364,6 +366,7 @@ project with it.
 | AC & DC metering | [Annunciator-Electrical-PMDG737-800.mfproj](profiles/Annunciator-Electrical-PMDG737-800.mfproj) |
 | Air conditioning | [Annunciator-AirCond-Bleed-Press-PMDG737-800.mfproj](profiles/Annunciator-AirCond-Bleed-Press-PMDG737-800.mfproj) |
 | Flight controls | [Annunciator-FlightControls-PMDG737-800.mfproj](profiles/Annunciator-FlightControls-PMDG737-800.mfproj) |
+| Flight controls with switches | [Annunciator-FlightControls-Switches-PMDG737-800.mfproj](profiles/Annunciator-FlightControls-Switches-PMDG737-800.mfproj) |
 | IRS display unit | [Annunciator-IRS-DisplayUnit-PMDG737-800.mfproj](profiles/Annunciator-IRS-DisplayUnit-PMDG737-800.mfproj) |
 | Master caution, captain | [Annunciator-MasterCaution-Captain-PMDG737-800.mfproj](profiles/Annunciator-MasterCaution-Captain-PMDG737-800.mfproj) |
 | Master caution, first officer | [Annunciator-MasterCaution-FO-PMDG737-800.mfproj](profiles/Annunciator-MasterCaution-FO-PMDG737-800.mfproj) |
@@ -449,7 +452,7 @@ Annunciator/            the firmware
   LampPanel.{h,cpp}       the engine for panels that are just lamps, run from a table
   Touch*.{h,cpp}          touch polling, calibration, and zones -> button events
   Splash/                 the boot splash, and the logo bitmaps generated for it
-  Demo/                   the splash's DEMO: the player and the ten scenes
+  Demo/                   the splash's DEMO: the player and the eleven scenes
   <Name>Panel/            one directory per panel
   fonts/                  DM Sans Bold, embedded, with the metrics the renderer measures by
   Community/              the board and device definitions the Connector reads

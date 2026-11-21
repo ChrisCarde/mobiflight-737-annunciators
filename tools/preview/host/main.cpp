@@ -4,7 +4,7 @@
            preview splash <on|press|nopanel|credits> <out.ppm>
            preview demo <panel> <out-dir> [every-ms]
 
-   panels  door irs elec mcs_l mcs_r mcs_both mcs_both_afds air fctl isdu
+   panels  door irs elec mcs_l mcs_r mcs_both mcs_both_afds air fctl fctl_sw isdu
    scenes  off      nothing lit, the way the panel sits with the aircraft quiet
            demo     a representative mix of lit, unlit and blinking lamps
            all      every lamp on, as the lamp-test message drives it
@@ -59,7 +59,7 @@ struct PanelOps {
     uint8_t lampCount; // 0 for panels that are not a lamp table
 };
 
-// The same ten panels as MFCustomDevice.cpp's dispatch table, in the same order.
+// The same eleven panels as Panels.cpp's table, in the same order.
 const PanelOps PANELS[] = {
     {"door", DoorPanel::init, LampPanel::clear, LampPanel::set, LampPanel::update, DoorPanel::LAMP_COUNT},
     {"irs", IrsPanel::init, IrsPanel::clear, IrsPanel::set, IrsPanel::update, 11},
@@ -70,6 +70,7 @@ const PanelOps PANELS[] = {
     {"mcs_both_afds", McsPanel::initBothAfds, LampPanel::clear, LampPanel::set, LampPanel::update, 17},
     {"air", AirPanel::init, LampPanel::clear, LampPanel::set, LampPanel::update, 16},
     {"fctl", FctlPanel::init, LampPanel::clear, LampPanel::set, LampPanel::update, 9},
+    {"fctl_sw", FctlPanel::initSwitches, LampPanel::clear, LampPanel::set, LampPanel::update, 9},
     {"isdu", IsduPanel::init, IsduPanel::clear, IsduPanel::set, IsduPanel::update, 0},
 };
 
@@ -102,6 +103,10 @@ void demoPanel(const PanelOps &p)
         return;
     }
     demoLamps(p);
+    if (n == "fctl_sw") {
+        send(p, 9, "0");  // the A switch at STBY RUD, so the lever is off its rest position
+        send(p, 10, "2"); // and B ON
+    }
     if (n == "elec") {
         send(p, ElecPanel::MSG_LINE_TOP, "  28   400  ");
         send(p, ElecPanel::MSG_LINE_BOTTOM, " 24  115 400");
@@ -213,8 +218,10 @@ int main(int argc, char **argv)
             // an explicit point, for checking a particular button
         } else {
             const bool  glareshield = want.rfind("mcs", 0) == 0;
-            const float fx = glareshield ? 0.13f : 0.45f;
-            const float fy = glareshield ? 0.50f : 0.30f;
+            // On the switches panel the finger goes on the upper half of the A toggle.
+            const bool  toggle = want == "fctl_sw";
+            const float fx = glareshield ? 0.13f : toggle ? 0.14f : 0.45f;
+            const float fy = glareshield ? 0.50f : toggle ? 0.50f : 0.30f;
             px = (int16_t)(Board::PANEL_W * fx);
             py = (int16_t)(Board::PANEL_H * fy);
         }

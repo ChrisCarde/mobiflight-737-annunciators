@@ -19,6 +19,9 @@ the firmware's MobiFlight path can be exercised end to end without the sim PC.
 
 A freshly flashed board has an empty config, so it has no custom device -- run `setup` once.
 The config is kept in flash across reboots, exactly as if the Connector had uploaded it.
+`setup` also names the board after its panel ("Annun IRS"), so two boards of one kind are told
+apart in the Connector's module list; `--name` picks another. Without it every board of a type
+keeps the firmware's default name, and only the serial number differs.
 
 The panel stays dark until MobiFlight sends it a value, just as it would with the real
 Connector before Run, so `setup` alone shows nothing: follow it with `selftest` or `demo`.
@@ -55,6 +58,7 @@ K_SET_CONFIG, K_GET_CONFIG, K_RESET_CONFIG = 11, 12, 13
 K_SAVE_CONFIG, K_CONFIG_SAVED = 14, 15
 K_ACTIVATE_CONFIG, K_CONFIG_ACTIVATED = 16, 17
 K_SET_POWER_SAVING = 18
+K_SET_NAME = 19
 K_SET_CUSTOM_DEVICE = 32
 K_DEBUG = 255
 
@@ -66,7 +70,8 @@ FIELD, END, ESCAPE = ",", ";", "/"
 # generated profiles (tools/make_profiles.py) address it by.
 PANEL_FILES = {
     "door": "annunciator_door", "irs": "annunciator_irs", "elec": "annunciator_elec",
-    "air": "annunciator_air", "fctl": "annunciator_fctl", "isdu": "annunciator_isdu",
+    "air": "annunciator_air", "fctl": "annunciator_fctl", "fctl_sw": "annunciator_fctl_sw",
+    "isdu": "annunciator_isdu",
     "mcs_l": "annunciator_mcs_l", "mcs_r": "annunciator_mcs_r", "mcs_both": "annunciator_mcs_both",
     "mcs_both_afds": "annunciator_mcs_both_afds",
 }
@@ -79,6 +84,29 @@ def _panel(key):
 
 
 PANELS = {key: _panel(key) for key in PANEL_FILES}
+
+# The name `setup` gives a board: what is on it, so that two boards of one kind do not both
+# show up in the Connector's module list under the firmware's default ("Annunciator 35").
+# Kept to the 16 characters and the characters the profile tool allows a name
+# (make_profiles.NAME_MAX, NAME_RESERVED); the panel's key is the tag unless listed here.
+BOARD_NAME_PREFIX = "Annun "
+BOARD_NAME_TAGS = {"mcs_both_afds": "MCS AFDS"}
+NAME_MAX, NAME_RESERVED = 16, ":.;,#/|"
+
+
+def name_problem(name):
+    if not name or name != name.strip():
+        return "empty, or with leading/trailing spaces"
+    if len(name) > NAME_MAX:
+        return "longer than %d characters" % NAME_MAX
+    bad = [c for c in NAME_RESERVED if c in name]
+    return "contains " + " ".join(bad) if bad else None
+
+
+PANEL_BOARD_NAMES = {key: BOARD_NAME_PREFIX + BOARD_NAME_TAGS.get(key, key.upper().replace("_", " "))
+                     for key in PANELS}
+assert not any(name_problem(n) for n in PANEL_BOARD_NAMES.values()), PANEL_BOARD_NAMES
+assert len(set(PANEL_BOARD_NAMES.values())) == len(PANEL_BOARD_NAMES), PANEL_BOARD_NAMES
 
 
 def _boards():
@@ -299,8 +327,10 @@ def cmd_info(board, _args):
 
     # The board's name: a Connector config upload stores it on the board, and reflashing does
     # not clear it, so a board once used with an older firmware can still carry its name.
+    # `setup` names it after its panel; only a name that is neither that nor the default is odd.
     expected_name = BOARD_NAMES.get(info[0] if info else None)
-    if len(info) > 1 and expected_name and info[1] != expected_name:
+    if (len(info) > 1 and expected_name and info[1] != expected_name
+            and info[1] not in PANEL_BOARD_NAMES.values()):
         print("WARN  the board is named %r; the profiles expect %r unless regenerated with "
               "--board PANEL=SERIAL:%s (rename it in the Connector's module settings and "
               "upload the config once)" % (info[1], expected_name, info[1]))
@@ -347,6 +377,12 @@ def cmd_info(board, _args):
 def cmd_setup(board, args):
     dtype, label = PANELS[args.panel]
 
+    # Before anything is sent: a refused name must not leave the board with its config reset.
+    name = args.name or PANEL_BOARD_NAMES[args.panel]
+    problem = name_problem(name)
+    if problem:
+        sys.exit("FAIL  --name %r: %s" % (name, problem))
+
     info = board.wait_ready()
     if not info:
         sys.exit("FAIL  board did not answer kGetInfo")
@@ -363,6 +399,12 @@ def cmd_setup(board, args):
     board.send(K_RESET_CONFIG)
     if board.expect(K_STATUS) != ["OK"]:
         sys.exit("FAIL  kResetConfig")
+
+    # The Connector names the board in the same upload, before the config. The name is
+    # written to the board's memory now and committed by kSaveConfig below.
+    board.send(K_SET_NAME, name)
+    if board.expect(K_STATUS) != [name]:
+        sys.exit("FAIL  kSetName: the board did not take the name %r" % name)
 
     # The Connector uploads in MessageSize-limited chunks and the firmware appends them;
     # reply is the cumulative length stored so far.
@@ -388,6 +430,7 @@ def cmd_setup(board, args):
     if not echoed or echoed[0] != config:
         sys.exit("FAIL  kGetConfig echoed %r, expected %r" % (echoed, config))
 
+    print("OK    board named %r" % name)
     print("OK    config stored and activated: %s" % config)
     print("      the panel stays dark until it receives a value -- try: selftest, or demo")
 
@@ -499,6 +542,13 @@ DEMOS = {
         ("standby rudder: STBY RUD ON", {4: 1}),
         ("trim failures", {6: 1, 7: 1}),
     ],
+    # The same, with the A and B switches (9, 10): 0 STBY RUD, 1 OFF, 2 ON.
+    "fctl_sw": [
+        ("cold aircraft: both LOW PRESSURE, both switches ON", {0: 1, 1: 1, 9: 2, 10: 2}),
+        ("system A lost: A switch OFF", {0: 1, 5: 1, 9: 1, 10: 2}),
+        ("standby rudder: A switch at STBY RUD, STBY RUD ON", {4: 1, 9: 0, 10: 2}),
+        ("back to normal: both ON", {9: 2, 10: 2}),
+    ],
     # 0/1 the display strings, 2 dots, 3 DSPL SEL, 4 SYS DSPL, 5/6 ENT/CLR cue lights.
     "isdu": [
         ("PPOS, as in the FCOM", {0: "N47324", 1: "W122123", 2: 1, 3: 2, 4: 0, 5: 0, 6: 0}),
@@ -528,7 +578,7 @@ DEMOS = {
 
 def cmd_demo(board, args):
     count = {"door": 13, "irs": 11, "elec": 3, "mcs_l": 8, "mcs_r": 8, "mcs_both": 14,
-             "mcs_both_afds": 17, "air": 16, "fctl": 9, "isdu": 0}[args.panel]
+             "mcs_both_afds": 17, "air": 16, "fctl": 9, "fctl_sw": 9, "isdu": 0}[args.panel]
     start(board)
     for label, values in DEMOS[args.panel]:
         for i in range(count):
@@ -595,6 +645,8 @@ def main():
     p = sub.add_parser("setup", help="upload and activate a config for one panel")
     p.add_argument("panel", choices=sorted(PANELS))
     p.add_argument("--brightness", type=int, default=255)
+    p.add_argument("--name", help="the board's name in the Connector's module list "
+                   "(default: Annun <PANEL>, e.g. 'Annun ELEC'; at most %d characters)" % NAME_MAX)
 
     p = sub.add_parser("lamp", help="set one lamp")
     p.add_argument("id", type=int)

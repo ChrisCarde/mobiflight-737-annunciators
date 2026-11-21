@@ -492,6 +492,114 @@ void renderLampLines(Gfx::Canvas &spr, const LampStyle &st,
     }
 }
 
+/* ---- A toggle --------------------------------------------------------------------
+   Everything is proportioned from the sprite's width, so one routine serves the 71px column
+   of the 3.2in screen and the 101px one of the 3.5in: the lever is a third of the width, the
+   slot a third of the lever, and the detents are spread between a chevron at each end.
+---------------------------------------------------------------------------------- */
+static const uint32_t TOGGLE_FILL   = 0x08090A; // the flight-control clusters' plate
+static const uint32_t TOGGLE_TINT   = 0x17191C; // the half under a finger
+static const uint32_t TOGGLE_SLOT   = 0x000000;
+static const uint32_t TOGGLE_LEVER  = 0x7E8690;
+static const uint32_t TOGGLE_LIT    = 0xDADFE5; // the position it is in
+static const uint32_t TOGGLE_DIMMED = 0x1F2328; // the slot's edge
+
+// A filled triangle, point up or down, `w` wide at its base and `h` tall.
+template <class Target>
+static void chevron(Target &spr, int16_t cx, int16_t y, int16_t w, int16_t h, bool up, uint16_t colour)
+{
+    for (int16_t i = 0; i < h; ++i) {
+        const int16_t row  = up ? i : (int16_t)(h - 1 - i);          // 0 at the point
+        const int16_t span = (int16_t)(1 + (w - 1) * row / max<int16_t>(1, (int16_t)(h - 1)));
+        spr.drawFastHLine((int32_t)(cx - span / 2), (int32_t)(y + i), span, colour);
+    }
+}
+
+void renderToggle(Gfx::Canvas &spr, const char *const names[3], uint8_t pos, int8_t half,
+                  bool dim, PanelFont &loaded)
+{
+    const int16_t w = (int16_t)spr.width();
+    const int16_t h = (int16_t)spr.height();
+    if (pos > 2) pos = 2;
+
+    auto shade = [dim](uint32_t c) { return dim ? Theme::blend(c, 0x000000, 130) : c; };
+
+    spr.fillSprite(Theme::to565(shade(TOGGLE_FILL)));
+    spr.drawRoundRect(0, 0, w, h, 3, Theme::to565(shade(Theme::Bezel)));
+
+    // The half a finger is on.
+    if (half != 0) {
+        const int16_t hy = (int16_t)(half > 0 ? 2 : h / 2);
+        spr.fillRect(2, hy, w - 4, (int16_t)(h / 2 - 2), Theme::to565(shade(TOGGLE_TINT)));
+    }
+
+    const int16_t margin = (int16_t)(w / 12);                 // 5 / 8
+    const int16_t knobW  = toggleLeverW(w);                   // 23 / 33
+    const int16_t knobH  = (int16_t)(knobW + knobW / 5);      // 27 / 39
+    const int16_t slotW  = (int16_t)max<int16_t>(5, knobW / 3);
+    const int16_t chevW  = (int16_t)(w / 6), chevH = (int16_t)(chevW / 2 + 1);
+    const int16_t cx     = (int16_t)(margin + 2 + knobW / 2);  // the lever's centre line
+    const int16_t topC   = (int16_t)(margin + chevH + 4 + knobH / 2);
+    const int16_t botC   = (int16_t)(h - topC);
+    const int16_t midC   = (int16_t)((topC + botC) / 2);
+    const int16_t detent[3] = {botC, midC, topC};
+
+    // The slot the lever runs in, a little longer than its travel.
+    spr.fillRoundRect(cx - slotW / 2, topC - 4, slotW, (int16_t)(botC - topC + 8), slotW / 2,
+                      Theme::to565(shade(TOGGLE_SLOT)));
+    spr.drawRoundRect(cx - slotW / 2, topC - 4, slotW, (int16_t)(botC - topC + 8), slotW / 2,
+                      Theme::to565(shade(TOGGLE_DIMMED)));
+
+    // Chevrons: bright for the half being pressed.
+    const uint32_t chevOff = shade(Theme::HeaderFg), chevOn = shade(TOGGLE_LIT);
+    chevron(spr, cx, margin, chevW, chevH, true, Theme::to565(half > 0 ? chevOn : chevOff));
+    chevron(spr, cx, (int16_t)(h - margin - chevH), chevW, chevH, false,
+            Theme::to565(half < 0 ? chevOn : chevOff));
+
+    // Ticks and names. The name of the position the lever is in is the bright one.
+    const int16_t tickX  = (int16_t)(cx + knobW / 2 + 3);
+    const int16_t labelX = toggleLabelX(w);
+    (void)tickX;
+    if (loaded != FONT_TINY) {
+        spr.unloadFont();
+        useFont(spr, FONT_TINY);
+        loaded = FONT_TINY;
+    }
+    const FontMetrics &fm = fontOf(FONT_TINY);
+    const int16_t cap = fm.capHeight, gap = max<int16_t>(2, (int16_t)(cap / 2));
+    spr.setTextDatum(L_BASELINE);
+    for (uint8_t p = 0; p < 3; ++p) {
+        const uint32_t colour = shade(p == pos ? TOGGLE_LIT : Theme::HeaderFg);
+        spr.drawFastHLine(tickX, detent[p], 3, Theme::to565(colour));
+
+        // One line, or two where the name has a space ("STBY RUD").
+        char first[16], second[16] = "";
+        snprintf(first, sizeof(first), "%s", names[p] ? names[p] : "");
+        if (char *sp = strchr(first, ' ')) {
+            snprintf(second, sizeof(second), "%s", sp + 1);
+            *sp = 0;
+        }
+        const uint8_t lines = second[0] ? 2 : 1;
+        int16_t       base  = (int16_t)(detent[p] - (lines * cap + (lines - 1) * gap) / 2 + cap);
+        const char   *text[2] = {first, second};
+        spr.setTextColor(Theme::to565(colour));
+        for (uint8_t i = 0; i < lines; ++i) {
+            const int16_t x = max<int16_t>((int16_t)(labelX - inkLeadOf(fm, text[i])), 2);
+            spr.drawString(text[i], x, base);
+            base += cap + gap;
+        }
+    }
+
+    // The lever, on top of its slot: a metal bat with a grip line across it.
+    reliefFace(spr, (int16_t)(cx - knobW / 2), (int16_t)(detent[pos] - knobH / 2), knobW, knobH, 3,
+               shade(TOGGLE_LEVER), false, false);
+    const int16_t gy = detent[pos];
+    spr.drawFastHLine((int32_t)(cx - knobW / 2 + 4), gy, (int32_t)(knobW - 8),
+                      Theme::to565(shade(Theme::blend(0x000000, TOGGLE_LEVER, 130))));
+    spr.drawFastHLine((int32_t)(cx - knobW / 2 + 4), (int32_t)(gy + 1), (int32_t)(knobW - 8),
+                      Theme::to565(shade(Theme::blend(0xFFFFFF, TOGGLE_LEVER, 70))));
+}
+
 void drawPlate(int16_t x, int16_t y, int16_t w, int16_t h, int16_t radius,
                uint32_t fill, uint32_t edge, bool raised, bool pressed)
 {

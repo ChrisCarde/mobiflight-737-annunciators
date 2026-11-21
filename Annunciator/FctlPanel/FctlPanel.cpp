@@ -103,8 +103,66 @@ const LampPanel::Def DEF = {
     nullptr, 0,
     DEMO, COUNT(DEMO),
 };
+
+/* ---- With the switches ----------------------------------------------------------
+   The FLT CONTROL A and B switches go under their LOW PRESSURE lights, in the same two
+   columns, and run down the panel as far as the four-stack does. A toggle is as wide as a
+   lens and about four lenses tall: room for three detents and their names, and two halves
+   each deep enough to press.
+---------------------------------------------------------------------------------- */
+static constexpr int16_t SW_Y  = rowY(1);
+static constexpr int16_t SW_H  = (int16_t)(rowY(4) + LENS_H - SW_Y);   // 146 / 197
+static constexpr int16_t SW_B_X = (int16_t)(PAIR_X + LENS_W + SEAM);
+
+static_assert(SW_B_X + LENS_W + PAD < FOUR_X - PAD, "the B switch runs into the four-stack");
+static_assert(SW_Y + SW_H <= PANEL_H, "the switches run off the panel");
+static_assert(SW_H / 2 >= LY::MIN_TOUCH_PX && LENS_W >= LY::MIN_TOUCH_PX, "half a toggle is too small to press");
+// The names sit between the lever and the toggle's right edge.
+static_assert(LY::fits(FONT_TINY, "STBY", LENS_W - PanelGfx::toggleLabelX(LENS_W), 1), "STBY does not fit beside the lever");
+static_assert(LY::fits(FONT_TINY, "RUD", LENS_W - PanelGfx::toggleLabelX(LENS_W), 1), "RUD does not fit beside the lever");
+
+static const LampPanel::Toggle TOGGLES[TOGGLE_COUNT] = {
+    {PAIR_X, SW_Y, LENS_W, SW_H, {"STBY RUD", "OFF", "ON"}},
+    {SW_B_X, SW_Y, LENS_W, SW_H, {"STBY RUD", "OFF", "ON"}},
+};
+
+/* Each toggle is two buttons: the upper half steps the switch up (toward ON), the lower half
+   down (toward STBY RUD). The names are what MobiFlight sees; tools/make_profiles.py binds
+   each to the PMDG switch, opening and closing its guard around the click. */
+static const LampPanel::Zone SW_ZONES[] = {
+    {PAIR_X, SW_Y, LENS_W, (int16_t)(SW_H / 2), "FLT CONTROL A UP"},
+    {PAIR_X, (int16_t)(SW_Y + SW_H / 2), LENS_W, (int16_t)(SW_H - SW_H / 2), "FLT CONTROL A DOWN"},
+    {SW_B_X, SW_Y, LENS_W, (int16_t)(SW_H / 2), "FLT CONTROL B UP"},
+    {SW_B_X, (int16_t)(SW_Y + SW_H / 2), LENS_W, (int16_t)(SW_H - SW_H / 2), "FLT CONTROL B DOWN"},
+};
+
+/* The self test's switches, a row per state of DEMO above: A, then B. Both ON until the
+   system A loss, where the A switch is taken to OFF; then the standby rudder check has A at
+   STBY RUD. 0 STBY RUD, 1 OFF, 2 ON. */
+static const uint8_t DEMO_TOGGLES[] = {
+    2, 2,   // cold aircraft
+    1, 2,   // system A lost: A switch OFF
+    0, 2,   // STBY RUD ON: A at STBY RUD
+    2, 2,
+    2, 2,
+    2, 2,
+};
+static_assert(sizeof(DEMO_TOGGLES) == sizeof(DEMO) / sizeof(DEMO[0]) * TOGGLE_COUNT,
+              "DEMO_TOGGLES needs a row per self-test state");
+
+const LampPanel::Def DEF_SW = {
+    nullptr,
+    LAMPS, LAMP_COUNT,
+    PLATES, COUNT(PLATES),
+    LABELS, COUNT(LABELS),
+    SW_ZONES, COUNT(SW_ZONES),
+    DEMO, COUNT(DEMO),
+    TOGGLES, TOGGLE_COUNT,
+    DEMO_TOGGLES,
+};
 #undef COUNT
 
 void init(uint8_t backlightPin) { LampPanel::init(DEF, backlightPin); }
+void initSwitches(uint8_t backlightPin) { LampPanel::init(DEF_SW, backlightPin); }
 
 } // namespace FctlPanel

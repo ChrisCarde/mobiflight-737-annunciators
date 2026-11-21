@@ -25,7 +25,7 @@ namespace Panels
     inline constexpr const char *NAMES[] = {
         "DOOR ANNUNCIATOR", "MASTER CAUTION R", "MASTER CAUTION L", "ELECTRICAL METER",
         "AIR CONDITIONING", "FLIGHT CONTROLS", "IRS ANNUNCIATOR", "IRS DISPLAY UNIT",
-        "MASTER CAUTION", "CAUTION + AFDS",
+        "MASTER CAUTION", "CAUTION + AFDS", "FLT CTRL SWITCH",
     };
 
     uint8_t    count();

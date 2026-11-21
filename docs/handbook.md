@@ -6,7 +6,7 @@ panel stays dark. The [README](../README.md) is the short version.*
 Turns a cheap all-in-one ESP32 display board into one of the 737-800 panels the Rowsfire
 B107 overhead and the WinCtrl MCP/EFIS leave out, driven from MobiFlight Connector.
 
-Two boards are supported, and the same ten panels run on both: the **LCDWIKI E32R32P**
+Two boards are supported, and the same eleven panels run on both: the **LCDWIKI E32R32P**
 (3.2", 240×320 used as 320×240 landscape, resistive touch) and the **Caturda C3248W535**
 (3.5", 320×480 used as 480×320, capacitive touch). Everything below applies to both unless
 it says otherwise.
@@ -18,6 +18,7 @@ it says otherwise.
 | AC & DC electrical metering | `ANNUN_ELEC` | — |
 | Air conditioning / bleed / pressurisation lights | `ANNUN_AIR` | — |
 | Flight controls lights | `ANNUN_FCTL` | — |
+| Flight controls lights and the FLT CONTROL A / B switches | `ANNUN_FCTL_SW` | each switch is a toggle: its upper half steps it up, its lower half down |
 | IRS display unit (ISDU) | `ANNUN_ISDU` | the keypad and both knobs work |
 | Master caution, captain's glareshield | `ANNUN_MCS_L` | FIRE WARN, MASTER CAUTION, six-pack recall |
 | Master caution, first officer's glareshield | `ANNUN_MCS_R` | the same |
@@ -84,10 +85,10 @@ Annunciator/
   TouchAXS15231B.cpp           capacitive: an I2C read, and no calibration to do
   TouchZones.{h,cpp}           touch buttons -> MobiFlight button events, the press ring
   Splash/                      the boot splash, and the logo bitmaps generated for it
-  Demo/                        the splash's DEMO: the player and the ten scenes
+  Demo/                        the splash's DEMO: the player and the eleven scenes
   DoorPanel/                   door lamps (a LampPanel table)
   AirPanel/                    air conditioning / bleed / pressurisation (a LampPanel table)
-  FctlPanel/                   flight controls (a LampPanel table)
+  FctlPanel/                   flight controls, with and without the switches (LampPanel tables)
   McsPanel/                    the three master caution layouts (LampPanel tables)
   IrsPanel/                    IRS mode select unit lamps
   ElecPanel/                   electrical metering
@@ -184,7 +185,7 @@ So **the panel is never rotated.** It keeps its native 320x480 portrait shape, a
 *sprite* is rotated instead: LovyanGFX keeps a sprite's buffer exactly as created and
 applies rotation to the drawing coordinates, so a 320x480 buffer at sprite rotation 1 hands
 the renderer a 480x320 landscape surface while staying in the layout the panel wants. The
-ten panel layouts know nothing about any of this. If a future board does accept a rotated
+eleven panel layouts know nothing about any of this. If a future board does accept a rotated
 window, this is still the better arrangement -- it is one blit of a whole frame either way.
 
 **3. LovyanGFX sprites are already big-endian.** *Symptom: the layout is perfect and every
@@ -371,7 +372,7 @@ from the current Connector definitions each time (`pio run -t annunciator_packag
 only that). That zip is the whole release and `_dist/` holds nothing else; the build deletes
 any other file there, because the release publishes `_dist/*`. It contains:
 
-- `Community/Annunciator/` — the Connector's package: both board definitions, the ten device
+- `Community/Annunciator/` — the Connector's package: both board definitions, the eleven device
   definitions they share, and a firmware binary for each board. Build every env with the same
   `VERSION`; `tools/check_definitions.py` fails a package that lacks one. That binary is the
   **application image**, not a merged flash image — it is there for the Connector, not for
@@ -539,7 +540,7 @@ picture until then.
 
 The device gets the panel's name — `Door Annunciator`, `IRS Annunciator`, `Electrical
 Meter`, `Air Conditioning`, `Flight Controls`, `IRS Display Unit`, `Master Caution L`,
-`Master Caution R`, `Master Caution`, `Caution + AFDS` — and that is exactly the name the
+`Master Caution R`, `Master Caution`, `Caution + AFDS`, `Flt Ctrl Switch` — and that is exactly the name the
 profiles look for.
 **Don't rename it** (or regenerate the profiles with `--name`, see below). A board set up
 with the current `tools/mfsim.py setup` already shows its device, under the same name,
@@ -588,6 +589,7 @@ Connector with the batch file from step 2.
 | `Annunciator-Electrical-PMDG737-800.mfproj` | 3 lamps, both display lines, both selectors | |
 | `Annunciator-AirCond-Bleed-Press-PMDG737-800.mfproj` | 16 lamps | |
 | `Annunciator-FlightControls-PMDG737-800.mfproj` | 9 lamps | |
+| `Annunciator-FlightControls-Switches-PMDG737-800.mfproj` | 9 lamps, both switches' positions | 4: each switch's two halves |
 | `Annunciator-IRS-DisplayUnit-PMDG737-800.mfproj` | both displays, dots, both knobs, ENT/CLR cue lights | 12 keys, 7 knob positions |
 | `Annunciator-MasterCaution-Captain-PMDG737-800.mfproj` | 8 lamps | 3 |
 | `Annunciator-MasterCaution-FO-PMDG737-800.mfproj` | 8 lamps | 3 |
@@ -845,6 +847,27 @@ has the FLT ALT / LAND ALT windows.
 Seven stacked lamps do not fit 240 px, so the unlabelled four-lamp stack stands beside
 STANDBY HYD's three, a row lower, rather than under it.
 
+**Flight controls with the switches** (`ANNUN_FCTL_SW`) — the same nine lamps, and under the two
+LOW PRESSURE lights the FLT CONTROL A and B switches, one column each, as on the aircraft.
+Each is a three-position toggle: message `9` (A) and `10` (B), payload `0` STBY RUD, `1` OFF,
+`2` ON — PMDG's `FCTL_FltControl_Sw[2]` as it is (`0x6457`, `0x6458`), STBY RUD at the bottom
+and ON at the top. Pressing a toggle's **upper half** sends the button `FLT CONTROL A UP` (or
+`B UP`) and steps the switch up one position; the **lower half** sends `DOWN` and steps it
+down. Like every touch button on these panels it moves nothing on the screen: the lever
+follows the sim, so a press the aircraft ignores leaves it where it was.
+
+The profile binds each of the four buttons to one string of three `ROTOR_BRAKE` clicks: the
+switch's guard (`EVT_OH_FCTL_A_GUARD` +79, B +81), the switch (`EVT_OH_FCTL_A_SWITCH` +78, B
++80; a left click, `01`, steps up, a right click, `02`, steps down), and the guard again, which
+is how a guarded PMDG switch is driven and leaves the guard as it was. The SDK has no field
+for the guard's state, so it is clicked without looking. **These bindings have not been run
+against the aircraft.** The event numbers come from the PMDG SDK's own definitions and the
+click codes from FSUIPC's list of them, but which way a click steps this switch, and whether
+the guard needs the clicks around the switch, were not tried. If a half moves the lever the
+wrong way, swap `CLICK` and `RIGHT_CLICK` in `tools/make_profiles.py`; if the switch does not
+move at all, the guard clicks are the first thing to look at. `--sdk-header` checks the four
+event numbers against your copy of the SDK, like every other binding.
+
 **Master caution** — `0` FIRE WARN (red), `1` MASTER CAUTION, then the six-pack captions row
 by row, left column first:
 
@@ -949,7 +972,7 @@ Nothing else ends it:
 ### The demo
 
 Tap **DEMO** on the splash, or on *No panel configured*, and the board plays a scene on each
-of the ten panels in turn, round and round, with no Connector and no sim. It is for showing
+of the eleven panels in turn, round and round, with no Connector and no sim. It is for showing
 the panels to people, for photos and video, and for checking a freshly flashed board. Any
 board can play it, whatever panel it is configured as.
 
@@ -960,6 +983,7 @@ board can play it, whatever panel it is configured as.
 | ISDU | that present position keyed in, as the FCOM has it: DSPL SEL to PPOS, N 4 7 3 2 4, ENT; W 1 2 2 1 2 3, ENT; then HDG/STS, left and right |
 | Electrical | on the battery (BAT DISCHARGE); ground power shown, then switched on, the TRs at 28 V; the APU generator coming up to 115 V and 400 Hz and taking the load |
 | Flight controls | both LOW PRESSURE on a cold aircraft, out as the B and A pumps come on; then the standby-rudder check, each switch in turn (STBY RUD ON) |
+| Flight controls with switches | the same, and then the check done by hand: the A toggle's lower half pressed twice steps its lever to OFF and then STBY RUD (STBY RUD ON lights), the upper half twice steps it back to ON, and the same for B |
 | Air conditioning | ram doors full open on the ground; DUAL BLEED at engine start; ram doors closing after takeoff; a pressure controller failure (AUTO FAIL, ALTN) and ALTN selected |
 | Master caution (each) | a caution and its reset, a recall, the fault back and cleared, then the fire test and its bell cutout |
 | Master caution with AFDS | autopilot and autothrottle disconnects (A/P, A/T flashing red), an A/T airspeed error (flashing amber), an FMC alert, then a caution |
@@ -1093,7 +1117,7 @@ machine. It needs pyserial, which PlatformIO's own interpreter already has:
 PY=~/.platformio/penv/bin/python
 $PY tools/mfsim.py info           # identify the board, its device and names; check them against the JSON
 $PY tools/mfsim.py setup door     # upload + activate a config: door, irs, elec, air, fctl,
-                                  #   isdu, mcs_l, mcs_r, mcs_both, mcs_both_afds
+                                  #   fctl_sw, isdu, mcs_l, mcs_r, mcs_both, mcs_both_afds
 $PY tools/mfsim.py demo door      # walk through a few states over MobiFlight messages
 $PY tools/mfsim.py lamp 3 1       # one lamp: id, then 0 off / 1 on / 2 blink
 $PY tools/mfsim.py send 102 1     # any message ID -- here, night dimming

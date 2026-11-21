@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Assemble panel previews into sheets, and refresh the images the README and handbook use.
 
-    python3 tools/preview/contact_sheet.py                 # one sheet of all ten panels
+    python3 tools/preview/contact_sheet.py                 # one sheet of all eleven panels
     python3 tools/preview/contact_sheet.py --scene all
     python3 tools/preview/contact_sheet.py --docs          # refresh docs/previews/, splash included
     python3 tools/preview/contact_sheet.py --compare door  # 320 beside 480, true relative size
@@ -21,7 +21,7 @@ OUT = ROOT / "tools" / "preview" / "out"
 DOCS = ROOT / "docs" / "previews"
 
 PANELS = ["door", "irs", "elec", "mcs_l", "mcs_r", "mcs_both", "mcs_both_afds",
-          "air", "fctl", "isdu"]
+          "air", "fctl", "fctl_sw", "isdu"]
 
 # Active area / pixel count for each screen. Measure these on the real panels before
 # trusting --compare to the millimetre; they come from the standard sizes for a 3.2in
@@ -79,7 +79,7 @@ def main():
     ap.add_argument("--res", type=int, default=320, choices=[320, 480])
     ap.add_argument("--compare", metavar="PANEL", choices=PANELS)
     ap.add_argument("--docs", action="store_true",
-                    help="refresh docs/previews: the ten panels, the README sheet, the boot "
+                    help="refresh docs/previews: the eleven panels, the README sheet, the boot "
                          "screens and the two screens compared")
     ap.add_argument("--out", type=Path)
     args = ap.parse_args()
