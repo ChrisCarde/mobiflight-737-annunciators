@@ -69,6 +69,30 @@ you add to it, so a board becomes a different panel without reflashing.
 Touch is not something the real aircraft does. It is there because pressing a door
 annunciator is quicker than breaking out of FMS mode on the CDU or digging for the EFB.
 
+## 3D-printed mounts
+
+Printable mounts for five boards: three side by side as an overhead module, and one at each
+end of the glareshield for the master caution panels. Each piece comes as a **STEP** file, to
+edit in your CAD program, and an **STL**, ready to slice. Full-size renders are in
+[`hardware/renders/`](hardware/renders/).
+
+| | |
+|---|---|
+| <img src="docs/hardware/overhead-assembly-with-displays.jpg" width="400"> | <img src="docs/hardware/overhead-assembly.jpg" width="400"> |
+| The overhead module with its three displays | The same, without the displays |
+| <img src="docs/hardware/master-caution-left-with-display.jpg" width="400"> | <img src="docs/hardware/master-caution-left.jpg" width="400"> |
+| The captain's master caution mount, with its display | The same, without the display |
+
+| | Piece | Files |
+|---|---|---|
+| <img src="docs/hardware/overhead-center.jpg" width="220"> | **Overhead, center.** One display frame on the mounting plate; the side pieces attach to it | [STEP](hardware/overhead-center.step) · [STL](hardware/overhead-center.stl) |
+| <img src="docs/hardware/overhead-left.jpg" width="220"> | **Overhead, left.** One display frame | [STEP](hardware/overhead-left.step) · [STL](hardware/overhead-left.stl) |
+| | **Overhead, right.** The left piece mirrored | [STEP](hardware/overhead-right.step) · [STL](hardware/overhead-right.stl) |
+| <img src="docs/hardware/master-caution-left.jpg" width="220"> | **Master caution, captain's side.** Glareshield mount with a hood over the display | [STEP](hardware/master-caution-left.step) · [STL](hardware/master-caution-left.stl) |
+| <img src="docs/hardware/master-caution-right.jpg" width="220"> | **Master caution, first officer's side.** The captain's mount mirrored | [STEP](hardware/master-caution-right.step) · [STL](hardware/master-caution-right.stl) |
+
+A parts list and assembly instructions are still to come.
+
 ## How it works
 
 This is a [MobiFlight CommunityTemplate](https://github.com/MobiFlight/CommunityTemplate)
@@ -462,6 +486,7 @@ release/                the README.txt at the top of the release zip
 web/                    the browser installer page (its manifest is written by the build)
 tools/                  profile generator, definition checks, a bench tool, the host preview
 art/                    the splash logo's source image and its licence
+hardware/               3D-printed mounts: STEP and STL per piece, and full-size renders
 docs/handbook.md        everything in detail
 .github/workflows/       the release build
 ```

@@ -7,3 +7,8 @@
 # Firmware and images are binary.
 *.bin  binary
 *.png  binary
+*.jpg  binary
+*.stl  binary
+
+# STEP is text, but CAD programs read it byte for byte: store and check out exactly as exported.
+*.step -text
