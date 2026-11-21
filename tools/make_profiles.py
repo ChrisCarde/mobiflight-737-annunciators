@@ -385,6 +385,10 @@ PANELS = {
     "mcs_both_afds": ("ANNUN_MCS_BOTH_AFDS", "annunciator_mcs_both_afds.device.json",
                       "MasterCaution-Both-AFDS", MCS_BOTH + AFDS, MCS_BOTH_TOUCH, [],
                       ("McsPanel/McsPanel.cpp", "BOTH_AFDS_ZONES")),
+    # The captain's side with the same AFDS rows, numbered straight after its eight lamps.
+    "mcs_l_afds": ("ANNUN_MCS_L_AFDS", "annunciator_mcs_l_afds.device.json",
+                   "MasterCaution-Captain-AFDS", MCS_L + [(row[0] - 6,) + tuple(row[1:]) for row in AFDS],
+                   MCS_L_TOUCH, [], ("McsPanel/McsPanel.cpp", "LEFT_AFDS_ZONES")),
 }
 
 # Zones the firmware sends but nothing is bound to yet, with the reason. The three P/RST
@@ -394,6 +398,7 @@ PANELS = {
 # --sdk-header to have every event checked against your own copy of the SDK, then add them.
 UNBOUND_ZONES = {
     "mcs_both_afds": ["AFDS AP", "AFDS AT", "AFDS FMC"],
+    "mcs_l_afds": ["AFDS AP", "AFDS AT", "AFDS FMC"],
 }
 
 GUID_NS = uuid.UUID("6f2c1d52-3b0e-4f5a-9c1e-4a9d7a0e2b11")

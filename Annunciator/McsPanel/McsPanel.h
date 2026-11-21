@@ -32,6 +32,14 @@
                                           DOORS     AIR COND
            messages 0 FIRE WARN, 1 MASTER CAUTION, 2..7 captain's, 8..13 F/O's six-pack
 
+    LEFT AFDS  the captain's unit with the autoflight P/RST lights in a row beneath the two
+           push-lights, as BOTH AFDS has them
+               FIRE WARN  MASTER CAUTION  FLT CONT  ELEC
+                                          IRS       APU
+               A/P   A/T   FMC            FUEL      OVHT/DET
+           messages 0..7 as LEFT, so a LEFT binding lands on the same lamp; 8 A/P, 9 A/T,
+           10 FMC
+
     Six-pack captions are numbered row by row, left column first.
 
     Every one of them is a button too, as on the aircraft: FIRE WARN silences the bell,
@@ -45,6 +53,8 @@ namespace McsPanel
     // The same again plus the three autoflight lights, which keep the message IDs above
     // the ones ANNUN_MCS_BOTH already uses: 14 A/P, 15 A/T, 16 FMC.
     static const uint8_t BOTH_AFDS_LAMP_COUNT = 17;
+    // The captain's side plus the same three, numbered straight after it: 8 A/P, 9 A/T, 10 FMC.
+    static const uint8_t LEFT_AFDS_LAMP_COUNT = 11;
 
     extern const LampPanel::Def LEFT;
     extern const LampPanel::Def RIGHT;
@@ -54,4 +64,5 @@ namespace McsPanel
     void initRight(uint8_t backlightPin);
     void initBoth(uint8_t backlightPin);
     void initBothAfds(uint8_t backlightPin);
+    void initLeftAfds(uint8_t backlightPin);
 }

@@ -22,6 +22,7 @@ static const Ops PANELS[] = {
     {CUSTOMDEVICE_TYPE_MCS_R, "MASTER CAUTION R", McsPanel::initRight, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
     {CUSTOMDEVICE_TYPE_MCS_BOTH, "MASTER CAUTION", McsPanel::initBoth, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
     {CUSTOMDEVICE_TYPE_MCS_BOTH_AFDS, "CAUTION + AFDS", McsPanel::initBothAfds, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
+    {CUSTOMDEVICE_TYPE_MCS_L_AFDS, "CAUTION L + AFDS", McsPanel::initLeftAfds, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
     {CUSTOMDEVICE_TYPE_AIR, "AIR CONDITIONING", AirPanel::init, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
     {CUSTOMDEVICE_TYPE_FCTL, "FLIGHT CONTROLS", FctlPanel::init, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},
     {CUSTOMDEVICE_TYPE_FCTL_SW, "FLT CTRL SWITCH", FctlPanel::initSwitches, LampPanel::stop, LampPanel::clear, LampPanel::set, LampPanel::update},

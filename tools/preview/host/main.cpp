@@ -4,7 +4,7 @@
            preview splash <on|press|nopanel|credits> <out.ppm>
            preview demo <panel> <out-dir> [every-ms]
 
-   panels  door irs elec mcs_l mcs_r mcs_both mcs_both_afds air fctl fctl_sw isdu
+   panels  door irs elec mcs_l mcs_r mcs_both mcs_both_afds mcs_l_afds air fctl fctl_sw isdu
    scenes  off      nothing lit, the way the panel sits with the aircraft quiet
            demo     a representative mix of lit, unlit and blinking lamps
            all      every lamp on, as the lamp-test message drives it
@@ -59,7 +59,7 @@ struct PanelOps {
     uint8_t lampCount; // 0 for panels that are not a lamp table
 };
 
-// The same eleven panels as Panels.cpp's table, in the same order.
+// The same twelve panels as Panels.cpp's table, in the same order.
 const PanelOps PANELS[] = {
     {"door", DoorPanel::init, LampPanel::clear, LampPanel::set, LampPanel::update, DoorPanel::LAMP_COUNT},
     {"irs", IrsPanel::init, IrsPanel::clear, IrsPanel::set, IrsPanel::update, 11},
@@ -68,6 +68,7 @@ const PanelOps PANELS[] = {
     {"mcs_r", McsPanel::initRight, LampPanel::clear, LampPanel::set, LampPanel::update, 8},
     {"mcs_both", McsPanel::initBoth, LampPanel::clear, LampPanel::set, LampPanel::update, 14},
     {"mcs_both_afds", McsPanel::initBothAfds, LampPanel::clear, LampPanel::set, LampPanel::update, 17},
+    {"mcs_l_afds", McsPanel::initLeftAfds, LampPanel::clear, LampPanel::set, LampPanel::update, 11},
     {"air", AirPanel::init, LampPanel::clear, LampPanel::set, LampPanel::update, 16},
     {"fctl", FctlPanel::init, LampPanel::clear, LampPanel::set, LampPanel::update, 9},
     {"fctl_sw", FctlPanel::initSwitches, LampPanel::clear, LampPanel::set, LampPanel::update, 9},

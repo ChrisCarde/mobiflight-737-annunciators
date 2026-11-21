@@ -274,6 +274,23 @@ constexpr Step MCS_AFDS[] = {
     TAP(26500, "MASTER CAUTION"), DARK(26800, MASTER_CAUTION), DARK(26800, BOTH_HYD),
 };
 
+/* ---- The captain's master caution with the AFDS lights ----------------------------
+   The same autoflight story on the captain's side alone, then a caution and its reset.
+   The AFDS lights are 8..10 here. */
+enum : int16_t { L_AFDS_AP = 8, L_AFDS_AT, L_AFDS_FMC };
+constexpr Step MCS_L_AFDS[] = {
+    FLASH(1000, L_AFDS_AP),
+    TAP(4000, "AFDS AP"), DARK(4300, L_AFDS_AP),
+    FLASH(6500, L_AFDS_AT),
+    TAP(9500, "AFDS AT"), DARK(9800, L_AFDS_AT),
+    ALT_FLASH(12500, L_AFDS_AT),
+    DARK(16500, L_AFDS_AT),
+    LIT(18500, L_AFDS_FMC),
+    TAP(21500, "AFDS FMC"), DARK(21800, L_AFDS_FMC),
+    LIT(24000, CPT_FUEL), LIT(24000, MASTER_CAUTION),
+    TAP(26500, "MASTER CAUTION L"), DARK(26800, MASTER_CAUTION), DARK(26800, CPT_FUEL),
+};
+
 #undef SIX_LIT
 #undef SIX_DARK
 #undef TAP
@@ -299,6 +316,7 @@ const Demo::Scene SCENES[] = {
     {CUSTOMDEVICE_TYPE_MCS_R, MCS_R, countOf(MCS_R), 23000},
     {CUSTOMDEVICE_TYPE_MCS_BOTH, MCS_BOTH, countOf(MCS_BOTH), 24000},
     {CUSTOMDEVICE_TYPE_MCS_BOTH_AFDS, MCS_AFDS, countOf(MCS_AFDS), 30000},
+    {CUSTOMDEVICE_TYPE_MCS_L_AFDS, MCS_L_AFDS, countOf(MCS_L_AFDS), 30000},
 };
 
 constexpr size_t textLength(const char *s)
@@ -323,7 +341,8 @@ template <size_t N> constexpr bool wellFormed(const Step (&s)[N], uint16_t lengt
 static_assert(wellFormed(DOORS, 26000) && wellFormed(IRS, 28000) && wellFormed(ISDU, 33000) &&
                   wellFormed(ELEC, 29000) && wellFormed(FCTL, 23000) && wellFormed(FCTL_SW, 27000) && wellFormed(AIR, 24000) &&
                   wellFormed(MCS_L, 23000) && wellFormed(MCS_R, 23000) &&
-                  wellFormed(MCS_BOTH, 24000) && wellFormed(MCS_AFDS, 30000),
+                  wellFormed(MCS_BOTH, 24000) && wellFormed(MCS_AFDS, 30000) &&
+                  wellFormed(MCS_L_AFDS, 30000),
               "a demo scene's steps are out of order, past its length, or a payload is too long");
 
 } // namespace

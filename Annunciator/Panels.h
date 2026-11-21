@@ -23,7 +23,7 @@ namespace Panels
 
     // The names, longest first, for fit checks: the boot splash shows them in big type.
     inline constexpr const char *NAMES[] = {
-        "DOOR ANNUNCIATOR", "MASTER CAUTION R", "MASTER CAUTION L", "ELECTRICAL METER",
+        "DOOR ANNUNCIATOR", "CAUTION L + AFDS", "MASTER CAUTION R", "MASTER CAUTION L", "ELECTRICAL METER",
         "AIR CONDITIONING", "FLIGHT CONTROLS", "IRS ANNUNCIATOR", "IRS DISPLAY UNIT",
         "MASTER CAUTION", "CAUTION + AFDS", "FLT CTRL SWITCH",
     };

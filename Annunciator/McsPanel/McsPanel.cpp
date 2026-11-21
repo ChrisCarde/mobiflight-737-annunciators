@@ -122,6 +122,12 @@ static_assert(AFDS_W >= LY::MIN_TOUCH_PX && AFDS_H + AFDS_GAP >= LY::MIN_TOUCH_P
               "an AFDS light is too small to press");
 static_assert(AFDS_GAP > LY::RING_INSET, "no room between the AFDS lights");
 
+/* The captain's side with the same AFDS row. The caps and the row sit where BOTH AFDS has
+   them; the six-pack keeps a single side's shape, level with the caps, as on the aircraft. */
+static constexpr int16_t LEFT_AFDS_SP_Y = (int16_t)(AFDS_SQ_Y + (SQ - SIDE_SP_H) / 2);
+static_assert(LEFT_AFDS_SP_Y >= 3 && LEFT_AFDS_SP_Y + SIDE_SP_H <= PANEL_H - 3,
+              "the captain's AFDS six-pack runs off the panel");
+
 #define FIRE_WARN(x)      {"FIRE", "WARN", "BELL CUTOUT", x, SQ_Y, SQ, SQ, LAMP_RED, KIND_FILLED, FONT_LARGE}
 #define MASTER_CAUTION(x) {"MASTER", "CAUTION", "PUSH TO RESET", x, SQ_Y, SQ, SQ, LAMP_AMBER, KIND_FILLED, FONT_LARGE}
 #define CAPTION(text, spX, spY, spH, c, r) \
@@ -171,6 +177,16 @@ static const LampPanel::Lamp BOTH_AFDS_LAMPS[BOTH_AFDS_LAMP_COUNT] = {
     AFDS("FMC", 2, LAMP_AMBER, LAMP_AMBER),
 };
 
+/* 8, 9, 10: the same three autoflight lights, after the captain's eight. */
+static const LampPanel::Lamp LEFT_AFDS_LAMPS[LEFT_AFDS_LAMP_COUNT] = {
+    FIRE_WARN_AT(OUT_X, AFDS_SQ_Y),
+    MASTER_CAUTION_AT(IN_X, AFDS_SQ_Y),
+    CAPT_SIX_PACK(SP_R_X, LEFT_AFDS_SP_Y, SIDE_SP_H),
+    AFDS("A/P", 0, LAMP_RED, LAMP_AMBER),
+    AFDS("A/T", 1, LAMP_RED, LAMP_AMBER),
+    AFDS("FMC", 2, LAMP_AMBER, LAMP_AMBER),
+};
+
 #undef FIRE_WARN
 #undef MASTER_CAUTION
 #undef FIRE_WARN_AT
@@ -182,6 +198,7 @@ static const LampPanel::Lamp BOTH_AFDS_LAMPS[BOTH_AFDS_LAMP_COUNT] = {
 
 static const LampPanel::Plate LEFT_PLATES[]  = {{SP_R_X, SIDE_SP_Y, SP_W, SIDE_SP_H, Theme::SixPackFace, Theme::Bezel}};
 static const LampPanel::Plate RIGHT_PLATES[] = {{SP_L_X, SIDE_SP_Y, SP_W, SIDE_SP_H, Theme::SixPackFace, Theme::Bezel}};
+static const LampPanel::Plate LEFT_AFDS_PLATES[] = {{SP_R_X, LEFT_AFDS_SP_Y, SP_W, SIDE_SP_H, Theme::SixPackFace, Theme::Bezel}};
 static const LampPanel::Plate BOTH_PLATES[]  = {
     {SP_R_X, TOP_SP_Y, SP_W, BOTH_SP_H, Theme::SixPackFace, Theme::Bezel},
     {SP_R_X, BOT_SP_Y, SP_W, BOTH_SP_H, Theme::SixPackFace, Theme::Bezel},
@@ -204,6 +221,15 @@ static const LampPanel::Zone BOTH_AFDS_ZONES[] = {
     {IN_X, AFDS_SQ_Y, SQ, SQ, "MASTER CAUTION"},
     {SP_R_X, TOP_SP_Y, SP_W, BOTH_SP_H, "RECALL L"},
     {SP_R_X, BOT_SP_Y, SP_W, BOTH_SP_H, "RECALL R"},
+    {afdsX(0), AFDS_Y, AFDS_W, AFDS_H, "AFDS AP"},
+    {afdsX(1), AFDS_Y, AFDS_W, AFDS_H, "AFDS AT"},
+    {afdsX(2), AFDS_Y, AFDS_W, AFDS_H, "AFDS FMC"},
+};
+
+static const LampPanel::Zone LEFT_AFDS_ZONES[] = {
+    {OUT_X, AFDS_SQ_Y, SQ, SQ, "FIRE WARN L"},
+    {IN_X, AFDS_SQ_Y, SQ, SQ, "MASTER CAUTION L"},
+    {SP_R_X, LEFT_AFDS_SP_Y, SP_W, SIDE_SP_H, "RECALL L"},
     {afdsX(0), AFDS_Y, AFDS_W, AFDS_H, "AFDS AP"},
     {afdsX(1), AFDS_Y, AFDS_W, AFDS_H, "AFDS AT"},
     {afdsX(2), AFDS_Y, AFDS_W, AFDS_H, "AFDS FMC"},
@@ -244,6 +270,16 @@ static const uint32_t BOTH_AFDS_DEMO[] = {
     0,
 };
 
+/* The captain's states, then the autoflight row as BOTH AFDS shows it. */
+static const uint32_t LEFT_AFDS_DEMO[] = {
+    (1u << 1) | (1u << 2),             // MASTER CAUTION, FLT CONT
+    (1u << 0) | (1u << 1) | (1u << 7), // FIRE WARN, MASTER CAUTION, OVHT/DET
+    (1u << 1) | SIX,                   // recall
+    (1u << 8) | (1u << 9),             // A/P, A/T
+    (1u << 10),                        // FMC
+    0,
+};
+
 static const uint32_t BOTH_DEMO[] = {
     (1u << 1) | (1u << 2) | (1u << 10),            // MASTER CAUTION, FLT CONT, HYD
     (1u << 0) | (1u << 1) | (1u << 7) | (1u << 9), // FIRE WARN, MASTER CAUTION, OVHT/DET, ENG
@@ -260,6 +296,8 @@ const LampPanel::Def RIGHT = DEF_OF(RIGHT_LAMPS, RIGHT_PLATES, RIGHT_ZONES, RIGH
 const LampPanel::Def BOTH  = DEF_OF(BOTH_LAMPS, BOTH_PLATES, BOTH_ZONES, BOTH_DEMO);
 const LampPanel::Def BOTH_AFDS =
     DEF_OF(BOTH_AFDS_LAMPS, BOTH_PLATES, BOTH_AFDS_ZONES, BOTH_AFDS_DEMO);
+const LampPanel::Def LEFT_AFDS =
+    DEF_OF(LEFT_AFDS_LAMPS, LEFT_AFDS_PLATES, LEFT_AFDS_ZONES, LEFT_AFDS_DEMO);
 #undef DEF_OF
 #undef COUNT
 
@@ -267,5 +305,6 @@ void initLeft(uint8_t backlightPin) { LampPanel::init(LEFT, backlightPin); }
 void initRight(uint8_t backlightPin) { LampPanel::init(RIGHT, backlightPin); }
 void initBoth(uint8_t backlightPin) { LampPanel::init(BOTH, backlightPin); }
 void initBothAfds(uint8_t backlightPin) { LampPanel::init(BOTH_AFDS, backlightPin); }
+void initLeftAfds(uint8_t backlightPin) { LampPanel::init(LEFT_AFDS, backlightPin); }
 
 } // namespace McsPanel

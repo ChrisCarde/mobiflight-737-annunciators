@@ -1,6 +1,6 @@
 # Annunciator
 
-Eleven Boeing 737-800 annunciator panels on a cheap all-in-one ESP32 display board, driven
+Twelve Boeing 737-800 annunciator panels on a cheap all-in-one ESP32 display board, driven
 from [MobiFlight Connector](https://www.mobiflight.com/) as a custom device. Built to fill
 the gaps a Rowsfire B107 overhead and a WinCtrl MCP/EFIS leave in a PMDG 737-800 cockpit —
 the doors panel, the IRS unit, electrical metering, air conditioning, flight controls and
@@ -48,7 +48,7 @@ entirely.
 
 ## The panels
 
-All eleven ship in **one firmware image per board type** — every board of a type gets the
+All twelve ship in **one firmware image per board type** — every board of a type gets the
 same `.bin`. Which panel a board shows is chosen in the Connector, by which custom device
 you add to it, so a board becomes a different panel without reflashing.
 
@@ -65,6 +65,7 @@ you add to it, so a board becomes a different panel without reflashing.
 | <img src="docs/previews/mcs_r.png" width="260"> | **Master caution, first officer's side** | `ANNUN_MCS_R` | the same |
 | <img src="docs/previews/mcs_both.png" width="260"> | **Master caution, both six-packs** on one screen | `ANNUN_MCS_BOTH` | the same, with a recall per six-pack |
 | <img src="docs/previews/mcs_both_afds.png" width="260"> | **Master caution with AFDS** — the combined layout plus the autoflight P/RST lights, A/P, A/T and FMC | `ANNUN_MCS_BOTH_AFDS` | the same, plus the three P/RST lights |
+| <img src="docs/previews/mcs_l_afds.png" width="260"> | **Master caution, captain's side, with AFDS** — the captain's unit plus the same three P/RST lights | `ANNUN_MCS_L_AFDS` | as the captain's side, plus the three P/RST lights |
 
 Touch is not something the real aircraft does. It is there because pressing a door
 annunciator is quicker than breaking out of FMS mode on the CDU or digging for the EFB.
@@ -335,7 +336,7 @@ name in **MobiFlight Modules** first and use those names here. The names to use 
 | AC & DC metering | `elec` | Master caution, first officer | `mcs_r` |
 | Air conditioning | `air` | Master caution, both | `mcs_both` |
 | Flight controls | `fctl` | Master caution with AFDS | `mcs_both_afds` |
-| Flight controls with switches | `fctl_sw` | | |
+| Flight controls with switches | `fctl_sw` | Master caution, captain, with AFDS | `mcs_l_afds` |
 
 </details>
 
@@ -396,6 +397,7 @@ project with it.
 | Master caution, first officer | [Annunciator-MasterCaution-FO-PMDG737-800.mfproj](profiles/Annunciator-MasterCaution-FO-PMDG737-800.mfproj) |
 | Master caution, both | [Annunciator-MasterCaution-Both-PMDG737-800.mfproj](profiles/Annunciator-MasterCaution-Both-PMDG737-800.mfproj) |
 | Master caution with AFDS | [Annunciator-MasterCaution-Both-AFDS-PMDG737-800.mfproj](profiles/Annunciator-MasterCaution-Both-AFDS-PMDG737-800.mfproj) |
+| Master caution, captain, with AFDS | [Annunciator-MasterCaution-Captain-AFDS-PMDG737-800.mfproj](profiles/Annunciator-MasterCaution-Captain-AFDS-PMDG737-800.mfproj) |
 
 ### 8. Check it works
 
@@ -476,7 +478,7 @@ Annunciator/            the firmware
   LampPanel.{h,cpp}       the engine for panels that are just lamps, run from a table
   Touch*.{h,cpp}          touch polling, calibration, and zones -> button events
   Splash/                 the boot splash, and the logo bitmaps generated for it
-  Demo/                   the splash's DEMO: the player and the eleven scenes
+  Demo/                   the splash's DEMO: the player and the twelve scenes
   <Name>Panel/            one directory per panel
   fonts/                  DM Sans Bold, embedded, with the metrics the renderer measures by
   Community/              the board and device definitions the Connector reads

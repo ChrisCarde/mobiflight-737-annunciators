@@ -29,7 +29,7 @@ OUT = ROOT / "tools" / "preview" / "out" / "demo"
 MANIFEST = ROOT / "tools" / "preview" / "golden" / "demo.sha256"
 
 # In the order the board plays them (Annunciator/Demo/DemoScenes.cpp).
-PANELS = ["door", "irs", "isdu", "elec", "fctl", "fctl_sw", "air", "mcs_l", "mcs_r", "mcs_both", "mcs_both_afds"]
+PANELS = ["door", "irs", "isdu", "elec", "fctl", "fctl_sw", "air", "mcs_l", "mcs_r", "mcs_both", "mcs_both_afds", "mcs_l_afds"]
 FRAME_MS = 250
 
 

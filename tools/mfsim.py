@@ -73,7 +73,7 @@ PANEL_FILES = {
     "air": "annunciator_air", "fctl": "annunciator_fctl", "fctl_sw": "annunciator_fctl_sw",
     "isdu": "annunciator_isdu",
     "mcs_l": "annunciator_mcs_l", "mcs_r": "annunciator_mcs_r", "mcs_both": "annunciator_mcs_both",
-    "mcs_both_afds": "annunciator_mcs_both_afds",
+    "mcs_both_afds": "annunciator_mcs_both_afds", "mcs_l_afds": "annunciator_mcs_l_afds",
 }
 
 
@@ -573,12 +573,22 @@ DEMOS = {
         ("cautions: A/P and A/T amber, FMC", {14: 3, 15: 3, 16: 1}),
         ("recall: every caption", {i: 1 for i in range(1, 14)}),
     ],
+    # The captain's side, then its autoflight row: 8 A/P, 9 A/T, 10 FMC.
+    "mcs_l_afds": [
+        ("all clear", {}),
+        ("MASTER CAUTION, FUEL", {1: 1, 6: 1}),
+        ("engine fire: FIRE WARN, MASTER CAUTION, OVHT/DET", {0: 1, 1: 1, 7: 1}),
+        ("autopilot disconnect: A/P red, blinking", {8: 2}),
+        ("autothrottle disconnect: A/T red", {9: 1}),
+        ("cautions: A/P and A/T amber, FMC", {8: 3, 9: 3, 10: 1}),
+        ("recall: every caption", {i: 1 for i in range(1, 8)}),
+    ],
 }
 
 
 def cmd_demo(board, args):
     count = {"door": 13, "irs": 11, "elec": 3, "mcs_l": 8, "mcs_r": 8, "mcs_both": 14,
-             "mcs_both_afds": 17, "air": 16, "fctl": 9, "fctl_sw": 9, "isdu": 0}[args.panel]
+             "mcs_both_afds": 17, "mcs_l_afds": 11, "air": 16, "fctl": 9, "fctl_sw": 9, "isdu": 0}[args.panel]
     start(board)
     for label, values in DEMOS[args.panel]:
         for i in range(count):

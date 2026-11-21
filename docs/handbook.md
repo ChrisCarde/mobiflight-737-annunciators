@@ -6,7 +6,7 @@ panel stays dark. The [README](../README.md) is the short version.*
 Turns a cheap all-in-one ESP32 display board into one of the 737-800 panels the Rowsfire
 B107 overhead and the WinCtrl MCP/EFIS leave out, driven from MobiFlight Connector.
 
-Two boards are supported, and the same eleven panels run on both: the **LCDWIKI E32R32P**
+Two boards are supported, and the same twelve panels run on both: the **LCDWIKI E32R32P**
 (3.2", 240×320 used as 320×240 landscape, resistive touch) and the **Caturda C3248W535**
 (3.5", 320×480 used as 480×320, capacitive touch). Everything below applies to both unless
 it says otherwise.
@@ -24,6 +24,7 @@ it says otherwise.
 | Master caution, first officer's glareshield | `ANNUN_MCS_R` | the same |
 | Master caution, both six-packs on one screen | `ANNUN_MCS_BOTH` | the same, a recall per six-pack |
 | Master caution with the AFDS P/RST lights | `ANNUN_MCS_BOTH_AFDS` | the same, plus A/P, A/T and FMC |
+| Master caution, captain's glareshield, with the AFDS P/RST lights | `ANNUN_MCS_L_AFDS` | as the captain's, plus A/P, A/T and FMC |
 
 All of them ship in one firmware image per board type — every board of a type gets the same
 `.bin`. Which panel a board shows is chosen **in the Connector**, by which custom device you add to it, so any
@@ -85,7 +86,7 @@ Annunciator/
   TouchAXS15231B.cpp           capacitive: an I2C read, and no calibration to do
   TouchZones.{h,cpp}           touch buttons -> MobiFlight button events, the press ring
   Splash/                      the boot splash, and the logo bitmaps generated for it
-  Demo/                        the splash's DEMO: the player and the eleven scenes
+  Demo/                        the splash's DEMO: the player and the twelve scenes
   DoorPanel/                   door lamps (a LampPanel table)
   AirPanel/                    air conditioning / bleed / pressurisation (a LampPanel table)
   FctlPanel/                   flight controls, with and without the switches (LampPanel tables)
@@ -185,7 +186,7 @@ So **the panel is never rotated.** It keeps its native 320x480 portrait shape, a
 *sprite* is rotated instead: LovyanGFX keeps a sprite's buffer exactly as created and
 applies rotation to the drawing coordinates, so a 320x480 buffer at sprite rotation 1 hands
 the renderer a 480x320 landscape surface while staying in the layout the panel wants. The
-eleven panel layouts know nothing about any of this. If a future board does accept a rotated
+twelve panel layouts know nothing about any of this. If a future board does accept a rotated
 window, this is still the better arrangement -- it is one blit of a whole frame either way.
 
 **3. LovyanGFX sprites are already big-endian.** *Symptom: the layout is perfect and every
@@ -306,6 +307,7 @@ The names:
 | Master caution, captain / F/O | `FIRE WARN L`, `MASTER CAUTION L`, `RECALL L` / the same with `R` |
 | Master caution, both | `FIRE WARN`, `MASTER CAUTION`, `RECALL L` (top six-pack), `RECALL R` (bottom) |
 | Master caution + AFDS | the same four, plus `AFDS AP`, `AFDS AT`, `AFDS FMC` |
+| Master caution, captain + AFDS | the captain's three, plus `AFDS AP`, `AFDS AT`, `AFDS FMC` |
 | IRS display unit | `ISDU 0` … `ISDU 9`, `ISDU ENT`, `ISDU CLR`; `ISDU DSPL TEST`, `ISDU DSPL TK GS`, `ISDU DSPL PPOS`, `ISDU DSPL WIND`, `ISDU DSPL HDG STS`; `ISDU SYS DSPL L`, `ISDU SYS DSPL R` |
 
 GRD PWR is not a button: the PMDG has no event that connects ground power. The two
@@ -372,7 +374,7 @@ from the current Connector definitions each time (`pio run -t annunciator_packag
 only that). That zip is the whole release and `_dist/` holds nothing else; the build deletes
 any other file there, because the release publishes `_dist/*`. It contains:
 
-- `Community/Annunciator/` — the Connector's package: both board definitions, the eleven device
+- `Community/Annunciator/` — the Connector's package: both board definitions, the twelve device
   definitions they share, and a firmware binary for each board. Build every env with the same
   `VERSION`; `tools/check_definitions.py` fails a package that lacks one. That binary is the
   **application image**, not a merged flash image — it is there for the Connector, not for
@@ -445,7 +447,8 @@ end up with:
 %LOCALAPPDATA%\MobiFlight\MobiFlight Connector\Community\Annunciator\
     boards\annunciator_e32r32p.board.json       (and annunciator_c3248w535.board.json)
     devices\annunciator_door.device.json        (and one per panel: irs, elec, air, fctl,
-    devices\annunciator_irs.device.json          isdu, mcs_l, mcs_r, mcs_both, mcs_both_afds)
+    devices\annunciator_irs.device.json          isdu, mcs_l, mcs_r, mcs_both, mcs_both_afds,
+    ...                                          mcs_l_afds)
     ...
     firmware\annunciator_e32r32p_0_1_0.bin       (one per board; not used by the Connector)
 ```
@@ -540,7 +543,7 @@ picture until then.
 
 The device gets the panel's name — `Door Annunciator`, `IRS Annunciator`, `Electrical
 Meter`, `Air Conditioning`, `Flight Controls`, `IRS Display Unit`, `Master Caution L`,
-`Master Caution R`, `Master Caution`, `Caution + AFDS`, `Flt Ctrl Switch` — and that is exactly the name the
+`Master Caution R`, `Master Caution`, `Caution + AFDS`, `Caution L + AFDS`, `Flt Ctrl Switch` — and that is exactly the name the
 profiles look for.
 **Don't rename it** (or regenerate the profiles with `--name`, see below). A board set up
 with the current `tools/mfsim.py setup` already shows its device, under the same name,
@@ -595,6 +598,7 @@ Connector with the batch file from step 2.
 | `Annunciator-MasterCaution-FO-PMDG737-800.mfproj` | 8 lamps | 3 |
 | `Annunciator-MasterCaution-Both-PMDG737-800.mfproj` | 14 lamps | 4 |
 | `Annunciator-MasterCaution-Both-AFDS-PMDG737-800.mfproj` | 17 lamps | 4 (the A/P, A/T and FMC presses are not bound yet) |
+| `Annunciator-MasterCaution-Captain-AFDS-PMDG737-800.mfproj` | 11 lamps | 3 (the A/P, A/T and FMC presses are not bound yet) |
 
 Each also has the same three **shared** outputs: **night dimming** (`102`) and **lamp test**
 (`103`), both following the main panel's TEST / BRT / DIM lights switch; and **bus
@@ -776,7 +780,7 @@ Lamp payloads are `0` dark, `1` lit, `2` lit and blinking at 1 Hz.
 
 A few lamps show two colours, because the aircraft uses colour to say how serious it is:
 `3` lights the second colour and `4` blinks it. Only the autoflight lights on
-`ANNUN_MCS_BOTH_AFDS` have one so far. A lamp with a single colour treats `3` and `4` as
+`ANNUN_MCS_BOTH_AFDS` and `ANNUN_MCS_L_AFDS` have one so far. A lamp with a single colour treats `3` and `4` as
 `1` and `2`, so a binding cannot break a panel by sending them.
 
 **Door panel** — the 737-800's, lamp IDs 0–12. The two centre columns are four deep; the
@@ -910,6 +914,14 @@ nothing. They are listed in `UNBOUND_ZONES` in `tools/make_profiles.py`; run it 
 The autoflight lights sit well below the warning caps because they are separate units on
 the aircraft — the caps are in the glareshield panel, the P/RST lights under the MCP.
 
+**Master caution, captain's side, with AFDS** (`ANNUN_MCS_L_AFDS`) — the captain's unit with
+the same three P/RST lights below its warning caps, for a cockpit with a separate first
+officer's panel. Lamps `0`–`7` are exactly the captain's panel's, so a binding made for
+`ANNUN_MCS_L` lands on the same lamp; the autoflight lights follow at `8` A/P, `9` A/T and
+`10` FMC, read and coloured exactly as above. The six-pack keeps a single side's shape, level
+with the caps. Its touch buttons are the captain's (`FIRE WARN L`, `MASTER CAUTION L`,
+`RECALL L`) and the same three unbound `AFDS AP`, `AFDS AT`, `AFDS FMC`.
+
 **IRS display unit** — the two segmented displays of the aft overhead's ISDU, its knobs and
 keypad:
 
@@ -977,7 +989,7 @@ Nothing else ends it:
 ### The demo
 
 Tap **DEMO** on the splash, or on *No panel configured*, and the board plays a scene on each
-of the eleven panels in turn, round and round, with no Connector and no sim. It is for showing
+of the twelve panels in turn, round and round, with no Connector and no sim. It is for showing
 the panels to people, for photos and video, and for checking a freshly flashed board. Any
 board can play it, whatever panel it is configured as.
 
@@ -1122,7 +1134,8 @@ machine. It needs pyserial, which PlatformIO's own interpreter already has:
 PY=~/.platformio/penv/bin/python
 $PY tools/mfsim.py info           # identify the board, its device and names; check them against the JSON
 $PY tools/mfsim.py setup door     # upload + activate a config: door, irs, elec, air, fctl,
-                                  #   fctl_sw, isdu, mcs_l, mcs_r, mcs_both, mcs_both_afds
+                                  #   fctl_sw, isdu, mcs_l, mcs_r, mcs_both, mcs_both_afds,
+                                  #   mcs_l_afds
 $PY tools/mfsim.py demo door      # walk through a few states over MobiFlight messages
 $PY tools/mfsim.py lamp 3 1       # one lamp: id, then 0 off / 1 on / 2 blink
 $PY tools/mfsim.py send 102 1     # any message ID -- here, night dimming
