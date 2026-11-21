@@ -600,6 +600,11 @@ Each also has the same three **shared** outputs: **night dimming** (`102`) and *
 (`103`), both following the main panel's TEST / BRT / DIM lights switch; and **bus
 unpowered** (`107`) from the DC BATT BUS, so the panel lights when the battery switch goes on.
 
+Every FSUIPC read carries a mask as wide as the read (`0xFF` for one byte, `0xFFFFFFFF` for
+four). The Connector ANDs the mask into the value, so the old fixed `0xFF` kept only the first
+byte of the AFDS rows' four-byte reads, and their amber states never arrived. Keep the mask
+full width if you edit such a row in the Connector.
+
 **Merge, don't open.** Each file is one config tab, meant to go *into* the project you fly
 with — the one with your B107 config. In the Connector:
 

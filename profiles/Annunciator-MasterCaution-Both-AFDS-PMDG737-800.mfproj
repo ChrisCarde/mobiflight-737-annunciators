@@ -1,8 +1,8 @@
 {
-  "Name": "[c30308] MasterCaution-Both-AFDS",
+  "Name": "[b8cf33] MasterCaution-Both-AFDS",
   "ConfigFiles": [
     {
-      "Label": "[c30308] MasterCaution-Both-AFDS",
+      "Label": "[b8cf33] MasterCaution-Both-AFDS",
       "FileName": null,
       "ReferenceOnly": false,
       "EmbedContent": true,
@@ -559,7 +559,7 @@
               "Offset": 26097,
               "Size": 4,
               "OffsetType": 0,
-              "Mask": 255,
+              "Mask": 4294967295,
               "BcdMode": false
             },
             "Type": "FsuipcSource"
@@ -604,7 +604,7 @@
               "Offset": 26101,
               "Size": 4,
               "OffsetType": 0,
-              "Mask": 255,
+              "Mask": 4294967295,
               "BcdMode": false
             },
             "Type": "FsuipcSource"

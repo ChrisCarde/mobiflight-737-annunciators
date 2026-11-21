@@ -226,7 +226,8 @@ AFDS = [
 
 # Shared by every panel: (id, label, field, offset, size, type, transformation, test value).
 # MAIN_LightsSelector is the TEST / BRT / DIM switch (0 / 1 / 2). The panel is dark while the
-# DC BATT BUS is unpowered -- when the real annunciators are dark.
+# DC BATT BUS is unpowered -- when the real annunciators are dark. Not DC BUS 1/2: those need
+# AC through the TRs, and the panels must come up on the battery alone.
 #
 # Bus power is 107, "bus unpowered", not 105: Test Mode sends each output its test value as
 # it is, whatever the binding says, and the end of every test sends "0" -- which must not
@@ -427,8 +428,10 @@ def output(panel, dtype, dname, board, mid, label, field, offset, size, otype, e
         source = {
             # A string offset is always read 255 bytes long up to its NUL, whatever Size says;
             # 255 is what the Connector's own editor writes for one.
+            # The Connector ANDs the mask into every integer read (FsuipcHelper.cs), so it
+            # must span the whole read: 255 on a multi-byte read would keep only its first byte.
             "FSUIPC": {"Offset": offset, "Size": 255 if otype == STRING else size, "OffsetType": otype,
-                       "Mask": 255, "BcdMode": False},  # the Connector's own default
+                       "Mask": 255 if otype == STRING else (1 << 8 * size) - 1, "BcdMode": False},
             "Type": "FsuipcSource",
         }
     if otype == STRING:
@@ -555,29 +558,40 @@ def check_offsets(pdf_text):
             rows[m.group(4)] = (int(m.group(1), 16), int(m.group(2)), count, m.group(3).upper())
     problems = []
     for panel, spec in PANELS.items():
-        for mid, label, field, off, size, otype in list(spec[3]) + [s[:6] for s in SHARED]:
+        for row in list(spec[3]) + list(SHARED):
+            mid, label, field, off, size, otype = row[:6]
             if off is None:
                 continue  # an L-var, not in FSUIPC's table
-            base, _, idx = field.partition("[")
-            index = int(idx.rstrip("]")) if idx else 0
-            if base not in rows:
-                problems.append("%s: %s not found in the FSUIPC table" % (panel, base))
-                continue
-            start, total, count, ftype = rows[base]
-            if idx and count is None:
-                problems.append("%s: %s is indexed but not an array in the FSUIPC table" % (panel, field))
-                continue
-            if count is not None and index >= count:
-                problems.append("%s: %s is past the end of %s[%d]" % (panel, field, base, count))
-                continue
-            elem = total // count if count else total
-            want = start + index * elem
-            if want != off:
-                problems.append("%s: %s is 0x%04X in the FSUIPC table, profile says 0x%04X"
-                                % (panel, field, want, off))
-            if otype == INT and (size != elem or ftype not in ("BYTE", "WORD", "DWORD")):
-                problems.append("%s: %s is %d-byte %s in the FSUIPC table, profile reads %d-byte integer"
-                                % (panel, field, elem, ftype, size))
+            # One read may cover several fields, written "A[0] + B[0]" (the AFDS rows skip
+            # the [1] in between): the first starts the read, and each lies inside it.
+            for n, part in enumerate(field.split(" + ")):
+                problem = None
+                base, _, idx = part.partition("[")
+                index = int(idx.rstrip("]")) if idx else 0
+                if base not in rows:
+                    problems.append("%s: %s not found in the FSUIPC table" % (panel, base))
+                    break
+                start, total, count, ftype = rows[base]
+                if idx and count is None:
+                    problem = "%s is indexed but not an array in the FSUIPC table" % part
+                elif count is not None and index >= count:
+                    problem = "%s is past the end of %s[%d]" % (part, base, count)
+                elif otype == INT and ftype not in ("BYTE", "WORD", "DWORD"):
+                    problem = "%s is %s in the FSUIPC table, profile reads an integer" % (part, ftype)
+                if problem:
+                    problems.append("%s: %s" % (panel, problem))
+                    break
+                elem = total // count if count else total
+                want = start + index * elem
+                if n == 0 and want != off:
+                    problems.append("%s: %s is 0x%04X in the FSUIPC table, profile says 0x%04X"
+                                    % (panel, part, want, off))
+                elif not off <= want <= want + elem <= off + size:
+                    problems.append("%s: %s (0x%04X, %d bytes) is outside the profile's read of "
+                                    "%d bytes at 0x%04X" % (panel, part, want, elem, size, off))
+                elif n == 0 and " + " not in field and otype == INT and size != elem:
+                    problems.append("%s: %s is %d bytes in the FSUIPC table, profile reads %d"
+                                    % (panel, part, elem, size))
     return problems
 
 
