@@ -1,8 +1,8 @@
 {
-  "Name": "[791bd1] FlightControls",
+  "Name": "[e0bf72] FlightControls",
   "ConfigFiles": [
     {
-      "Label": "[791bd1] FlightControls",
+      "Label": "[e0bf72] FlightControls",
       "FileName": null,
       "ReferenceOnly": false,
       "EmbedContent": true,
@@ -451,7 +451,7 @@
         {
           "Source": {
             "FSUIPC": {
-              "Offset": 25816,
+              "Offset": 25817,
               "Size": 1,
               "OffsetType": 0,
               "Mask": 255,
@@ -476,7 +476,7 @@
           "DeviceName": "Flight Controls",
           "GUID": "138bbd27-bb53-5117-aad1-0ca9e1b87c88",
           "Active": true,
-          "Name": "Flight Controls - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Name": "Flight Controls - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D9]",
           "Type": "OutputConfigItem",
           "Controller": {
             "Name": "Annunciator",

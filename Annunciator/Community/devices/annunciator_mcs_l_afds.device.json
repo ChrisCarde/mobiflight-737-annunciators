@@ -115,7 +115,7 @@
     {
       "Id": 107,
       "Label": "Bus unpowered (panel dark)",
-      "Description": "$ = 1 keeps the panel dark (the bus that feeds these lights is off), 0 lets it light. The inverse of 105, so that the 0 which Test Mode and the end of every test send leaves the panel lit (a row's own Test sends 1, which shows the dark, unpowered state). PMDG: FSUIPC 0x64D8 (DC BATT BUS) with Transformation if($=0,1,0)"
+      "Description": "$ = 1 keeps the panel dark (the bus that feeds these lights is off), 0 lets it light. The inverse of 105, so that the 0 which Test Mode and the end of every test send leaves the panel lit (a row's own Test sends 1, which shows the dark, unpowered state). PMDG: FSUIPC 0x64D9 (DC BATT BUS) with Transformation if($=0,1,0)"
     }
   ]
 }

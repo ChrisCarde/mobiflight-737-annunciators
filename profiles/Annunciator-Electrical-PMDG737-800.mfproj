@@ -1,8 +1,8 @@
 {
-  "Name": "[0ebfa3] Electrical",
+  "Name": "[e7c7db] Electrical",
   "ConfigFiles": [
     {
-      "Label": "[0ebfa3] Electrical",
+      "Label": "[e7c7db] Electrical",
       "FileName": null,
       "ReferenceOnly": false,
       "EmbedContent": true,
@@ -373,7 +373,7 @@
         {
           "Source": {
             "FSUIPC": {
-              "Offset": 25816,
+              "Offset": 25817,
               "Size": 1,
               "OffsetType": 0,
               "Mask": 255,
@@ -398,7 +398,7 @@
           "DeviceName": "Electrical Meter",
           "GUID": "4b6053ca-4d64-55b1-ad01-39e9bd076606",
           "Active": true,
-          "Name": "Electrical Meter - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Name": "Electrical Meter - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D9]",
           "Type": "OutputConfigItem",
           "Controller": {
             "Name": "Annunciator",

@@ -241,7 +241,11 @@ AFDS = [
 SHARED = [
     (102, "Night dimming (lights switch DIM)", "MAIN_LightsSelector", 0x6601, 1, INT, "if($=2,1,0)", 2),
     (103, "Lamp test (lights switch TEST)", "MAIN_LightsSelector", 0x6601, 1, INT, "if($<=0,1,0)", -1),
-    (107, "Bus unpowered (DC BATT BUS off)", "ELEC_BusPowered[2]", 0x64D6 + 2, 1, INT, "if($=0,1,0)", 0),
+    # 0x64D9, found in the sim to be the byte that follows the DC BATT BUS on every panel.
+    # FSUIPC's 737-700 table puts ELEC_BusPowered at 0x64D6, which would
+    # make the DC BATT BUS 0x64D8 -- one byte early. The measurement wins; --offsets-text will
+    # flag this row against a table that still says 0x64D6.
+    (107, "Bus unpowered (DC BATT BUS off)", "ELEC_BusPowered[2]", 0x64D9, 1, INT, "if($=0,1,0)", 0),
 ]
 
 # What the Connector's tests show on the text displays.

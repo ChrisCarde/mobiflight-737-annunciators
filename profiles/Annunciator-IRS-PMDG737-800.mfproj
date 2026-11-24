@@ -1,8 +1,8 @@
 {
-  "Name": "[47b19e] IRS",
+  "Name": "[68af26] IRS",
   "ConfigFiles": [
     {
-      "Label": "[47b19e] IRS",
+      "Label": "[68af26] IRS",
       "FileName": null,
       "ReferenceOnly": false,
       "EmbedContent": true,
@@ -525,7 +525,7 @@
         {
           "Source": {
             "FSUIPC": {
-              "Offset": 25816,
+              "Offset": 25817,
               "Size": 1,
               "OffsetType": 0,
               "Mask": 255,
@@ -550,7 +550,7 @@
           "DeviceName": "IRS Annunciator",
           "GUID": "b7ab7543-88c2-5da4-a7e5-79e7b0dfe71b",
           "Active": true,
-          "Name": "IRS Annunciator - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Name": "IRS Annunciator - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D9]",
           "Type": "OutputConfigItem",
           "Controller": {
             "Name": "Annunciator",

@@ -1,8 +1,8 @@
 {
-  "Name": "[db33ff] MasterCaution-Both",
+  "Name": "[67d371] MasterCaution-Both",
   "ConfigFiles": [
     {
-      "Label": "[db33ff] MasterCaution-Both",
+      "Label": "[67d371] MasterCaution-Both",
       "FileName": null,
       "ReferenceOnly": false,
       "EmbedContent": true,
@@ -646,7 +646,7 @@
         {
           "Source": {
             "FSUIPC": {
-              "Offset": 25816,
+              "Offset": 25817,
               "Size": 1,
               "OffsetType": 0,
               "Mask": 255,
@@ -671,7 +671,7 @@
           "DeviceName": "Master Caution",
           "GUID": "139fd755-ad1d-55a0-9af5-4f9e3642ba6d",
           "Active": true,
-          "Name": "Master Caution - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Name": "Master Caution - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D9]",
           "Type": "OutputConfigItem",
           "Controller": {
             "Name": "Annunciator",

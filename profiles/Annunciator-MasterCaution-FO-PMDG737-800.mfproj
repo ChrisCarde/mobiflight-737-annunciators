@@ -1,8 +1,8 @@
 {
-  "Name": "[019d0f] MasterCaution-FO",
+  "Name": "[5ef842] MasterCaution-FO",
   "ConfigFiles": [
     {
-      "Label": "[019d0f] MasterCaution-FO",
+      "Label": "[5ef842] MasterCaution-FO",
       "FileName": null,
       "ReferenceOnly": false,
       "EmbedContent": true,
@@ -412,7 +412,7 @@
         {
           "Source": {
             "FSUIPC": {
-              "Offset": 25816,
+              "Offset": 25817,
               "Size": 1,
               "OffsetType": 0,
               "Mask": 255,
@@ -437,7 +437,7 @@
           "DeviceName": "Master Caution R",
           "GUID": "e40be98a-b60e-538c-9b91-4da4dbd2acd5",
           "Active": true,
-          "Name": "Master Caution R - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Name": "Master Caution R - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D9]",
           "Type": "OutputConfigItem",
           "Controller": {
             "Name": "Annunciator",

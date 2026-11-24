@@ -1,8 +1,8 @@
 {
-  "Name": "[b8cf33] MasterCaution-Both-AFDS",
+  "Name": "[e66f11] MasterCaution-Both-AFDS",
   "ConfigFiles": [
     {
-      "Label": "[b8cf33] MasterCaution-Both-AFDS",
+      "Label": "[e66f11] MasterCaution-Both-AFDS",
       "FileName": null,
       "ReferenceOnly": false,
       "EmbedContent": true,
@@ -775,7 +775,7 @@
         {
           "Source": {
             "FSUIPC": {
-              "Offset": 25816,
+              "Offset": 25817,
               "Size": 1,
               "OffsetType": 0,
               "Mask": 255,
@@ -800,7 +800,7 @@
           "DeviceName": "Caution + AFDS",
           "GUID": "3ffe82a4-02b2-5e7c-891d-260ad0744d1a",
           "Active": true,
-          "Name": "Caution + AFDS - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Name": "Caution + AFDS - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D9]",
           "Type": "OutputConfigItem",
           "Controller": {
             "Name": "Annunciator",

@@ -1,8 +1,8 @@
 {
-  "Name": "[fb940a] AirCond-Bleed-Press",
+  "Name": "[f6729e] AirCond-Bleed-Press",
   "ConfigFiles": [
     {
-      "Label": "[fb940a] AirCond-Bleed-Press",
+      "Label": "[f6729e] AirCond-Bleed-Press",
       "FileName": null,
       "ReferenceOnly": false,
       "EmbedContent": true,
@@ -724,7 +724,7 @@
         {
           "Source": {
             "FSUIPC": {
-              "Offset": 25816,
+              "Offset": 25817,
               "Size": 1,
               "OffsetType": 0,
               "Mask": 255,
@@ -749,7 +749,7 @@
           "DeviceName": "Air Conditioning",
           "GUID": "a3cb9014-012c-57b0-98a9-f3b080dac6d6",
           "Active": true,
-          "Name": "Air Conditioning - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Name": "Air Conditioning - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D9]",
           "Type": "OutputConfigItem",
           "Controller": {
             "Name": "Annunciator",

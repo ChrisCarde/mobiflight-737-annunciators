@@ -1,8 +1,8 @@
 {
-  "Name": "[0a2eed] Doors",
+  "Name": "[0948c8] Doors",
   "ConfigFiles": [
     {
-      "Label": "[0a2eed] Doors",
+      "Label": "[0948c8] Doors",
       "FileName": null,
       "ReferenceOnly": false,
       "EmbedContent": true,
@@ -607,7 +607,7 @@
         {
           "Source": {
             "FSUIPC": {
-              "Offset": 25816,
+              "Offset": 25817,
               "Size": 1,
               "OffsetType": 0,
               "Mask": 255,
@@ -632,7 +632,7 @@
           "DeviceName": "Door Annunciator",
           "GUID": "ad9cf2f8-4b24-5f4a-bdee-3e6ac8130804",
           "Active": true,
-          "Name": "Door Annunciator - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Name": "Door Annunciator - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D9]",
           "Type": "OutputConfigItem",
           "Controller": {
             "Name": "Annunciator",

@@ -1,8 +1,8 @@
 {
-  "Name": "[b4e1ca] IRS-DisplayUnit",
+  "Name": "[95f5d3] IRS-DisplayUnit",
   "ConfigFiles": [
     {
-      "Label": "[b4e1ca] IRS-DisplayUnit",
+      "Label": "[95f5d3] IRS-DisplayUnit",
       "FileName": null,
       "ReferenceOnly": false,
       "EmbedContent": true,
@@ -369,7 +369,7 @@
         {
           "Source": {
             "FSUIPC": {
-              "Offset": 25816,
+              "Offset": 25817,
               "Size": 1,
               "OffsetType": 0,
               "Mask": 255,
@@ -394,7 +394,7 @@
           "DeviceName": "IRS Display Unit",
           "GUID": "786cfafb-3248-572a-b290-841e72f2d948",
           "Active": true,
-          "Name": "IRS Display Unit - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Name": "IRS Display Unit - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D9]",
           "Type": "OutputConfigItem",
           "Controller": {
             "Name": "Annunciator",

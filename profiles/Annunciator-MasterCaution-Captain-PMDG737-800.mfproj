@@ -1,8 +1,8 @@
 {
-  "Name": "[d9308b] MasterCaution-Captain",
+  "Name": "[659cd0] MasterCaution-Captain",
   "ConfigFiles": [
     {
-      "Label": "[d9308b] MasterCaution-Captain",
+      "Label": "[659cd0] MasterCaution-Captain",
       "FileName": null,
       "ReferenceOnly": false,
       "EmbedContent": true,
@@ -412,7 +412,7 @@
         {
           "Source": {
             "FSUIPC": {
-              "Offset": 25816,
+              "Offset": 25817,
               "Size": 1,
               "OffsetType": 0,
               "Mask": 255,
@@ -437,7 +437,7 @@
           "DeviceName": "Master Caution L",
           "GUID": "4988fbe0-a29c-510c-871e-5451dbe8cdb2",
           "Active": true,
-          "Name": "Master Caution L - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Name": "Master Caution L - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D9]",
           "Type": "OutputConfigItem",
           "Controller": {
             "Name": "Annunciator",

@@ -1,8 +1,8 @@
 {
-  "Name": "[468949] FlightControls-Switches",
+  "Name": "[0d2c8c] FlightControls-Switches",
   "ConfigFiles": [
     {
-      "Label": "[468949] FlightControls-Switches",
+      "Label": "[0d2c8c] FlightControls-Switches",
       "FileName": null,
       "ReferenceOnly": false,
       "EmbedContent": true,
@@ -529,7 +529,7 @@
         {
           "Source": {
             "FSUIPC": {
-              "Offset": 25816,
+              "Offset": 25817,
               "Size": 1,
               "OffsetType": 0,
               "Mask": 255,
@@ -554,7 +554,7 @@
           "DeviceName": "Flt Ctrl Switch",
           "GUID": "2c7d7c0b-9081-5ab9-b2bc-0f556c08840b",
           "Active": true,
-          "Name": "Flt Ctrl Switch - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Name": "Flt Ctrl Switch - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D9]",
           "Type": "OutputConfigItem",
           "Controller": {
             "Name": "Annunciator",

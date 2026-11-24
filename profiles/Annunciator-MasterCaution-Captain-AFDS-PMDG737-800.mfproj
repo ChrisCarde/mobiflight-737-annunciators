@@ -1,8 +1,8 @@
 {
-  "Name": "[8b4c68] MasterCaution-Captain-AFDS",
+  "Name": "[965c7f] MasterCaution-Captain-AFDS",
   "ConfigFiles": [
     {
-      "Label": "[8b4c68] MasterCaution-Captain-AFDS",
+      "Label": "[965c7f] MasterCaution-Captain-AFDS",
       "FileName": null,
       "ReferenceOnly": false,
       "EmbedContent": true,
@@ -541,7 +541,7 @@
         {
           "Source": {
             "FSUIPC": {
-              "Offset": 25816,
+              "Offset": 25817,
               "Size": 1,
               "OffsetType": 0,
               "Mask": 255,
@@ -566,7 +566,7 @@
           "DeviceName": "Caution L + AFDS",
           "GUID": "746db51b-e2eb-5384-942e-e24f6800ac35",
           "Active": true,
-          "Name": "Caution L + AFDS - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D8]",
+          "Name": "Caution L + AFDS - Bus unpowered (DC BATT BUS off)  [ELEC_BusPowered[2] 0x64D9]",
           "Type": "OutputConfigItem",
           "Controller": {
             "Name": "Annunciator",
